@@ -6,6 +6,7 @@ import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.RoutineJ
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.RoutineMapper;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.repository.RoutineJpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
 @Repository
 public class RoutineRepositoryImpl implements RoutineRepository {
@@ -25,5 +26,12 @@ public class RoutineRepositoryImpl implements RoutineRepository {
         RoutineJpaEntity savedEntity = jpaRepository.save(entityToSave);
 
         return mapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<Routine> findById(Long id) {
+        Optional<RoutineJpaEntity> optionalEntity =  jpaRepository.findById(id);
+
+        return optionalEntity.map(mapper::toDomain);
     }
 }
