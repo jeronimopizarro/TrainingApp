@@ -3,6 +3,7 @@ package com.trainingapp.trainingapp.application.usecase;
 import com.trainingapp.trainingapp.domain.entity.Routine;
 import com.trainingapp.trainingapp.domain.entity.RoutineDetail;
 import com.trainingapp.trainingapp.domain.entity.TrainingDay;
+import com.trainingapp.trainingapp.domain.exception.RoutineNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.RoutineRepository;
 import com.trainingapp.trainingapp.web.dto.GetRoutineByIdResponse;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,13 @@ public class GetRoutineByIdUseCase {
 
     public GetRoutineByIdResponse execute(Long id) {
         Routine routine = routineRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Routine not found"));
+                .orElseThrow(() -> new RoutineNotFoundException("The routine with id " + id + " was not found"));
 
-        // 1. Mapeamos la lista de días delegando la lógica a un método privado
+        // Mapeamos la lista de días delegando la lógica a un método privado
         List<GetRoutineByIdResponse.TrainingDayResponse> daysResponse = routine.getDays().stream()
                 .map(this::mapToTrainingDayResponse)
                 .toList();
 
-        // 2. Retornamos la respuesta
         return new GetRoutineByIdResponse(
                 routine.getId(), routine.getName(), routine.getStartDate(),
                 routine.getEndDate(), routine.getMemberId(), routine.getTrainerId(),
