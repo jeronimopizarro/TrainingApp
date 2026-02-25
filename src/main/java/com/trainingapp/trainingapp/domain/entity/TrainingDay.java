@@ -50,9 +50,6 @@ public class TrainingDay {
         if (suggestedWeight < 0) {
             throw new IllegalArgumentException("Suggest weight cannot be less than 0.");
         }
-        if (!this.details.isEmpty()) {
-            throw new IllegalStateException("Cannot add more than one exercise.");
-        }
 
         int exerciseOrder = this.details.size() + 1;
         RoutineDetail detail = new RoutineDetail(exerciseId, exerciseOrder, sets, repsMin, repsMax, targetRIR,suggestedWeight, notes);

@@ -55,8 +55,9 @@ public class GetRoutineByIdUseCase {
                 detail.getSets(),
                 detail.getRepsMin(),
                 detail.getRepsMax(),
+                detail.getTargetRIR(),
+                detail.getSuggestedWeight(),
                 detail.getNotes()
         );
     }
-
 }

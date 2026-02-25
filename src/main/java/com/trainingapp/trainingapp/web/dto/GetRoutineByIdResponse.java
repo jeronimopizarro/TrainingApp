@@ -11,9 +11,12 @@ public record GetRoutineByIdResponse(Long id, String name, LocalDate startDate, 
 
     public record TrainingDayResponse(
             Long id, String name, Integer orderNumber, List<RoutineDetailResponse> exercises
-    ) {}
+    ) {
+    }
 
     public record RoutineDetailResponse(
-            Long exerciseId, Integer sets, Integer repsMin, Integer repsMax, String notes
-    ) {}
+            Long exerciseId, Integer sets, Integer repsMin, Integer repsMax, Integer targetRIR,
+            Double suggestedWeight, String notes
+    ) {
+    }
 }

@@ -38,17 +38,16 @@ public class Routine {
         this.days = new ArrayList<>();
     }
 
-    public void addDay(String name){
+    public TrainingDay addDay(String name){
         if (name == null ||  name.isBlank()){
             throw new IllegalArgumentException("Name cannot be null.");
-        }
-        if (!this.days.isEmpty()){
-            throw new IllegalStateException("Cannot add more than one day.");
         }
 
         int order = this.days.size() + 1;
         TrainingDay day = new TrainingDay(name, order);
         this.days.add(day);
+
+        return day;
     }
 
     public void activate(LocalDate startDate, LocalDate endDate){

@@ -5,6 +5,7 @@ import com.trainingapp.trainingapp.application.usecase.GetRoutineByIdUseCase;
 import com.trainingapp.trainingapp.web.dto.CreateRoutineRequest;
 import com.trainingapp.trainingapp.web.dto.CreateRoutineResponse;
 import com.trainingapp.trainingapp.web.dto.GetRoutineByIdResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class RoutineController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateRoutineResponse> createRoutine(@RequestBody CreateRoutineRequest routineRequest) {
+    public ResponseEntity<CreateRoutineResponse> createRoutine(@Valid @RequestBody CreateRoutineRequest routineRequest) {
         CreateRoutineResponse response = createRoutineUseCase.execute(routineRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
