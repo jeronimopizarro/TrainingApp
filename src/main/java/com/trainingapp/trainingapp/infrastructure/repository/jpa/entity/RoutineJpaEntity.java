@@ -37,6 +37,9 @@ public class RoutineJpaEntity {
     @Column(name = "trainer_id")
     private Long trainerId;
 
+    @Column(name = "created_by_user_id", nullable = false)
+    private Long createdByUserId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private RoutineStatus status;

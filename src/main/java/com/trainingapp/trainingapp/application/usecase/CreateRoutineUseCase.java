@@ -19,7 +19,7 @@ public class CreateRoutineUseCase {
 
     public CreateRoutineResponse execute(CreateRoutineRequest request) {
         // 1. Creamos la Rutina base (El Aggregate Root)
-        Routine routine = new Routine(request.name(), request.memberId(), request.trainerId());
+        Routine routine = new Routine(request.name(), request.memberId(), request.trainerId(), request.createdByUserId());
 
             // 2. Iteramos sobre los Días del JSON
             request.days().forEach(dayRequest -> {

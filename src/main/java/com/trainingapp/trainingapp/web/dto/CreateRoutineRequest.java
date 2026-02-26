@@ -15,8 +15,10 @@ public record CreateRoutineRequest(
         @NotNull(message = "El ID del socio es obligatorio")
         Long memberId,
 
-        @NotNull(message = "El ID del entrenador es obligatorio")
         Long trainerId,
+
+        @NotNull(message = "El ID del usuario creador es obligatorio")
+        Long createdByUserId,
 
         @NotEmpty(message = "La rutina debe tener al menos un día de entrenamiento")
         @Valid

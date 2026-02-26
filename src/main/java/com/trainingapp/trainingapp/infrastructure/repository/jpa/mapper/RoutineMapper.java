@@ -24,6 +24,7 @@ public class RoutineMapper {
         entity.setEndDate(domain.getEndDate());
         entity.setMemberId(domain.getMemberId());
         entity.setTrainerId(domain.getTrainerId());
+        entity.setCreatedByUserId(domain.getCreatedByUserId());
         entity.setStatus(domain.getStatus());
 
         if (domain.getDays() != null) {
@@ -78,12 +79,14 @@ public class RoutineMapper {
     public Routine toDomain(RoutineJpaEntity entity) {
         if (entity == null) return null;
 
-        Routine domain = new Routine(entity.getName(), entity.getMemberId(), entity.getTrainerId());
+        Routine domain = new Routine(entity.getName(), entity.getMemberId(), entity.getTrainerId(),
+                entity.getCreatedByUserId());
 
         domain.setId(entity.getId());
         domain.setStartDate(entity.getStartDate());
         domain.setEndDate(entity.getEndDate());
         domain.setStatus(entity.getStatus());
+        domain.setCreatedByUserId(entity.getCreatedByUserId());
 
         if (entity.getDays() != null) {
             domain.setDays(

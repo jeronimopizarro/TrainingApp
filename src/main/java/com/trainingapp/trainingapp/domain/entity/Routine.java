@@ -18,22 +18,24 @@ public class Routine {
 
     private Long memberId;
     private Long trainerId;
+    private Long createdByUserId;
 
     private RoutineStatus status;
 
     private List<TrainingDay> days;
 
-    public Routine(String name, Long memberId, Long trainerId) {
+    public Routine(String name, Long memberId, Long trainerId,  Long createdByUserId) {
         if (name == null || name.isBlank()){
             throw new IllegalArgumentException("Name cannot be null.");
         }
-        if (memberId == null || trainerId == null) {
-            throw new IllegalArgumentException("The routine must have an assigned member and trainer.");
+        if (memberId == null) {
+            throw new IllegalArgumentException("The routine must have an assigned member");
         }
 
         this.name = name;
         this.memberId = memberId;
         this.trainerId = trainerId;
+        this.createdByUserId = createdByUserId;
         this.status = RoutineStatus.DRAFT;
         this.days = new ArrayList<>();
     }
@@ -50,22 +52,35 @@ public class Routine {
         return day;
     }
 
-    public void activate(LocalDate startDate, LocalDate endDate){
-        if (startDate == null || endDate == null){
-            throw new IllegalArgumentException("Start date and end date cannot be null.");
-        }
-        if (startDate.isAfter(endDate)){
-            throw new IllegalArgumentException("Start date cannot be after end date.");
-        }
-        if (this.days.isEmpty()){
-            throw  new IllegalStateException("Cannot activate a routine when the days list is empty.");
+    public void activate(Long requestingUserId, LocalDate startDate, LocalDate endDate){
+        if (!canBeManagedBy(requestingUserId)){
+            throw new IllegalArgumentException("The requesting user is not allowed to activate this routine.");
         }
         if (this.status != RoutineStatus.DRAFT){
-            throw new IllegalStateException("Only DRAFT routines can be activated.");
+            throw new IllegalStateException("Routine must be in DRAFT state to be activated.");
+        }
+        if (endDate != null && endDate.isBefore(startDate)){
+            throw new IllegalArgumentException("End date cannot be before start date.");
         }
 
+        this.status = RoutineStatus.ACTIVE;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.status = RoutineStatus.ACTIVE;
+    }
+
+    private boolean canBeManagedBy(Long userId) {
+        // 1. El Creador siempre tiene permisos absolutos.
+        // Si la creó el Socio, el Socio puede. Si la creó el Profe, el Profe puede.
+        if (this.createdByUserId != null && this.createdByUserId.equals(userId)) {
+            return true;
+        }
+
+        // 2. Si la rutina tiene un Profe asignado (quizás la creó un Admin o el coordinador),
+        // el profe asignado también tiene derecho a activarla.
+        if (this.trainerId != null && this.trainerId.equals(userId)) {
+            return true;
+        }
+
+        return false;
     }
 }

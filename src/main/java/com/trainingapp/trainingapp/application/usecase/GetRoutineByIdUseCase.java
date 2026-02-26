@@ -29,7 +29,7 @@ public class GetRoutineByIdUseCase {
 
         return new GetRoutineByIdResponse(
                 routine.getId(), routine.getName(), routine.getStartDate(),
-                routine.getEndDate(), routine.getMemberId(), routine.getTrainerId(),
+                routine.getEndDate(), routine.getMemberId(), routine.getTrainerId(), routine.getCreatedByUserId(),
                 routine.getStatus(), daysResponse
         );
     }
