@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ActivateRoutineUseCase {
+
     private final RoutineRepository routineRepository;
 
     public ActivateRoutineUseCase(RoutineRepository routineRepository) {

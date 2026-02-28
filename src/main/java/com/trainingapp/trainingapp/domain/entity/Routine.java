@@ -53,9 +53,8 @@ public class Routine {
     }
 
     public void activate(Long requestingUserId, LocalDate startDate, LocalDate endDate){
-        if (!canBeManagedBy(requestingUserId)){
-            throw new IllegalArgumentException("The requesting user is not allowed to activate this routine.");
-        }
+        ensureCanBeManagedBy(requestingUserId, "activate");
+
         if (this.status != RoutineStatus.DRAFT){
             throw new IllegalStateException("Routine must be in DRAFT state to be activated.");
         }
@@ -68,15 +67,39 @@ public class Routine {
         this.endDate = endDate;
     }
 
+    public void inactive(Long requestingUserId) {
+        ensureCanBeManagedBy(requestingUserId, "archive");
+
+        if (this.status == RoutineStatus.INACTIVE) {
+            throw new IllegalStateException("The routine is already archived.");
+        }
+
+        //Si la rutina estaba activa, le ponemos fecha de fin hoy.
+        if (this.status == RoutineStatus.ACTIVE) {
+            this.endDate = LocalDate.now();
+        }
+
+        this.status = RoutineStatus.INACTIVE;
+    }
+
+    private void ensureCanBeManagedBy(Long userId, String action) {
+        if (!canBeManagedBy(userId)) {
+            throw new IllegalArgumentException("The requesting user is not allowed to " + action + " this routine.");
+        }
+    }
+
     private boolean canBeManagedBy(Long userId) {
-        // 1. El Creador siempre tiene permisos absolutos.
-        // Si la creó el Socio, el Socio puede. Si la creó el Profe, el Profe puede.
+        //El dueño de la rutina (Socio) siempre tiene control sobre esta.
+        if (this.memberId != null && this.memberId.equals(userId)) {
+            return true;
+        }
+
+        // 2. El Creador siempre tiene control, es decir, createdBy
         if (this.createdByUserId != null && this.createdByUserId.equals(userId)) {
             return true;
         }
 
-        // 2. Si la rutina tiene un Profe asignado (quizás la creó un Admin o el coordinador),
-        // el profe asignado también tiene derecho a activarla.
+        // 3. El profe asignado a la rutina también tiene control, es decir, trainerId
         if (this.trainerId != null && this.trainerId.equals(userId)) {
             return true;
         }
