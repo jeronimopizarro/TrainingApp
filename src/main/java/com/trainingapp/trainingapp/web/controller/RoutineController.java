@@ -1,9 +1,6 @@
 package com.trainingapp.trainingapp.web.controller;
 
-import com.trainingapp.trainingapp.application.usecase.ActivateRoutineUseCase;
-import com.trainingapp.trainingapp.application.usecase.CreateRoutineUseCase;
-import com.trainingapp.trainingapp.application.usecase.GetAllRoutinesByMemberIdUseCase;
-import com.trainingapp.trainingapp.application.usecase.GetRoutineByIdUseCase;
+import com.trainingapp.trainingapp.application.usecase.*;
 import com.trainingapp.trainingapp.web.dto.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,15 +17,18 @@ public class RoutineController {
     private final GetRoutineByIdUseCase getRoutineByIdUseCase;
     private final GetAllRoutinesByMemberIdUseCase getAllRoutinesByMemberIdUseCase;
     private final ActivateRoutineUseCase activateRoutineUseCase;
+    private final GetActiveRoutineUseCase getActiveRoutineUseCase;
 
     public RoutineController(CreateRoutineUseCase createRoutineUseCase,
                              GetRoutineByIdUseCase getRoutineByIdUseCase,
                              GetAllRoutinesByMemberIdUseCase getAllRoutinesByMemberIdUseCase,
-                             ActivateRoutineUseCase activateRoutineUseCase) {
+                             ActivateRoutineUseCase activateRoutineUseCase,
+                             GetActiveRoutineUseCase getActiveRoutineUseCase) {
         this.createRoutineUseCase = createRoutineUseCase;
         this.getRoutineByIdUseCase = getRoutineByIdUseCase;
         this.getAllRoutinesByMemberIdUseCase = getAllRoutinesByMemberIdUseCase;
         this.activateRoutineUseCase = activateRoutineUseCase;
+        this.getActiveRoutineUseCase = getActiveRoutineUseCase;
     }
 
     @PostMapping
@@ -39,8 +39,8 @@ public class RoutineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetRoutineByIdResponse> getRoutine(@PathVariable Long id) {
-        GetRoutineByIdResponse response = getRoutineByIdUseCase.execute(id);
+    public ResponseEntity<RoutineResponse> getRoutine(@PathVariable Long id) {
+        RoutineResponse response = getRoutineByIdUseCase.execute(id);
         return ResponseEntity.ok(response);
     }
 
@@ -49,6 +49,12 @@ public class RoutineController {
             @RequestParam Long memberId) {
         List<GetAllRoutinesByMemberIdResponse> response = getAllRoutinesByMemberIdUseCase.execute(
                 memberId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<RoutineResponse> getActiveRoutine(@RequestParam Long memberId) {
+        RoutineResponse response = getActiveRoutineUseCase.execute(memberId);
         return ResponseEntity.ok(response);
     }
 
