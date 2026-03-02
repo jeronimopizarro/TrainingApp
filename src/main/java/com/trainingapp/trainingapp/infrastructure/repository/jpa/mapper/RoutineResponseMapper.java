@@ -38,6 +38,7 @@ public class RoutineResponseMapper {
 
     private RoutineResponse.RoutineDetailResponse toRoutineDetailResponse(RoutineDetail detail) {
         return new RoutineResponse.RoutineDetailResponse(
+                detail.getId(),
                 detail.getExerciseId(),
                 detail.getSets(),
                 detail.getRepsMin(),

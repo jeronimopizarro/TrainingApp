@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -20,6 +19,7 @@ public class RoutineController {
     private final GetActiveRoutineUseCase getActiveRoutineUseCase;
     private final InactiveRoutineUseCase inactiveRoutineUseCase;
     private final DuplicateRoutineUseCase duplicateRoutineUseCase;
+    private final UpdateRoutineUseCase updateRoutineUseCase;
 
     public RoutineController(CreateRoutineUseCase createRoutineUseCase,
                              GetRoutineByIdUseCase getRoutineByIdUseCase,
@@ -27,7 +27,8 @@ public class RoutineController {
                              ActivateRoutineUseCase activateRoutineUseCase,
                              GetActiveRoutineUseCase getActiveRoutineUseCase,
                              InactiveRoutineUseCase inactiveRoutineUseCase,
-                             DuplicateRoutineUseCase duplicateRoutineUseCase) {
+                             DuplicateRoutineUseCase duplicateRoutineUseCase,
+                             UpdateRoutineUseCase updateRoutineUseCase) {
         this.createRoutineUseCase = createRoutineUseCase;
         this.getRoutineByIdUseCase = getRoutineByIdUseCase;
         this.getAllRoutinesByMemberIdUseCase = getAllRoutinesByMemberIdUseCase;
@@ -35,6 +36,7 @@ public class RoutineController {
         this.getActiveRoutineUseCase = getActiveRoutineUseCase;
         this.inactiveRoutineUseCase = inactiveRoutineUseCase;
         this.duplicateRoutineUseCase = duplicateRoutineUseCase;
+        this.updateRoutineUseCase = updateRoutineUseCase;
     }
 
     @PostMapping
@@ -47,7 +49,8 @@ public class RoutineController {
     @PostMapping("/{routineId}/duplicate")
     public ResponseEntity<CreateRoutineResponse> duplicateRoutine(@PathVariable Long routineId,
                                                                   @Valid @RequestBody DuplicateRoutineRequest duplicateRoutineRequest) {
-        CreateRoutineResponse response =  duplicateRoutineUseCase.execute(routineId, duplicateRoutineRequest);
+        CreateRoutineResponse response = duplicateRoutineUseCase.execute(routineId,
+                duplicateRoutineRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -86,5 +89,12 @@ public class RoutineController {
         inactiveRoutineUseCase.execute(id,
                 userId);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CreateRoutineResponse> updateRoutine(@PathVariable Long id,
+                                                               @Valid @RequestBody UpdateRoutineRequest request) {
+        CreateRoutineResponse response = updateRoutineUseCase.execute(id, request);
+        return ResponseEntity.ok(response);
     }
 }

@@ -15,7 +15,7 @@ public record RoutineResponse(Long id, String name, LocalDate startDate, LocalDa
     }
 
     public record RoutineDetailResponse(
-            Long exerciseId, Integer sets, Integer repsMin, Integer repsMax, Integer targetRIR,
+            Long id, Long exerciseId, Integer sets, Integer repsMin, Integer repsMax, Integer targetRIR,
             Double suggestedWeight, String notes
     ) {
     }
