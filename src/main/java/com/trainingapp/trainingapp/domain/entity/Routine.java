@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 @Getter
 @Setter
 public class Routine {
@@ -24,8 +25,8 @@ public class Routine {
 
     private List<TrainingDay> days;
 
-    public Routine(String name, Long memberId, Long trainerId,  Long createdByUserId) {
-        if (name == null || name.isBlank()){
+    public Routine(String name, Long memberId, Long trainerId, Long createdByUserId) {
+        if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name cannot be null.");
         }
         if (memberId == null) {
@@ -40,8 +41,8 @@ public class Routine {
         this.days = new ArrayList<>();
     }
 
-    public TrainingDay addDay(String name){
-        if (name == null ||  name.isBlank()){
+    public TrainingDay addDay(String name) {
+        if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name cannot be null.");
         }
 
@@ -52,13 +53,13 @@ public class Routine {
         return day;
     }
 
-    public void activate(Long requestingUserId, LocalDate startDate, LocalDate endDate){
+    public void activate(Long requestingUserId, LocalDate startDate, LocalDate endDate) {
         ensureCanBeManagedBy(requestingUserId, "activate");
 
-        if (this.status != RoutineStatus.DRAFT){
+        if (this.status != RoutineStatus.DRAFT) {
             throw new IllegalStateException("Routine must be in DRAFT state to be activated.");
         }
-        if (endDate != null && endDate.isBefore(startDate)){
+        if (endDate != null && endDate.isBefore(startDate)) {
             throw new IllegalArgumentException("End date cannot be before start date.");
         }
 
@@ -74,7 +75,6 @@ public class Routine {
             throw new IllegalStateException("The routine is already archived.");
         }
 
-        //Si la rutina estaba activa, le ponemos fecha de fin hoy.
         if (this.status == RoutineStatus.ACTIVE) {
             this.endDate = LocalDate.now();
         }
@@ -84,7 +84,8 @@ public class Routine {
 
     private void ensureCanBeManagedBy(Long userId, String action) {
         if (!canBeManagedBy(userId)) {
-            throw new IllegalArgumentException("The requesting user is not allowed to " + action + " this routine.");
+            throw new IllegalArgumentException(
+                    "The requesting user is not allowed to " + action + " this routine.");
         }
     }
 
@@ -105,5 +106,33 @@ public class Routine {
         }
 
         return false;
+    }
+
+    public Routine duplicate(String newName, Long targetMemberId, Long targetTrainerId,
+                             Long newCreatedByUserId) {
+        Routine clonedRoutine = new Routine(newName, targetMemberId, targetTrainerId,
+                newCreatedByUserId);
+
+        copyDaysAndDetailsTo(clonedRoutine);
+
+        return clonedRoutine;
+    }
+
+    private void copyDaysAndDetailsTo(Routine clonedRoutine) {
+        for (TrainingDay sourceDay : this.days) {
+
+            TrainingDay clonedDay = clonedRoutine.addDay(sourceDay.getName());
+
+            copyDetailsToDay(sourceDay, clonedDay);
+        }
+    }
+
+    private static void copyDetailsToDay(TrainingDay sourceDay, TrainingDay clonedDay) {
+        for (RoutineDetail sourceDetail : sourceDay.getDetails()) {
+            clonedDay.addDetails(sourceDetail.getExerciseId(), sourceDetail.getSets(),
+                    sourceDetail.getRepsMin(), sourceDetail.getRepsMax(),
+                    sourceDetail.getTargetRIR(), sourceDetail.getSuggestedWeight(),
+                    sourceDetail.getNotes());
+        }
     }
 }

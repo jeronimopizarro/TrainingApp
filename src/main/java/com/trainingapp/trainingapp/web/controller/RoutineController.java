@@ -19,25 +19,35 @@ public class RoutineController {
     private final ActivateRoutineUseCase activateRoutineUseCase;
     private final GetActiveRoutineUseCase getActiveRoutineUseCase;
     private final InactiveRoutineUseCase inactiveRoutineUseCase;
+    private final DuplicateRoutineUseCase duplicateRoutineUseCase;
 
     public RoutineController(CreateRoutineUseCase createRoutineUseCase,
                              GetRoutineByIdUseCase getRoutineByIdUseCase,
                              GetAllRoutinesByMemberIdUseCase getAllRoutinesByMemberIdUseCase,
                              ActivateRoutineUseCase activateRoutineUseCase,
                              GetActiveRoutineUseCase getActiveRoutineUseCase,
-                             InactiveRoutineUseCase inactiveRoutineUseCase) {
+                             InactiveRoutineUseCase inactiveRoutineUseCase,
+                             DuplicateRoutineUseCase duplicateRoutineUseCase) {
         this.createRoutineUseCase = createRoutineUseCase;
         this.getRoutineByIdUseCase = getRoutineByIdUseCase;
         this.getAllRoutinesByMemberIdUseCase = getAllRoutinesByMemberIdUseCase;
         this.activateRoutineUseCase = activateRoutineUseCase;
         this.getActiveRoutineUseCase = getActiveRoutineUseCase;
         this.inactiveRoutineUseCase = inactiveRoutineUseCase;
+        this.duplicateRoutineUseCase = duplicateRoutineUseCase;
     }
 
     @PostMapping
     public ResponseEntity<CreateRoutineResponse> createRoutine(
             @Valid @RequestBody CreateRoutineRequest routineRequest) {
         CreateRoutineResponse response = createRoutineUseCase.execute(routineRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/{routineId}/duplicate")
+    public ResponseEntity<CreateRoutineResponse> duplicateRoutine(@PathVariable Long routineId,
+                                                                  @Valid @RequestBody DuplicateRoutineRequest duplicateRoutineRequest) {
+        CreateRoutineResponse response =  duplicateRoutineUseCase.execute(routineId, duplicateRoutineRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -63,16 +73,18 @@ public class RoutineController {
 
     @PatchMapping("/{id}/activate")
     public ResponseEntity<Void> activateRoutine(@PathVariable Long id,
-                                                                 @Valid @RequestBody
-                                                                 ActivateRoutineRequest request) {
-        activateRoutineUseCase.execute(id, request);
+                                                @Valid @RequestBody
+                                                ActivateRoutineRequest request) {
+        activateRoutineUseCase.execute(id,
+                request);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{id}/inactive")
     public ResponseEntity<Void> inactiveRoutine(@PathVariable Long id,
                                                 @RequestParam Long userId) {
-        inactiveRoutineUseCase.execute(id, userId);
+        inactiveRoutineUseCase.execute(id,
+                userId);
         return ResponseEntity.ok().build();
     }
 }

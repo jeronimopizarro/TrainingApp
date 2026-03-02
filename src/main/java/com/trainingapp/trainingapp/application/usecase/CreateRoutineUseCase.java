@@ -1,7 +1,6 @@
 package com.trainingapp.trainingapp.application.usecase;
 
 import com.trainingapp.trainingapp.domain.entity.Routine;
-import com.trainingapp.trainingapp.domain.entity.RoutineDetail;
 import com.trainingapp.trainingapp.domain.entity.TrainingDay;
 import com.trainingapp.trainingapp.domain.repository.RoutineRepository;
 import com.trainingapp.trainingapp.web.dto.CreateRoutineRequest;

@@ -7,7 +7,6 @@ import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.RoutineD
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.RoutineJpaEntity;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.TrainingDayJpaEntity;
 import org.springframework.stereotype.Component;
-
 import java.util.stream.Collectors;
 
 @Component

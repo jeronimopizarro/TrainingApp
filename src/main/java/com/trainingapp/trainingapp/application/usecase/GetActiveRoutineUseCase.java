@@ -6,7 +6,6 @@ import com.trainingapp.trainingapp.domain.exception.RoutineNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.RoutineRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.RoutineResponseMapper;
 import com.trainingapp.trainingapp.web.dto.RoutineResponse;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,5 +28,4 @@ public class GetActiveRoutineUseCase {
 
         return mapper.toDto(routine);
     }
-
 }

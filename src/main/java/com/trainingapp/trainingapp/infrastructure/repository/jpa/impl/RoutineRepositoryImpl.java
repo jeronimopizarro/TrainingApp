@@ -7,7 +7,6 @@ import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.RoutineJ
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.RoutineMapper;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.repository.RoutineJpaRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 

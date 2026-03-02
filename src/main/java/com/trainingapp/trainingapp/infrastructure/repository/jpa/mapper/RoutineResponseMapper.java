@@ -5,7 +5,6 @@ import com.trainingapp.trainingapp.domain.entity.RoutineDetail;
 import com.trainingapp.trainingapp.domain.entity.TrainingDay;
 import com.trainingapp.trainingapp.web.dto.RoutineResponse;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 @Component
