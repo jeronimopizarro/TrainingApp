@@ -19,7 +19,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RoutineNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleRoutineNotFound(RoutineNotFoundException ex) {
 
-        // Armamos el JSON prolijo
         ApiErrorResponse errorDetails = new ApiErrorResponse(
                 HttpStatus.NOT_FOUND.value(), // 404
                 "Not Found",
@@ -33,7 +32,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
-        // Creamos un diccionario vacío para guardar los errores
         Map<String, String> errors = new HashMap<>();
 
         // Extraemos todos los errores que encontró el patovica y los guardamos
@@ -43,7 +41,32 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        // Devolvemos un 400 Bad Request con la lista de errores
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalState(IllegalStateException ex) {
+
+        ApiErrorResponse errorDetails = new ApiErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Conflict - Business Rule Violation",
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDetails);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
+
+        ApiErrorResponse errorDetails = new ApiErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Bad Request - Invalid Argument",
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 }

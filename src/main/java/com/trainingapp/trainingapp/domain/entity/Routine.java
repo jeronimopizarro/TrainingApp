@@ -180,4 +180,12 @@ public class Routine {
             }
         }
     }
+
+    public void validateForDeletion(Long requestingUserId) {
+        ensureCanBeManagedBy(requestingUserId, "delete");
+
+        if (this.status != RoutineStatus.DRAFT) {
+            throw new IllegalStateException("Only routines in DRAFT state can be permanently deleted. If it has history, please archive it (inactive) instead.");
+        }
+    }
 }

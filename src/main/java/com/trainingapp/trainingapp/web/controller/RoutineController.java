@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -20,6 +21,7 @@ public class RoutineController {
     private final InactiveRoutineUseCase inactiveRoutineUseCase;
     private final DuplicateRoutineUseCase duplicateRoutineUseCase;
     private final UpdateRoutineUseCase updateRoutineUseCase;
+    private final DeleteRoutineUseCase deleteRoutineUseCase;
 
     public RoutineController(CreateRoutineUseCase createRoutineUseCase,
                              GetRoutineByIdUseCase getRoutineByIdUseCase,
@@ -28,7 +30,8 @@ public class RoutineController {
                              GetActiveRoutineUseCase getActiveRoutineUseCase,
                              InactiveRoutineUseCase inactiveRoutineUseCase,
                              DuplicateRoutineUseCase duplicateRoutineUseCase,
-                             UpdateRoutineUseCase updateRoutineUseCase) {
+                             UpdateRoutineUseCase updateRoutineUseCase,
+                             DeleteRoutineUseCase deleteRoutineUseCase) {
         this.createRoutineUseCase = createRoutineUseCase;
         this.getRoutineByIdUseCase = getRoutineByIdUseCase;
         this.getAllRoutinesByMemberIdUseCase = getAllRoutinesByMemberIdUseCase;
@@ -37,6 +40,7 @@ public class RoutineController {
         this.inactiveRoutineUseCase = inactiveRoutineUseCase;
         this.duplicateRoutineUseCase = duplicateRoutineUseCase;
         this.updateRoutineUseCase = updateRoutineUseCase;
+        this.deleteRoutineUseCase = deleteRoutineUseCase;
     }
 
     @PostMapping
@@ -96,5 +100,11 @@ public class RoutineController {
                                                                @Valid @RequestBody UpdateRoutineRequest request) {
         CreateRoutineResponse response = updateRoutineUseCase.execute(id, request);
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRoutine(@PathVariable Long id, @RequestParam Long userId) {
+        deleteRoutineUseCase.execute(id, userId);
+        return ResponseEntity.noContent().build();
     }
 }

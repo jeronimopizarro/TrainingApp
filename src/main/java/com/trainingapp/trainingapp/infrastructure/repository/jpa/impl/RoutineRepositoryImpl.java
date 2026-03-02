@@ -54,4 +54,9 @@ public class RoutineRepositoryImpl implements RoutineRepository {
     public Optional<Routine> findByMemberIdAndStatus(Long memberId, RoutineStatus status) {
         return jpaRepository.findByMemberIdAndStatus(memberId, status).map(mapper::toDomain);
     }
+
+    @Override
+    public void delete(Routine routineDomain) {
+        jpaRepository.deleteById(routineDomain.getId());
+    }
 }
