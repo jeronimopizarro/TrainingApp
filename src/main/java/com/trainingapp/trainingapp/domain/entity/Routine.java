@@ -188,4 +188,15 @@ public class Routine {
             throw new IllegalStateException("Only routines in DRAFT state can be permanently deleted. If it has history, please archive it (inactive) instead.");
         }
     }
+
+    public void complete(Long requestingUserId){
+        ensureCanBeManagedBy(requestingUserId, "complete");
+
+        if (this.status != RoutineStatus.ACTIVE) {
+            throw new IllegalStateException("Only ACTIVE routines can be marked as COMPLETED.");
+        }
+
+        this.status = RoutineStatus.COMPLETED;
+        this.endDate = LocalDate.now();
+    }
 }

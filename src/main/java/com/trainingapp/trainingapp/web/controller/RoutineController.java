@@ -22,6 +22,7 @@ public class RoutineController {
     private final DuplicateRoutineUseCase duplicateRoutineUseCase;
     private final UpdateRoutineUseCase updateRoutineUseCase;
     private final DeleteRoutineUseCase deleteRoutineUseCase;
+    private final CompleteRoutineUseCase completeRoutineUseCase;
 
     public RoutineController(CreateRoutineUseCase createRoutineUseCase,
                              GetRoutineByIdUseCase getRoutineByIdUseCase,
@@ -31,7 +32,8 @@ public class RoutineController {
                              InactiveRoutineUseCase inactiveRoutineUseCase,
                              DuplicateRoutineUseCase duplicateRoutineUseCase,
                              UpdateRoutineUseCase updateRoutineUseCase,
-                             DeleteRoutineUseCase deleteRoutineUseCase) {
+                             DeleteRoutineUseCase deleteRoutineUseCase,
+                             CompleteRoutineUseCase completeRoutineUseCase) {
         this.createRoutineUseCase = createRoutineUseCase;
         this.getRoutineByIdUseCase = getRoutineByIdUseCase;
         this.getAllRoutinesByMemberIdUseCase = getAllRoutinesByMemberIdUseCase;
@@ -41,6 +43,7 @@ public class RoutineController {
         this.duplicateRoutineUseCase = duplicateRoutineUseCase;
         this.updateRoutineUseCase = updateRoutineUseCase;
         this.deleteRoutineUseCase = deleteRoutineUseCase;
+        this.completeRoutineUseCase = completeRoutineUseCase;
     }
 
     @PostMapping
@@ -92,6 +95,13 @@ public class RoutineController {
                                                 @RequestParam Long userId) {
         inactiveRoutineUseCase.execute(id,
                 userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<Void> completeRoutine(@PathVariable Long id,
+                                                @RequestParam Long userId) {
+        completeRoutineUseCase.execute(id, userId);
         return ResponseEntity.ok().build();
     }
 
