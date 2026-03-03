@@ -23,6 +23,7 @@ public class RoutineController {
     private final UpdateRoutineUseCase updateRoutineUseCase;
     private final DeleteRoutineUseCase deleteRoutineUseCase;
     private final CompleteRoutineUseCase completeRoutineUseCase;
+    private final GetAllRoutinesByTrainerIdUseCase getAllRoutinesByTrainerIdUseCase;
 
     public RoutineController(CreateRoutineUseCase createRoutineUseCase,
                              GetRoutineByIdUseCase getRoutineByIdUseCase,
@@ -33,7 +34,8 @@ public class RoutineController {
                              DuplicateRoutineUseCase duplicateRoutineUseCase,
                              UpdateRoutineUseCase updateRoutineUseCase,
                              DeleteRoutineUseCase deleteRoutineUseCase,
-                             CompleteRoutineUseCase completeRoutineUseCase) {
+                             CompleteRoutineUseCase completeRoutineUseCase,
+                             GetAllRoutinesByTrainerIdUseCase getAllRoutinesByTrainerIdUseCase) {
         this.createRoutineUseCase = createRoutineUseCase;
         this.getRoutineByIdUseCase = getRoutineByIdUseCase;
         this.getAllRoutinesByMemberIdUseCase = getAllRoutinesByMemberIdUseCase;
@@ -44,6 +46,7 @@ public class RoutineController {
         this.updateRoutineUseCase = updateRoutineUseCase;
         this.deleteRoutineUseCase = deleteRoutineUseCase;
         this.completeRoutineUseCase = completeRoutineUseCase;
+        this.getAllRoutinesByTrainerIdUseCase = getAllRoutinesByTrainerIdUseCase;
     }
 
     @PostMapping
@@ -72,6 +75,14 @@ public class RoutineController {
             @RequestParam Long memberId) {
         List<GetAllRoutinesByMemberIdResponse> response = getAllRoutinesByMemberIdUseCase.execute(
                 memberId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(params = "trainerId")
+    public ResponseEntity<List<GetAllRoutinesByTrainerIdResponse>> getAllRoutinesByTrainer(
+            @RequestParam Long trainerId) {
+
+        List<GetAllRoutinesByTrainerIdResponse> response = getAllRoutinesByTrainerIdUseCase.execute(trainerId);
         return ResponseEntity.ok(response);
     }
 

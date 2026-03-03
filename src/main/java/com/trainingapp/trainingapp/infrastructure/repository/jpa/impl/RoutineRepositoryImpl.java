@@ -59,4 +59,10 @@ public class RoutineRepositoryImpl implements RoutineRepository {
     public void delete(Routine routineDomain) {
         jpaRepository.deleteById(routineDomain.getId());
     }
+
+    @Override
+    public List<Routine> findAllByTrainerId(Long trainerId) {
+        List<RoutineJpaEntity> routineJpaEntities = jpaRepository.findAllByTrainerId(trainerId);
+        return routineJpaEntities.stream().map(mapper::toDomain).toList();
+    }
 }

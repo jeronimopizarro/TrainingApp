@@ -10,4 +10,5 @@ public interface RoutineJpaRepository extends JpaRepository<RoutineJpaEntity, Lo
     List<RoutineJpaEntity> findAllByMemberId(Long memberId);
     boolean existsByMemberIdAndStatus(Long memberId, RoutineStatus status);
     Optional<RoutineJpaEntity> findByMemberIdAndStatus(Long memberId, RoutineStatus status);
+    List<RoutineJpaEntity> findAllByTrainerId(Long trainerId);
 }

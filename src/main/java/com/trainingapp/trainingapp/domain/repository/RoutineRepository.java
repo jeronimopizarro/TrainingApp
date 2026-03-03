@@ -14,4 +14,5 @@ public interface RoutineRepository {
     Boolean existsByMemberIdAndStatus(Long memberId, RoutineStatus status);
     Optional<Routine> findByMemberIdAndStatus(Long memberId, RoutineStatus status);
     void delete(Routine routine);
+    List<Routine> findAllByTrainerId(Long trainerId);
 }
