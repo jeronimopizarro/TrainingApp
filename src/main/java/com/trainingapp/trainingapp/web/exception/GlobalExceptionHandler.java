@@ -1,7 +1,7 @@
 package com.trainingapp.trainingapp.web.exception;
 
-import com.trainingapp.trainingapp.domain.exception.RoutineNotFoundException;
-import com.trainingapp.trainingapp.web.dto.ApiErrorResponse;
+import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
+import com.trainingapp.trainingapp.web.dto.routine.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
