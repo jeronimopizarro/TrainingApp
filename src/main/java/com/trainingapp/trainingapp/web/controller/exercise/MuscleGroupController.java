@@ -1,0 +1,34 @@
+package com.trainingapp.trainingapp.web.controller.exercise;
+
+import com.trainingapp.trainingapp.application.usecase.exercise.GetAllMuscleGroupsUseCase;
+import com.trainingapp.trainingapp.application.usecase.exercise.GetMuscleGroupByIdUseCase;
+import com.trainingapp.trainingapp.web.dto.exercise.MuscleGroupResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+
+@RestController
+@RequestMapping("/muscle-groups")
+public class MuscleGroupController {
+
+    private final GetAllMuscleGroupsUseCase getAllUseCase;
+    private final GetMuscleGroupByIdUseCase getByIdUseCase;
+
+    public MuscleGroupController(GetAllMuscleGroupsUseCase getAllUseCase, GetMuscleGroupByIdUseCase getByIdUseCase) {
+        this.getAllUseCase = getAllUseCase;
+        this.getByIdUseCase = getByIdUseCase;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MuscleGroupResponse>> getAll() {
+        return ResponseEntity.ok(getAllUseCase.execute());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MuscleGroupResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(getByIdUseCase.execute(id));
+    }
+}

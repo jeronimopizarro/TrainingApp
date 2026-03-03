@@ -1,5 +1,7 @@
 package com.trainingapp.trainingapp.web.exception;
 
+import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.exercise.MuscleGroupNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
 import com.trainingapp.trainingapp.web.dto.routine.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -8,6 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,9 +18,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
-    @ExceptionHandler(RoutineNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleRoutineNotFound(RoutineNotFoundException ex) {
+    @ExceptionHandler({RoutineNotFoundException.class, MuscleGroupNotFoundException.class, ExerciseNotFoundException.class})
+    public ResponseEntity<ApiErrorResponse> handleNotFoundExceptions(RuntimeException ex) {
 
         ApiErrorResponse errorDetails = new ApiErrorResponse(
                 HttpStatus.NOT_FOUND.value(), // 404
