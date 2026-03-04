@@ -92,4 +92,11 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
     public void delete(Exercise exercise) {
         jpaRepository.deleteById(exercise.getId());
     }
+
+    @Override
+    public List<Exercise> findAllById(List<Long> ids) {
+        return jpaRepository.findAllById(ids).stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
 }

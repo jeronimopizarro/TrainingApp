@@ -65,8 +65,8 @@ public class RoutineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RoutineResponse> getRoutine(@PathVariable Long id) {
-        RoutineResponse response = getRoutineByIdUseCase.execute(id);
+    public ResponseEntity<RoutineDetailResponse> getRoutine(@PathVariable Long id) {
+        RoutineDetailResponse response = getRoutineByIdUseCase.execute(id);
         return ResponseEntity.ok(response);
     }
 

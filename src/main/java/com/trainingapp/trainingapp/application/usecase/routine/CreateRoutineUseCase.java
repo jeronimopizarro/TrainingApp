@@ -2,6 +2,8 @@ package com.trainingapp.trainingapp.application.usecase.routine;
 
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
 import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
+import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
+import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineRequest;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
@@ -11,25 +13,23 @@ import org.springframework.stereotype.Service;
 public class CreateRoutineUseCase {
 
     private final RoutineRepository routineRepository;
+    private final ExerciseRepository exerciseRepository;
 
-    public CreateRoutineUseCase(RoutineRepository routineRepository) {
+    public CreateRoutineUseCase(RoutineRepository routineRepository,
+                                ExerciseRepository exerciseRepository) {
         this.routineRepository = routineRepository;
+        this.exerciseRepository = exerciseRepository;
     }
 
     public CreateRoutineResponse execute(CreateRoutineRequest request) {
-        // 1. Creamos la Rutina base (El Aggregate Root)
+        validateExercises(request);
+
         Routine routine = new Routine(request.name(), request.memberId(), request.trainerId(), request.createdByUserId());
 
-            // 2. Iteramos sobre los Días del JSON
             request.days().forEach(dayRequest -> {
-
-                // Le pedimos a la rutina que cree el día. (Gracias al return, lo capturamos en una variable)
                 TrainingDay createdDay = routine.addDay(dayRequest.dayName());
 
-                // 3. Iteramos sobre los Ejercicios de ese día
                 dayRequest.exercises().forEach(exerciseReq -> {
-
-                    // Le pedimos al día que agregue sus detalles
                     createdDay.addDetails(
                             exerciseReq.exerciseId(),
                             exerciseReq.sets(),
@@ -42,9 +42,20 @@ public class CreateRoutineUseCase {
                 });
             });
 
-            // 4. Guardamos todo el árbol en cascada
             Routine savedRoutine = routineRepository.save(routine);
 
         return new CreateRoutineResponse(savedRoutine.getId(), "Routine created successfully with all days and exercises");
+    }
+
+
+    private void validateExercises(CreateRoutineRequest request) {
+        request.days().forEach(day -> {
+            day.exercises().forEach(exReq -> {
+                exerciseRepository.findById(exReq.exerciseId())
+                        .orElseThrow(() -> new ExerciseNotFoundException(
+                                "Cannot create routine: Exercise with ID " + exReq.exerciseId() + " does not exist in the catalog."
+                        ));
+            });
+        });
     }
 }
