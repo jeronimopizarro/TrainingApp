@@ -5,6 +5,7 @@ import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository
 import com.trainingapp.trainingapp.domain.repository.exercise.MuscleGroupRepository;
 import com.trainingapp.trainingapp.web.dto.exercise.CreateExerciseRequest;
 import com.trainingapp.trainingapp.web.dto.exercise.ExerciseResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +20,7 @@ public class CreateExerciseUseCase {
         this.muscleGroupRepository = muscleGroupRepository;
     }
 
+    @Transactional
     public ExerciseResponse execute(CreateExerciseRequest request) {
         request.muscleGroups().forEach(mgRequest -> {
             muscleGroupRepository.findById(mgRequest.muscleGroupId())

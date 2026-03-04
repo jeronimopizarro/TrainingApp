@@ -7,6 +7,7 @@ import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineRequest;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +22,7 @@ public class CreateRoutineUseCase {
         this.exerciseRepository = exerciseRepository;
     }
 
+    @Transactional
     public CreateRoutineResponse execute(CreateRoutineRequest request) {
         validateExercises(request);
 

@@ -1,6 +1,6 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine;
 
-import com.trainingapp.trainingapp.domain.Enum.routine.RoutineStatus;
+import com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.trainingapp.trainingapp.domain.Enum.routine;
+package com.trainingapp.trainingapp.domain.enums.routine;
 
 public enum RoutineStatus {
     DRAFT,

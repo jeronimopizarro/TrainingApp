@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.impl.routine;
 
-import com.trainingapp.trainingapp.domain.Enum.routine.RoutineStatus;
+import com.trainingapp.trainingapp.domain.entity.routine.RoutineSummary;
+import com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine.RoutineJpaEntity;
@@ -38,13 +39,6 @@ public class RoutineRepositoryImpl implements RoutineRepository {
     }
 
     @Override
-    public List<Routine> findAllByMemberId(Long memberId) {
-        List<RoutineJpaEntity> routineJpaEntities = jpaRepository.findAllByMemberId(memberId);
-
-        return routineJpaEntities.stream().map(mapper::toDomain).toList();
-    }
-
-    @Override
     public Boolean existsByMemberIdAndStatus(Long memberId, RoutineStatus status) {
 
         return jpaRepository.existsByMemberIdAndStatus(memberId, status);
@@ -61,8 +55,12 @@ public class RoutineRepositoryImpl implements RoutineRepository {
     }
 
     @Override
-    public List<Routine> findAllByTrainerId(Long trainerId) {
-        List<RoutineJpaEntity> routineJpaEntities = jpaRepository.findAllByTrainerId(trainerId);
-        return routineJpaEntities.stream().map(mapper::toDomain).toList();
+    public List<RoutineSummary> findAllSummariesByMemberId(Long memberId) {
+        return jpaRepository.findAllSummariesByMemberId(memberId);
+    }
+
+    @Override
+    public List<RoutineSummary> findAllSummariesByTrainerId(Long trainerId) {
+        return jpaRepository.findAllSummariesByTrainerId(trainerId);
     }
 }

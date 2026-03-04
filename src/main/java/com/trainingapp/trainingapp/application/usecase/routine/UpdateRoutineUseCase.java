@@ -1,13 +1,21 @@
 package com.trainingapp.trainingapp.application.usecase.routine;
 
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
+import com.trainingapp.trainingapp.domain.entity.routine.RoutineDetail;
+import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
 import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
 import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest;
+import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest.UpdateTrainingDayRequest;
+import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest.UpdateRoutineDetailRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UpdateRoutineUseCase {
@@ -21,6 +29,7 @@ public class UpdateRoutineUseCase {
         this.exerciseRepository = exerciseRepository;
     }
 
+    @Transactional
     public CreateRoutineResponse execute(Long routineId,
                                          UpdateRoutineRequest request) {
 
@@ -28,7 +37,8 @@ public class UpdateRoutineUseCase {
 
         validateExercises(request);
 
-        routine.update(request);
+        List<TrainingDay> mappedDays = mapToDomainDays(request.days());
+        routine.update(request.name(), request.trainerId(), mappedDays);
 
         Routine updatedRoutine = routineRepository.save(routine);
 
@@ -36,10 +46,9 @@ public class UpdateRoutineUseCase {
     }
 
     private Routine validateRoutine(Long routineId) {
-        Routine routine = routineRepository.findById(routineId).orElseThrow(
+        return routineRepository.findById(routineId).orElseThrow(
                 () -> new RoutineNotFoundException(
                         "The routine with id " + routineId + " was not found"));
-        return routine;
     }
 
     private void validateExercises(UpdateRoutineRequest request) {
@@ -51,5 +60,28 @@ public class UpdateRoutineUseCase {
                         ));
             });
         });
+    }
+
+    private List<TrainingDay> mapToDomainDays(List<UpdateTrainingDayRequest> dayRequests) {
+        List<TrainingDay> domainDays = new ArrayList<>();
+        int dayOrder = 1;
+
+        for (UpdateTrainingDayRequest dayReq : dayRequests) {
+            TrainingDay day = new TrainingDay(dayReq.dayName(), dayOrder++);
+            day.setId(dayReq.id());
+
+            for (UpdateRoutineDetailRequest exReq : dayReq.exercises()) {
+                RoutineDetail detail = new RoutineDetail(
+                        exReq.exerciseId(),
+                        0, // El orden se recalcula adentro
+                        exReq.sets(), exReq.repsMin(), exReq.repsMax(),
+                        exReq.targetRIR(), exReq.suggestedWeight(), exReq.notes()
+                );
+                detail.setId(exReq.id());
+                day.getDetails().add(detail);
+            }
+            domainDays.add(day);
+        }
+        return domainDays;
     }
 }

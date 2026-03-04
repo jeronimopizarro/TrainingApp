@@ -6,6 +6,7 @@ import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository
 import com.trainingapp.trainingapp.domain.repository.exercise.MuscleGroupRepository;
 import com.trainingapp.trainingapp.web.dto.exercise.ExerciseResponse;
 import com.trainingapp.trainingapp.web.dto.exercise.UpdateExerciseRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +20,7 @@ public class UpdateExerciseUseCase {
         this.muscleGroupRepository = muscleGroupRepository;
     }
 
+    @Transactional
     public ExerciseResponse execute(Long id, UpdateExerciseRequest request) {
         Exercise exercise = exerciseRepository.findById(id)
                 .orElseThrow(() -> new ExerciseNotFoundException("The exercise with id " + id + " was not found."));

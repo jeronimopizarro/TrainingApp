@@ -1,6 +1,6 @@
 package com.trainingapp.trainingapp.domain.entity.routine;
 
-import com.trainingapp.trainingapp.domain.Enum.routine.RoutineStatus;
+import com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus;
 import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest;
 import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest.UpdateTrainingDayRequest;
 import java.util.Objects;
@@ -138,44 +138,35 @@ public class Routine {
         }
     }
 
-    public void update(UpdateRoutineRequest request) {
-        if (request.name() == null || request.name().isBlank()) {
+    public void update(String newName, Long newTrainerId, List<TrainingDay> incomingDays) {
+        if (newName == null || newName.isBlank()) {
             throw new IllegalArgumentException("Name cannot be null.");
         }
-        this.name = request.name();
+        this.name = newName;
+        this.trainerId = newTrainerId;
 
-        // Si mandan un trainerId nuevo, lo actualizamos. (Asumimos que puede ser null si se lo quitan)
-        this.trainerId = request.trainerId();
-
-        // Sincronizamos los días
-        syncDays(request.days());
+        syncDays(incomingDays);
     }
 
-    private void syncDays(List<UpdateTrainingDayRequest> incomingDays) {
-        // 1. ELIMINAR (DELETE): Borramos los días que el profe quitó
+    private void syncDays(List<TrainingDay> incomingDays) {
         List<Long> incomingIds = incomingDays.stream()
-                .map(UpdateTrainingDayRequest::id)
+                .map(TrainingDay::getId)
                 .filter(Objects::nonNull)
                 .toList();
 
         this.days.removeIf(day -> day.getId() != null && !incomingIds.contains(day.getId()));
 
-        // 2. ACTUALIZAR O AGREGAR (UPDATE / INSERT)
-        for (UpdateTrainingDayRequest incomingDay : incomingDays) {
-            if (incomingDay.id() == null) {
-                // Es un día nuevo: Lo creamos y le metemos sus ejercicios
-                TrainingDay newDay = this.addDay(incomingDay.dayName());
-
-                // Aprovechamos el método que hicimos recién para cargarle los ejercicios
-                newDay.syncDetails(incomingDay.exercises());
+        for (TrainingDay incomingDay : incomingDays) {
+            if (incomingDay.getId() == null) {
+                TrainingDay newDay = this.addDay(incomingDay.getName());
+                newDay.syncDetails(incomingDay.getDetails());
             } else {
-                // Es un día que ya existía: Le actualizamos el nombre y sincronizamos sus ejercicios
                 this.days.stream()
-                        .filter(day -> incomingDay.id().equals(day.getId()))
+                        .filter(day -> incomingDay.getId().equals(day.getId()))
                         .findFirst()
                         .ifPresent(existingDay -> {
-                            existingDay.updateName(incomingDay.dayName());
-                            existingDay.syncDetails(incomingDay.exercises());
+                            existingDay.updateName(incomingDay.getName());
+                            existingDay.syncDetails(incomingDay.getDetails());
                         });
             }
         }

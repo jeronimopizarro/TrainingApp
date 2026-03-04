@@ -1,6 +1,6 @@
 package com.trainingapp.trainingapp.application.usecase.routine;
 
-import com.trainingapp.trainingapp.domain.entity.routine.Routine;
+import com.trainingapp.trainingapp.domain.entity.routine.RoutineSummary;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.web.dto.routine.GetAllRoutinesByTrainerIdResponse;
 import org.springframework.stereotype.Service;
@@ -17,10 +17,10 @@ public class GetAllRoutinesByTrainerIdUseCase {
     }
 
     public List<GetAllRoutinesByTrainerIdResponse> execute(Long trainerId) {
-        List<Routine> routines = routineRepository.findAllByTrainerId(trainerId);
+        List<RoutineSummary> summaries = routineRepository.findAllSummariesByTrainerId(trainerId);
 
-        return routines.stream().map(
-                routine -> new GetAllRoutinesByTrainerIdResponse(routine.getId(),
-                        routine.getName(), routine.getStatus(), routine.getMemberId())).toList();
+        return summaries.stream()
+                .map(s -> new GetAllRoutinesByTrainerIdResponse(s.id(), s.name(), s.status(), s.memberId()))
+                .toList();
     }
 }

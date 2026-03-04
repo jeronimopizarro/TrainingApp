@@ -5,6 +5,7 @@ import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundExcep
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
 import com.trainingapp.trainingapp.web.dto.routine.DuplicateRoutineRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,7 @@ public class DuplicateRoutineUseCase {
         this.routineRepository = routineRepository;
     }
 
+    @Transactional
     public CreateRoutineResponse execute(Long sourceRoutineId, DuplicateRoutineRequest request) {
         Routine sourceRoutine = routineRepository.findById(sourceRoutineId).orElseThrow(
                 () -> new RoutineNotFoundException(

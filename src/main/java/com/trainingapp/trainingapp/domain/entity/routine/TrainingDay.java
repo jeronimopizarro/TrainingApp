@@ -4,6 +4,7 @@ package com.trainingapp.trainingapp.domain.entity.routine;
 import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest.UpdateRoutineDetailRequest;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +32,8 @@ public class TrainingDay {
         this.details = new ArrayList<>();
     }
 
-    public void addDetails(Long exerciseId, int sets, int repsMin, int repsMax, int targetRIR, Double suggestedWeight, String notes) {
+    public void addDetails(Long exerciseId, int sets, int repsMin, int repsMax, int targetRIR,
+                           Double suggestedWeight, String notes) {
         if (exerciseId == null || exerciseId <= 0) {
             throw new IllegalArgumentException("Exercise Id cannot be null.");
         }
@@ -55,7 +57,8 @@ public class TrainingDay {
         }
 
         int exerciseOrder = this.details.size() + 1;
-        RoutineDetail detail = new RoutineDetail(exerciseId, exerciseOrder, sets, repsMin, repsMax, targetRIR,suggestedWeight, notes);
+        RoutineDetail detail = new RoutineDetail(exerciseId, exerciseOrder, sets, repsMin, repsMax,
+                targetRIR, suggestedWeight, notes);
         this.details.add(detail);
     }
 
@@ -67,37 +70,36 @@ public class TrainingDay {
         this.name = newName;
     }
 
-    public void syncDetails(List<UpdateRoutineDetailRequest> incomingDetails) {
-        // 1. ELIMINAR (DELETE): Sacamos de nuestra lista los ejercicios que ya no vienen en el JSON
+    public void syncDetails(List<RoutineDetail> incomingDetails) {
         List<Long> incomingIds = incomingDetails.stream()
-                .map(UpdateRoutineDetailRequest::id)
+                .map(RoutineDetail::getId)
                 .filter(Objects::nonNull)
                 .toList();
 
-        // Esto dispara el Orphan Removal en la base de datos automáticamente
-        this.details.removeIf(detail -> detail.getId() != null && !incomingIds.contains(detail.getId()));
+        this.details.removeIf(
+                detail -> detail.getId() != null && !incomingIds.contains(detail.getId()));
 
-        // 2. ACTUALIZAR O AGREGAR (UPDATE / INSERT)
-        for (UpdateRoutineDetailRequest incomingDetail : incomingDetails) {
-            if (incomingDetail.id() == null) {
-                // Es un ejercicio nuevo, lo creamos y agregamos
+        for (RoutineDetail incomingDetail : incomingDetails) {
+            if (incomingDetail.getId() == null) {
                 this.addDetails(
-                        incomingDetail.exerciseId(),
-                        incomingDetail.sets(), incomingDetail.repsMin(), incomingDetail.repsMax(),
-                        incomingDetail.targetRIR(), incomingDetail.suggestedWeight(), incomingDetail.notes()
+                        incomingDetail.getExerciseId(),
+                        incomingDetail.getSets(), incomingDetail.getRepsMin(),
+                        incomingDetail.getRepsMax(),
+                        incomingDetail.getTargetRIR(), incomingDetail.getSuggestedWeight(),
+                        incomingDetail.getNotes()
                 );
             } else {
-                // Es un ejercicio existente, lo buscamos y lo actualizamos
                 this.details.stream()
-                        .filter(detail -> incomingDetail.id().equals(detail.getId()))
+                        .filter(detail -> incomingDetail.getId().equals(detail.getId()))
                         .findFirst()
                         .ifPresent(existingDetail -> existingDetail.update(
-                                incomingDetail.exerciseId(),
-                                incomingDetail.sets(), incomingDetail.repsMin(), incomingDetail.repsMax(),
-                                incomingDetail.targetRIR(), incomingDetail.suggestedWeight(), incomingDetail.notes()
+                                incomingDetail.getExerciseId(),
+                                incomingDetail.getSets(), incomingDetail.getRepsMin(),
+                                incomingDetail.getRepsMax(),
+                                incomingDetail.getTargetRIR(), incomingDetail.getSuggestedWeight(),
+                                incomingDetail.getNotes()
                         ));
             }
         }
     }
-
 }

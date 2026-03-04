@@ -1,6 +1,6 @@
 package com.trainingapp.trainingapp.web.dto.routine;
 
-import com.trainingapp.trainingapp.domain.Enum.routine.RoutineStatus;
+import com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus;
 import java.time.LocalDate;
 import java.util.List;
 
