@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ExerciseRepository {
     Exercise save(Exercise exercise);
-    Optional<Exercise> findById(long id);
+    Optional<Exercise> findById(Long id);
     List<Exercise> findAll();
     List<Exercise> findByMuscleGroupId(Long muscleGroupId);
     void delete(Exercise exercise);

@@ -71,7 +71,7 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
     }
 
     @Override
-    public Optional<Exercise> findById(long id) {
+    public Optional<Exercise> findById(Long id) {
         Optional<ExerciseJpaEntity> entity = jpaRepository.findById(id);
         return entity.map(mapper::toDomain);
     }
