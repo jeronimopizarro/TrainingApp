@@ -2,6 +2,7 @@ package com.trainingapp.trainingapp.web.exception;
 
 import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.exercise.MuscleGroupNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.gym.GymNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
 import com.trainingapp.trainingapp.web.dto.routine.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({RoutineNotFoundException.class, MuscleGroupNotFoundException.class, ExerciseNotFoundException.class})
+    @ExceptionHandler(
+            {RoutineNotFoundException.class, MuscleGroupNotFoundException.class, ExerciseNotFoundException.class, GymNotFoundException.class})
     public ResponseEntity<ApiErrorResponse> handleNotFoundExceptions(RuntimeException ex) {
 
         ApiErrorResponse errorDetails = new ApiErrorResponse(

@@ -3,7 +3,8 @@ package com.trainingapp.trainingapp.application.usecase.gym;
 import com.trainingapp.trainingapp.domain.entity.gym.Gym;
 import com.trainingapp.trainingapp.domain.repository.gym.GymRepository;
 import com.trainingapp.trainingapp.web.dto.gym.CreateGymRequest;
-import com.trainingapp.trainingapp.web.dto.gym.CreateGymResponse;
+import com.trainingapp.trainingapp.web.dto.gym.GymResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,12 +16,13 @@ public class CreateGymUseCase {
         this.gymRepository = gymRepository;
     }
 
-    public CreateGymResponse execute(CreateGymRequest request) {
+    @Transactional
+    public GymResponse execute(CreateGymRequest request) {
         Gym gym = new Gym(request.name(), request.address(), request.phone());
 
         Gym savedGym = gymRepository.save(gym);
 
-        return new CreateGymResponse(
+        return new GymResponse(
                 savedGym.getId(),savedGym.getName(),
                 savedGym.getAddress(), savedGym.getPhone(), savedGym.isActive());
     }
