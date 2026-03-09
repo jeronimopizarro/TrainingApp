@@ -1,0 +1,48 @@
+package com.trainingapp.trainingapp.domain.entity.user;
+
+import com.trainingapp.trainingapp.domain.enums.user.Role;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public abstract class User {
+
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    private Role role;
+    private boolean active;
+
+    protected User(String firstName, String lastName, String email, String password, Role role) {
+        validateBasicData(firstName, lastName, email, password);
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.active = true;
+    }
+
+    private void validateBasicData(String firstName, String lastName, String email,
+                                   String password) {
+        if (firstName == null || firstName.isBlank())
+            throw new IllegalArgumentException("First name cannot be empty.");
+        if (lastName == null || lastName.isBlank())
+            throw new IllegalArgumentException("Last name cannot be empty.");
+        if (email == null || !email.contains("@"))
+            throw new IllegalArgumentException("Invalid email format.");
+        if (password == null || password.length() < 6)
+            throw new IllegalArgumentException("Password must be at least 6 characters.");
+    }
+
+    public void deactivate() {
+        this.active = false;
+    }
+
+    public void activate() {
+        this.active = true;
+    }
+}

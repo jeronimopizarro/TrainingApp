@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoutineJpaRepository extends JpaRepository<RoutineJpaEntity, Long> {
+
     List<RoutineJpaEntity> findAllByMemberId(Long memberId);
 
     boolean existsByMemberIdAndStatus(Long memberId, RoutineStatus status);
@@ -25,5 +26,4 @@ public interface RoutineJpaRepository extends JpaRepository<RoutineJpaEntity, Lo
     @Query("SELECT new com.trainingapp.trainingapp.domain.entity.routine.RoutineSummary(r.id, r.name, r.status, r.memberId) " +
             "FROM RoutineJpaEntity r WHERE r.trainerId = :trainerId")
     List<RoutineSummary> findAllSummariesByTrainerId(@Param("trainerId") Long trainerId);
-
 }
