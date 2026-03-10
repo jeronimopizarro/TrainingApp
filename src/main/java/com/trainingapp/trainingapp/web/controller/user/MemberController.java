@@ -1,28 +1,61 @@
 package com.trainingapp.trainingapp.web.controller.user;
 
-import com.trainingapp.trainingapp.application.usecase.user.RegisterMemberUseCase;
+import com.trainingapp.trainingapp.application.usecase.user.*;
 import com.trainingapp.trainingapp.web.dto.user.MemberResponse;
 import com.trainingapp.trainingapp.web.dto.user.RegisterMemberRequest;
+import com.trainingapp.trainingapp.web.dto.user.UpdateMemberRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/members")
 public class MemberController {
 
     private final RegisterMemberUseCase registerMemberUseCase;
+    private final GetMemberByIdUseCase getMemberByIdUseCase;
+    private final GetAllMembersByGymIdUseCase getAllMembersByGymIdUseCase;
+    private final UpdateMemberUseCase updateMemberUseCase;
+    private final DeleteMemberUseCase deleteMemberUseCase;
 
-    public MemberController(RegisterMemberUseCase registerMemberUseCase) {
+    public MemberController(RegisterMemberUseCase registerMemberUseCase,
+                            GetMemberByIdUseCase getMemberByIdUseCase,
+                            GetAllMembersByGymIdUseCase getAllMembersByGymIdUseCase,
+                            UpdateMemberUseCase updateMemberUseCase,
+                            DeleteMemberUseCase deleteMemberUseCase) {
         this.registerMemberUseCase = registerMemberUseCase;
+        this.getMemberByIdUseCase = getMemberByIdUseCase;
+        this.getAllMembersByGymIdUseCase = getAllMembersByGymIdUseCase;
+        this.updateMemberUseCase = updateMemberUseCase;
+        this.deleteMemberUseCase = deleteMemberUseCase;
     }
 
     @PostMapping
     public ResponseEntity<MemberResponse> register(@RequestBody RegisterMemberRequest request) {
         MemberResponse response = registerMemberUseCase.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(getMemberByIdUseCase.execute(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MemberResponse>> getAllByGymId(@RequestParam Long gymId) {
+        return ResponseEntity.ok(getAllMembersByGymIdUseCase.execute(gymId));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MemberResponse> update(@PathVariable Long id, @RequestBody UpdateMemberRequest request) {
+        return ResponseEntity.ok(updateMemberUseCase.execute(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        deleteMemberUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 }
