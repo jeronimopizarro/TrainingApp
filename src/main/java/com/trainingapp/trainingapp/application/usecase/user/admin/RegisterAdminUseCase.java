@@ -1,4 +1,4 @@
-package com.trainingapp.trainingapp.application.usecase.user;
+package com.trainingapp.trainingapp.application.usecase.user.admin;
 
 import com.trainingapp.trainingapp.domain.entity.user.Admin;
 import com.trainingapp.trainingapp.domain.repository.user.AdminRepository;

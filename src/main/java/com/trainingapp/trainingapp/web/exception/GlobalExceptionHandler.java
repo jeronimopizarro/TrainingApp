@@ -4,6 +4,7 @@ import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundExc
 import com.trainingapp.trainingapp.domain.exception.exercise.MuscleGroupNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.gym.GymNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.user.AdminNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.user.MemberNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.user.TrainerNotFoundException;
 import com.trainingapp.trainingapp.web.dto.routine.ApiErrorResponse;
@@ -27,7 +28,8 @@ public class GlobalExceptionHandler {
             ExerciseNotFoundException.class,
             GymNotFoundException.class,
             TrainerNotFoundException.class,
-            MemberNotFoundException.class})
+            MemberNotFoundException.class,
+            AdminNotFoundException.class})
     public ResponseEntity<ApiErrorResponse> handleNotFoundExceptions(RuntimeException ex) {
 
         ApiErrorResponse errorDetails = new ApiErrorResponse(HttpStatus.NOT_FOUND.value(), // 404
