@@ -1,9 +1,9 @@
-package com.trainingapp.trainingapp.application.usecase.user;
+package com.trainingapp.trainingapp.application.usecase.user.trainer;
 
 import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.repository.user.TrainerRepository;
-import com.trainingapp.trainingapp.web.dto.user.RegisterTrainerRequest;
-import com.trainingapp.trainingapp.web.dto.user.TrainerResponse;
+import com.trainingapp.trainingapp.web.dto.user.trainer.RegisterTrainerRequest;
+import com.trainingapp.trainingapp.web.dto.user.trainer.TrainerResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

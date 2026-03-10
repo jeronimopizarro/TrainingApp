@@ -1,4 +1,4 @@
-package com.trainingapp.trainingapp.web.dto.user;
+package com.trainingapp.trainingapp.web.dto.user.admin;
 
 import com.trainingapp.trainingapp.domain.enums.user.Role;
 

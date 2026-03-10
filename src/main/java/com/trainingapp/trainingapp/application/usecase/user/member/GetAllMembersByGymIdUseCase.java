@@ -1,24 +1,27 @@
-package com.trainingapp.trainingapp.application.usecase.user;
+package com.trainingapp.trainingapp.application.usecase.user.member;
 
 import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
-import com.trainingapp.trainingapp.web.dto.user.MemberResponse;
+import com.trainingapp.trainingapp.web.dto.user.member.MemberResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class GetMemberByIdUseCase {
+public class GetAllMembersByGymIdUseCase {
 
     private final MemberRepository memberRepository;
 
-    public GetMemberByIdUseCase(MemberRepository memberRepository) {
+    public GetAllMembersByGymIdUseCase(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
-    public MemberResponse execute(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Member with id " + id + " not found."));
+    public List<MemberResponse> execute(Long gymId) {
+        List<Member> members = memberRepository.findByGymId(gymId);
 
-        return buildResponseFromMember(member);
+        return members.stream()
+                .map(this::buildResponseFromMember)
+                .toList();
     }
 
     private MemberResponse buildResponseFromMember(Member member) {

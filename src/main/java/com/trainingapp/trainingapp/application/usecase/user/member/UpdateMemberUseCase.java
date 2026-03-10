@@ -1,9 +1,10 @@
-package com.trainingapp.trainingapp.application.usecase.user;
+package com.trainingapp.trainingapp.application.usecase.user.member;
 
 import com.trainingapp.trainingapp.domain.entity.user.Member;
+import com.trainingapp.trainingapp.domain.exception.user.MemberNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
-import com.trainingapp.trainingapp.web.dto.user.MemberResponse;
-import com.trainingapp.trainingapp.web.dto.user.UpdateMemberRequest;
+import com.trainingapp.trainingapp.web.dto.user.member.MemberResponse;
+import com.trainingapp.trainingapp.web.dto.user.member.UpdateMemberRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class UpdateMemberUseCase {
     @Transactional
     public MemberResponse execute(Long id, UpdateMemberRequest request) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Member with id " + id + " not found."));
+                .orElseThrow(() -> new MemberNotFoundException("Member with id " + id + " not found."));
 
         updateMemberFields(member, request);
 

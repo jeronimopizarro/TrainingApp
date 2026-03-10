@@ -1,8 +1,8 @@
 package com.trainingapp.trainingapp.web.controller.user;
 
 import com.trainingapp.trainingapp.application.usecase.user.RegisterAdminUseCase;
-import com.trainingapp.trainingapp.web.dto.user.AdminResponse;
-import com.trainingapp.trainingapp.web.dto.user.RegisterAdminRequest;
+import com.trainingapp.trainingapp.web.dto.user.admin.AdminResponse;
+import com.trainingapp.trainingapp.web.dto.user.admin.RegisterAdminRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

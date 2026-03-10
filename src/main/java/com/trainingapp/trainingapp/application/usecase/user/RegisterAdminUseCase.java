@@ -2,8 +2,8 @@ package com.trainingapp.trainingapp.application.usecase.user;
 
 import com.trainingapp.trainingapp.domain.entity.user.Admin;
 import com.trainingapp.trainingapp.domain.repository.user.AdminRepository;
-import com.trainingapp.trainingapp.web.dto.user.AdminResponse;
-import com.trainingapp.trainingapp.web.dto.user.RegisterAdminRequest;
+import com.trainingapp.trainingapp.web.dto.user.admin.AdminResponse;
+import com.trainingapp.trainingapp.web.dto.user.admin.RegisterAdminRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

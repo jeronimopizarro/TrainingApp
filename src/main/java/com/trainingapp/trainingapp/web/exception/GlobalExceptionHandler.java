@@ -4,6 +4,8 @@ import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundExc
 import com.trainingapp.trainingapp.domain.exception.exercise.MuscleGroupNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.gym.GymNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.user.MemberNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.user.TrainerNotFoundException;
 import com.trainingapp.trainingapp.web.dto.routine.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +21,17 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(
-            {RoutineNotFoundException.class, MuscleGroupNotFoundException.class, ExerciseNotFoundException.class, GymNotFoundException.class})
+    @ExceptionHandler({
+            RoutineNotFoundException.class,
+            MuscleGroupNotFoundException.class,
+            ExerciseNotFoundException.class,
+            GymNotFoundException.class,
+            TrainerNotFoundException.class,
+            MemberNotFoundException.class})
     public ResponseEntity<ApiErrorResponse> handleNotFoundExceptions(RuntimeException ex) {
 
-        ApiErrorResponse errorDetails = new ApiErrorResponse(
-                HttpStatus.NOT_FOUND.value(), // 404
-                "Not Found",
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+        ApiErrorResponse errorDetails = new ApiErrorResponse(HttpStatus.NOT_FOUND.value(), // 404
+                "Not Found", ex.getMessage(), LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
     }
@@ -38,7 +41,7 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
 
-        // Extraemos todos los errores que encontró el patovica y los guardamos
+        // Extraemos todos los errores
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
@@ -51,12 +54,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiErrorResponse> handleIllegalState(IllegalStateException ex) {
 
-        ApiErrorResponse errorDetails = new ApiErrorResponse(
-                HttpStatus.CONFLICT.value(),
-                "Conflict - Business Rule Violation",
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+        ApiErrorResponse errorDetails = new ApiErrorResponse(HttpStatus.CONFLICT.value(),
+                "Conflict - Business Rule Violation", ex.getMessage(), LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDetails);
     }
@@ -64,12 +63,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
 
-        ApiErrorResponse errorDetails = new ApiErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                "Bad Request - Invalid Argument",
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+        ApiErrorResponse errorDetails = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(),
+                "Bad Request - Invalid Argument", ex.getMessage(), LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
