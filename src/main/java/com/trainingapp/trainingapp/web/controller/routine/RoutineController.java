@@ -5,6 +5,7 @@ import com.trainingapp.trainingapp.web.dto.routine.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,6 +50,8 @@ public class RoutineController {
         this.getAllRoutinesByTrainerIdUseCase = getAllRoutinesByTrainerIdUseCase;
     }
 
+    //TODO: Logica de negocio para que un member pueda crear solo su rutina.
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @PostMapping
     public ResponseEntity<CreateRoutineResponse> createRoutine(
             @Valid @RequestBody CreateRoutineRequest routineRequest) {
@@ -56,6 +59,7 @@ public class RoutineController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER')")
     @PostMapping("/{routineId}/duplicate")
     public ResponseEntity<CreateRoutineResponse> duplicateRoutine(@PathVariable Long routineId,
                                                                   @Valid @RequestBody DuplicateRoutineRequest duplicateRoutineRequest) {
@@ -64,12 +68,14 @@ public class RoutineController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping("/{id}")
     public ResponseEntity<RoutineDetailResponse> getRoutine(@PathVariable Long id) {
         RoutineDetailResponse response = getRoutineByIdUseCase.execute(id);
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping()
     public ResponseEntity<List<GetAllRoutinesByMemberIdResponse>> getAllRoutinesByMember(
             @RequestParam Long memberId) {
@@ -78,6 +84,8 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
+    //TODO: Logica de negocio para que un trainer solo pueda ver todas sus rutinas, y no las del otro trainer.
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER')")
     @GetMapping(params = "trainerId")
     public ResponseEntity<List<GetAllRoutinesByTrainerIdResponse>> getAllRoutinesByTrainer(
             @RequestParam Long trainerId) {
@@ -86,12 +94,15 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping("/active")
     public ResponseEntity<RoutineResponse> getActiveRoutine(@RequestParam Long memberId) {
         RoutineResponse response = getActiveRoutineUseCase.execute(memberId);
         return ResponseEntity.ok(response);
     }
 
+    //TODO: Logica de negocio para que un member solo pueda activar sus rutinas creadas por el.
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @PatchMapping("/{id}/activate")
     public ResponseEntity<Void> activateRoutine(@PathVariable Long id,
                                                 @Valid @RequestBody
@@ -101,6 +112,8 @@ public class RoutineController {
         return ResponseEntity.ok().build();
     }
 
+    //TODO: Logica de negocio para que un member pueda inactivar solo sus rutinas creadas por el.
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @PatchMapping("/{id}/inactive")
     public ResponseEntity<Void> inactiveRoutine(@PathVariable Long id,
                                                 @RequestParam Long userId) {
@@ -109,6 +122,8 @@ public class RoutineController {
         return ResponseEntity.ok().build();
     }
 
+    //TODO: Logica de negocio para que un member pueda completar solo sus rutinas creadas por el.
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @PatchMapping("/{id}/complete")
     public ResponseEntity<Void> completeRoutine(@PathVariable Long id,
                                                 @RequestParam Long userId) {
@@ -116,6 +131,8 @@ public class RoutineController {
         return ResponseEntity.ok().build();
     }
 
+    //TODO: Logica de negocio para que un member pueda modificar solo sus rutinas creadas por el.
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @PutMapping("/{id}")
     public ResponseEntity<CreateRoutineResponse> updateRoutine(@PathVariable Long id,
                                                                @Valid @RequestBody UpdateRoutineRequest request) {
@@ -123,6 +140,8 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
+    //TODO: Logica de negocio para que un member pueda eliminar solo sus rutinas creadas por el.
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoutine(@PathVariable Long id, @RequestParam Long userId) {
         deleteRoutineUseCase.execute(id, userId);

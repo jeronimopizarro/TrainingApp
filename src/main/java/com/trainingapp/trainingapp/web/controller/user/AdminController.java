@@ -6,6 +6,7 @@ import com.trainingapp.trainingapp.web.dto.user.admin.RegisterAdminRequest;
 import com.trainingapp.trainingapp.web.dto.user.admin.UpdateAdminRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,27 +33,33 @@ public class AdminController {
         this.deleteAdminUseCase = deleteAdminUseCase;
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @PostMapping
     public ResponseEntity<AdminResponse> register(@RequestBody RegisterAdminRequest request) {
         AdminResponse response = registerAdminUseCase.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    //TODO: logica de negocio para que el gym admin solo pueda ver su mismo ID, no el de otro admin.
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<AdminResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(getAdminByIdUseCase.execute(id));
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @GetMapping
     public ResponseEntity<List<AdminResponse>> getAllByGymId(@RequestParam Long gymId) {
         return ResponseEntity.ok(getAllAdminsByGymIdUseCase.execute(gymId));
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<AdminResponse> update(@PathVariable Long id, @RequestBody UpdateAdminRequest request) {
         return ResponseEntity.ok(updateAdminUseCase.execute(id, request));
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         deleteAdminUseCase.execute(id);

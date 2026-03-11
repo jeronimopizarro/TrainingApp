@@ -6,6 +6,7 @@ import com.trainingapp.trainingapp.web.dto.user.member.RegisterMemberRequest;
 import com.trainingapp.trainingapp.web.dto.user.member.UpdateMemberRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,27 +33,35 @@ public class MemberController {
         this.deleteMemberUseCase = deleteMemberUseCase;
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @PostMapping
     public ResponseEntity<MemberResponse> register(@RequestBody RegisterMemberRequest request) {
         MemberResponse response = registerMemberUseCase.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping("/{id}")
     public ResponseEntity<MemberResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(getMemberByIdUseCase.execute(id));
     }
 
+    //TODO: logica de negocio para que el gym admin y el traienr solo puedan ver todos del mismo
+    // gimnasio que ellos estan registrados
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER')")
     @GetMapping
     public ResponseEntity<List<MemberResponse>> getAllByGymId(@RequestParam Long gymId) {
         return ResponseEntity.ok(getAllMembersByGymIdUseCase.execute(gymId));
     }
 
+    //TODO: logica de negocio para que solamente el member se pueda modificar a su mismo (su ID) solamente.
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'MEMBER')")
     @PutMapping("/{id}")
     public ResponseEntity<MemberResponse> update(@PathVariable Long id, @RequestBody UpdateMemberRequest request) {
         return ResponseEntity.ok(updateMemberUseCase.execute(id, request));
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         deleteMemberUseCase.execute(id);
