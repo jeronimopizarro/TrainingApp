@@ -5,15 +5,19 @@ import com.trainingapp.trainingapp.domain.repository.user.TrainerRepository;
 import com.trainingapp.trainingapp.web.dto.user.trainer.RegisterTrainerRequest;
 import com.trainingapp.trainingapp.web.dto.user.trainer.TrainerResponse;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RegisterTrainerUseCase {
 
     private final TrainerRepository trainerRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public RegisterTrainerUseCase(TrainerRepository trainerRepository) {
+    public RegisterTrainerUseCase(TrainerRepository trainerRepository,
+                                  PasswordEncoder passwordEncoder) {
         this.trainerRepository = trainerRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -31,7 +35,7 @@ public class RegisterTrainerUseCase {
                 request.firstName(),
                 request.lastName(),
                 request.email(),
-                request.password(),
+                passwordEncoder.encode(request.password()),
                 request.gymId(),
                 request.specialization()
         );

@@ -5,14 +5,17 @@ import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
 import com.trainingapp.trainingapp.web.dto.user.member.MemberResponse;
 import com.trainingapp.trainingapp.web.dto.user.member.RegisterMemberRequest;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RegisterMemberUseCase {
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public RegisterMemberUseCase(MemberRepository memberRepository) {
+    public RegisterMemberUseCase(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -29,7 +32,7 @@ public class RegisterMemberUseCase {
                 request.firstName(),
                 request.lastName(),
                 request.email(),
-                request.password(),
+                passwordEncoder.encode(request.password()),
                 request.gymId(),
                 request.birthDate(),
                 request.primaryGoal()

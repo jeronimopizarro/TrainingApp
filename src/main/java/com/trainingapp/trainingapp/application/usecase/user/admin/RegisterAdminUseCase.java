@@ -5,15 +5,18 @@ import com.trainingapp.trainingapp.domain.repository.user.AdminRepository;
 import com.trainingapp.trainingapp.web.dto.user.admin.AdminResponse;
 import com.trainingapp.trainingapp.web.dto.user.admin.RegisterAdminRequest;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RegisterAdminUseCase {
 
     private final AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public RegisterAdminUseCase(AdminRepository adminRepository) {
+    public RegisterAdminUseCase(AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
         this.adminRepository = adminRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -30,7 +33,7 @@ public class RegisterAdminUseCase {
                 request.firstName(),
                 request.lastName(),
                 request.email(),
-                request.password(),
+                passwordEncoder.encode(request.password()),
                 request.role(),
                 request.gymId()
         );
