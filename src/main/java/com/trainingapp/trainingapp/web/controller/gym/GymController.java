@@ -38,9 +38,6 @@ public class GymController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    //TODO: logica de negocio que valida que el member solo puedo obtener el id de su gimansio donde entrena.
-    //TODO: logica de negocio que valida que el trainer solo puedo obtener el id de su gimansio donde trabaja.
-    //TODO: logica de negocio que valida que el gym admin solo puedo obtener el id de su gimansio.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping("/{id}")
     public ResponseEntity<GymResponse> getById(@PathVariable Long id) {
