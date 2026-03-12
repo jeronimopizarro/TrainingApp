@@ -14,11 +14,15 @@ public class DeleteGymUseCase {
     }
 
     public void execute(Long id) {
-        Gym gym = gymRepository.findById(id).orElseThrow(
-                () -> new GymNotFoundException("The gym with id " + id + " was not found."));
+        Gym gym = findGymOrThrow(id);
 
         gym.desactive();
 
         gymRepository.save(gym);
+    }
+
+    private Gym findGymOrThrow(Long id) {
+        return gymRepository.findById(id).orElseThrow(
+                () -> new GymNotFoundException("The gym with id " + id + " was not found."));
     }
 }

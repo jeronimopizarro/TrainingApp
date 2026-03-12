@@ -8,12 +8,10 @@ import java.util.List;
 public record CreateExerciseRequest(
         @NotBlank(message = "The exercise name cannot be empty")
         String name,
-
         String description,
         String imageUrl,
         String videoUrl,
-        Boolean isBase,
-        Long creatorTrainerId,
+        Boolean isBase, // Solo será respetado si el usuario es SUPER_ADMIN
 
         @NotEmpty(message = "You must assign at least one muscle group")
         List<MuscleGroupAssignmentRequest> muscleGroups
@@ -21,7 +19,6 @@ public record CreateExerciseRequest(
     public record MuscleGroupAssignmentRequest(
             @NotNull(message = "Muscle group ID is required")
             Long muscleGroupId,
-
             @NotNull(message = "You must specify if it is the primary muscle")
             Boolean isPrimary
     ) {}

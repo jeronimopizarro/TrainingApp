@@ -17,11 +17,16 @@ public class DeleteMemberUseCase {
 
     @Transactional
     public void execute(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException("Member with id " + id + " not found."));
+        Member member = findMemberOrThrow(id);
 
         member.deactivate();
 
         memberRepository.save(member);
+    }
+
+    private Member findMemberOrThrow(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(
+                        () -> new MemberNotFoundException("Member with id " + id + " not found."));
     }
 }

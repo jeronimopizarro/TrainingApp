@@ -41,9 +41,11 @@ public class ExerciseJpaEntity {
     @Column(name = "is_base")
     private Boolean isBase;
 
-    // Como todavía no tenemos la entidad Trainer mapeada, guardamos el ID suelto por ahora
-    @Column(name = "creator_trainer_id")
-    private Long creatorTrainerId;
+    @Column(name = "gym_id")
+    private Long gymId; // Nullable por defecto en JPA (lo cual es correcto para is_base = true)
+
+    @Column(name = "created_by_user_id")
+    private Long createdByUserId;
 
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExerciseMuscleGroupJpaEntity> muscleGroups = new ArrayList<>();

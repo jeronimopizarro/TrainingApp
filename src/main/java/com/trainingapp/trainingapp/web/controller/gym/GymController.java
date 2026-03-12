@@ -38,17 +38,22 @@ public class GymController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    //TODO: logica de negocio que valida que el member solo puedo obtener el id de su gimansio donde entrena.
+    //TODO: logica de negocio que valida que el trainer solo puedo obtener el id de su gimansio donde trabaja.
+    //TODO: logica de negocio que valida que el gym admin solo puedo obtener el id de su gimansio.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping("/{id}")
     public ResponseEntity<GymResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(getGymByIdUseCase.execute(id));
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @GetMapping
     public ResponseEntity<List<GymResponse>> getAll() {
         return ResponseEntity.ok(getAllGymsUseCase.execute());
     }
 
+    //TODO: logica de negocio que valide que el gym admin solo puede modificar su propio gimnasio.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<GymResponse> updateGym(@PathVariable Long id, @RequestBody UpdateGymRequest request) {

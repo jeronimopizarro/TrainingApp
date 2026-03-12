@@ -17,11 +17,16 @@ public class DeleteAdminUseCase {
 
     @Transactional
     public void execute(Long id) {
-        Admin admin = adminRepository.findById(id)
-                .orElseThrow(() -> new AdminNotFoundException("Admin with id " + id + " was not found."));
+        Admin admin = findAdminOrThrow(id);
 
         admin.deactivate();
 
         adminRepository.save(admin);
+    }
+
+    private Admin findAdminOrThrow(Long id) {
+        return adminRepository.findById(id)
+                .orElseThrow(() -> new AdminNotFoundException(
+                        "Admin with id " + id + " was not found."));
     }
 }

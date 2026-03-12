@@ -40,7 +40,6 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    //TODO: logica de negocio para que el gym admin solo pueda ver su mismo ID, no el de otro admin.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<AdminResponse> getById(@PathVariable Long id) {

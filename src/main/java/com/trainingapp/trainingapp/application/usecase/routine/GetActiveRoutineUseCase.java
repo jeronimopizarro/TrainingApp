@@ -22,10 +22,14 @@ public class GetActiveRoutineUseCase {
     }
 
     public RoutineResponse execute(Long memberId) {
-        Routine routine = routineRepository.findByMemberIdAndStatus(memberId,
-                RoutineStatus.ACTIVE).orElseThrow(() -> new RoutineNotFoundException(
-                "No active routine found for member with ID: " + memberId));
+        Routine routine = findActiveRoutineOrThrow(memberId);
 
         return mapper.toDto(routine);
+    }
+
+    private Routine findActiveRoutineOrThrow(Long memberId) {
+        return routineRepository.findByMemberIdAndStatus(memberId,
+                RoutineStatus.ACTIVE).orElseThrow(() -> new RoutineNotFoundException(
+                "No active routine found for member with ID: " + memberId));
     }
 }

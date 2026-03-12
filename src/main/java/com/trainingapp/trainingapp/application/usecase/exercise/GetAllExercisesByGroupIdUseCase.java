@@ -8,27 +8,27 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class GetAllExercisesUseCase {
+public class GetAllExercisesByGroupIdUseCase {
 
     private final ExerciseRepository exerciseRepository;
 
-    public GetAllExercisesUseCase(ExerciseRepository exerciseRepository) {
+    public GetAllExercisesByGroupIdUseCase(ExerciseRepository exerciseRepository) {
         this.exerciseRepository = exerciseRepository;
     }
 
     public List<ExerciseDetailResponse> execute(Long muscleGroupId) {
-        List<Exercise> exercises;
-
-        if (muscleGroupId != null) {
-            exercises = exerciseRepository.findByMuscleGroupId(muscleGroupId);
-        } else {
-            // Si no hay filtro, traemos todo el catálogo
-            exercises = exerciseRepository.findAll();
-        }
+        List<Exercise> exercises = fetchExercises(muscleGroupId);
 
         return exercises.stream()
                 .map(this::mapToResponse)
                 .toList();
+    }
+
+    private List<Exercise> fetchExercises(Long muscleGroupId) {
+        if (muscleGroupId != null) {
+            return exerciseRepository.findByMuscleGroupId(muscleGroupId);
+        }
+        return exerciseRepository.findAll();
     }
 
     private ExerciseDetailResponse mapToResponse(Exercise exercise) {
@@ -41,7 +41,7 @@ public class GetAllExercisesUseCase {
         return new ExerciseDetailResponse(
                 exercise.getId(), exercise.getName(), exercise.getDescription(),
                 exercise.getImageUrl(), exercise.getVideoUrl(), exercise.getIsBase(),
-                exercise.getCreatorTrainerId(), muscleGroups
+                exercise.getCreatedByUserId(), muscleGroups
         );
     }
 }

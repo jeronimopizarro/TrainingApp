@@ -1,4 +1,4 @@
-package com.trainingapp.trainingapp.application.usecase.exercise;
+package com.trainingapp.trainingapp.application.usecase.exercise.muscleGroup;
 
 import com.trainingapp.trainingapp.domain.entity.exercise.MuscleGroup;
 import com.trainingapp.trainingapp.domain.exception.exercise.MuscleGroupNotFoundException;
@@ -16,10 +16,18 @@ public class GetMuscleGroupByIdUseCase {
     }
 
     public MuscleGroupResponse execute(Long id) {
-        MuscleGroup muscleGroup = muscleGroupRepository.findById(id).orElseThrow(
+        MuscleGroup muscleGroup = findMuscleGroupsOrThrow(id);
+
+        return mapToResponse(muscleGroup);
+    }
+
+    private MuscleGroup findMuscleGroupsOrThrow(Long id) {
+        return muscleGroupRepository.findById(id).orElseThrow(
                 () -> new MuscleGroupNotFoundException(
                         "The muscle group with id" + id + " was not found."));
+    }
 
+    private MuscleGroupResponse mapToResponse(MuscleGroup muscleGroup) {
         return new MuscleGroupResponse(muscleGroup.getId(), muscleGroup.getName(),
                 muscleGroup.getDescription());
     }

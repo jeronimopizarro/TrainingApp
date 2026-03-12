@@ -1,7 +1,7 @@
 package com.trainingapp.trainingapp.web.controller.exercise;
 
-import com.trainingapp.trainingapp.application.usecase.exercise.GetAllMuscleGroupsUseCase;
-import com.trainingapp.trainingapp.application.usecase.exercise.GetMuscleGroupByIdUseCase;
+import com.trainingapp.trainingapp.application.usecase.exercise.muscleGroup.GetAllMuscleGroupsUseCase;
+import com.trainingapp.trainingapp.application.usecase.exercise.muscleGroup.GetMuscleGroupByIdUseCase;
 import com.trainingapp.trainingapp.web.dto.exercise.MuscleGroupResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

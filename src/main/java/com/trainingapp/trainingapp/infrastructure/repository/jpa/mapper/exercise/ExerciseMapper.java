@@ -14,7 +14,7 @@ public class ExerciseMapper {
 
         Exercise domain = new Exercise(entity.getName(), entity.getDescription(),
                 entity.getImageUrl(), entity.getVideoUrl(), entity.getIsBase(),
-                entity.getCreatorTrainerId());
+                entity.getCreatedByUserId(), entity.getGymId());
 
         domain.setId(entity.getId());
 
@@ -36,7 +36,8 @@ public class ExerciseMapper {
         entity.setImageUrl(domain.getImageUrl());
         entity.setVideoUrl(domain.getVideoUrl());
         entity.setIsBase(domain.getIsBase());
-        entity.setCreatorTrainerId(domain.getCreatorTrainerId());
+        entity.setCreatedByUserId(domain.getCreatedByUserId());
+        entity.setGymId(domain.getGymId());
 
         if (domain.getMuscleGroups() != null) {
             domain.getMuscleGroups().forEach(mgDomain -> {

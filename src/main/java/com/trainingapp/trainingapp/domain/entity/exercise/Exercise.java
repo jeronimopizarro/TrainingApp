@@ -15,12 +15,14 @@ public class Exercise {
     private String imageUrl;
     private String videoUrl;
     private Boolean isBase;
-    private Long creatorTrainerId;
+
+    private Long createdByUserId;
+    private Long gymId;
 
     private List<ExerciseMuscleGroup> muscleGroups;
 
     public Exercise(String name, String description, String imageUrl, String videoUrl,
-                    Boolean isBase, Long creatorTrainerId) {
+                    Boolean isBase, Long createdByUserId, Long gymId) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("The exercise name cannot be empty.");
         }
@@ -30,7 +32,14 @@ public class Exercise {
         this.imageUrl = imageUrl;
         this.videoUrl = videoUrl;
         this.isBase = isBase != null ? isBase : false;
-        this.creatorTrainerId = creatorTrainerId;
+
+        if (!this.isBase && gymId == null) {
+            throw new IllegalArgumentException("A custom exercise must be associated with a Gym.");
+        }
+
+        this.createdByUserId = createdByUserId;
+        this.gymId = gymId;
+
         this.muscleGroups = new ArrayList<>();
     }
 

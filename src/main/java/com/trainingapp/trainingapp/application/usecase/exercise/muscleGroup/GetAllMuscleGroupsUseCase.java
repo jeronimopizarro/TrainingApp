@@ -1,4 +1,4 @@
-package com.trainingapp.trainingapp.application.usecase.exercise;
+package com.trainingapp.trainingapp.application.usecase.exercise.muscleGroup;
 
 import com.trainingapp.trainingapp.domain.entity.exercise.MuscleGroup;
 import com.trainingapp.trainingapp.domain.repository.exercise.MuscleGroupRepository;
@@ -19,6 +19,10 @@ public class GetAllMuscleGroupsUseCase {
     public List<MuscleGroupResponse> execute() {
         List<MuscleGroup> muscleGroups = muscleGroupRepository.findAll();
 
+        return mapToReposponseList(muscleGroups);
+    }
+
+    private List<MuscleGroupResponse> mapToReposponseList(List<MuscleGroup> muscleGroups) {
         return muscleGroups.stream().map(mg -> new MuscleGroupResponse(mg.getId(), mg.getName(),
                 mg.getDescription())).toList();
     }

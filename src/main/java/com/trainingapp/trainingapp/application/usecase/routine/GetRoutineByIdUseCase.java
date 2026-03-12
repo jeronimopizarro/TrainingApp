@@ -29,75 +29,75 @@ public class GetRoutineByIdUseCase {
     }
 
     public RoutineDetailResponse execute(Long id) {
-        Routine routine = validateRoutine(id);
+        Routine routine = findRoutineOrThrow(id);
 
-        List<Long> exerciseIds = getExerciseIds(routine);
+        List<Exercise> exerciseCatalog = fetchExerciseCatalog(routine);
 
-        List<Exercise> exerciseCatalog = exerciseRepository.findAllById(exerciseIds);
+        List<DayDetailResponse> hydratedDays = mapToHydratedDays(routine, exerciseCatalog);
 
-        List<DayDetailResponse> hydratedDays = hydrateDays(routine, exerciseCatalog);
-
-        return new RoutineDetailResponse(
-                routine.getId(), routine.getName(), routine.getStartDate(), routine.getEndDate(),
-                routine.getMemberId(), routine.getTrainerId(), routine.getCreatedByUserId(),
-                routine.getStatus(), hydratedDays
-        );
+        return mapToDetailResponse(routine, hydratedDays);
     }
 
-    private Routine validateRoutine(Long id) {
+    private Routine findRoutineOrThrow(Long id) {
         return routineRepository.findById(id)
                 .orElseThrow(() -> new RoutineNotFoundException(
                         "The routine with id " + id + " was not found"));
     }
 
-    private static @NonNull List<Long> getExerciseIds(Routine routine) {
-        List<Long> exerciseIds = new ArrayList<>();
-        for (TrainingDay day : routine.getDays()) {
-            for (RoutineDetail detail : day.getDetails()) {
-                if (!exerciseIds.contains(detail.getExerciseId())) {
-                    exerciseIds.add(detail.getExerciseId());
-                }
-            }
-        }
-        return exerciseIds;
+    private List<Exercise> fetchExerciseCatalog(Routine routine) {
+        List<Long> exerciseIds = extractExerciseIds(routine);
+        return exerciseRepository.findAllById(exerciseIds);
     }
 
-    private Exercise findExerciseInList(List<Exercise> catalog, Long exerciseId) {
-        for (Exercise exercise : catalog) {
-            if (exercise.getId().equals(exerciseId)) {
-                return exercise;
-            }
-        }
-        return null;
+    private List<Long> extractExerciseIds(Routine routine) {
+        return routine.getDays().stream()
+                .flatMap(day -> day.getDetails().stream())
+                .map(RoutineDetail::getExerciseId)
+                .distinct()
+                .toList();
     }
 
-    private List<DayDetailResponse> hydrateDays(Routine routine, List<Exercise> exerciseCatalog) {
-        List<DayDetailResponse> hydratedDays = new ArrayList<>();
-        for (TrainingDay day : routine.getDays()) {
-            List<ExerciseItemResponse> hydratedExercises = new ArrayList<>();
+    private List<DayDetailResponse> mapToHydratedDays(Routine routine, List<Exercise> catalog) {
+        return routine.getDays().stream()
+                .map(day -> mapToDayResponse(day, catalog))
+                .toList();
+    }
 
-            for (RoutineDetail detail : day.getDetails()) {
-                Exercise catalogData = findExerciseInList(exerciseCatalog, detail.getExerciseId());
+    private DayDetailResponse mapToDayResponse(TrainingDay day, List<Exercise> catalog) {
+        List<ExerciseItemResponse> exercises = day.getDetails().stream()
+                .map(detail -> mapToExerciseItemResponse(detail, catalog))
+                .toList();
 
-                String exerciseName = (catalogData != null) ? catalogData.getName() : "Ejercicio Borrado";
-                String imageUrl = (catalogData != null) ? catalogData.getImageUrl() : null;
-                String videoUrl = (catalogData != null) ? catalogData.getVideoUrl() : null;
+        return new DayDetailResponse(day.getId(), day.getName(), day.getOrderNumber(), exercises);
+    }
 
-                ExerciseItemResponse exResponse = new ExerciseItemResponse(
-                        detail.getOrderNumber(), detail.getSets(), detail.getRepsMin(),
-                        detail.getRepsMax(),
-                        detail.getTargetRIR(), detail.getSuggestedWeight(), detail.getNotes(),
-                        detail.getExerciseId(), exerciseName, imageUrl, videoUrl
-                );
+    private ExerciseItemResponse mapToExerciseItemResponse(RoutineDetail detail, List<Exercise> catalog) {
+        // Buscamos el ejercicio en el catálogo local (para no ir a la DB en cada iteración)
+        Exercise catalogData = catalog.stream()
+                .filter(e -> e.getId().equals(detail.getExerciseId()))
+                .findFirst()
+                .orElse(null);
 
-                hydratedExercises.add(exResponse);
-            }
+        return buildExerciseItem(detail, catalogData);
+    }
 
-            DayDetailResponse dayResponse = new DayDetailResponse(
-                    day.getId(), day.getName(), day.getOrderNumber(), hydratedExercises
-            );
-            hydratedDays.add(dayResponse);
-        }
-        return hydratedDays;
+    private ExerciseItemResponse buildExerciseItem(RoutineDetail detail, Exercise data) {
+        String name = (data != null) ? data.getName() : "Ejercicio Borrado";
+        String img = (data != null) ? data.getImageUrl() : null;
+        String video = (data != null) ? data.getVideoUrl() : null;
+
+        return new ExerciseItemResponse(
+                detail.getOrderNumber(), detail.getSets(), detail.getRepsMin(), detail.getRepsMax(),
+                detail.getTargetRIR(), detail.getSuggestedWeight(), detail.getNotes(),
+                detail.getExerciseId(), name, img, video
+        );
+    }
+
+    private RoutineDetailResponse mapToDetailResponse(Routine routine, List<DayDetailResponse> days) {
+        return new RoutineDetailResponse(
+                routine.getId(), routine.getName(), routine.getStartDate(), routine.getEndDate(),
+                routine.getMemberId(), routine.getTrainerId(), routine.getCreatedByUserId(),
+                routine.getStatus(), days
+        );
     }
 }
