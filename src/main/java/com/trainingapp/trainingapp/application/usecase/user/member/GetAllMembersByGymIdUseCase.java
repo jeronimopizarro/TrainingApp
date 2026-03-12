@@ -26,29 +26,11 @@ public class GetAllMembersByGymIdUseCase {
     }
 
     public List<MemberResponse> execute(Long gymId) {
-        User currentUser = securityUtils.getCurrentUser();
-
-        validateGymAccess(currentUser, gymId);
+        securityUtils.validateSameGym(gymId);
 
         List<Member> members = memberRepository.findByGymId(gymId);
 
         return mapToResponseList(members);
-    }
-
-    private void validateGymAccess(User currentUser, Long targetGymId) {
-        Long staffGymId = null;
-
-        // Extraemos el Gym ID dependiendo de qué tipo de empleado sea.
-        if (currentUser instanceof Admin admin) {
-            staffGymId = admin.getGymId();
-        } else if (currentUser instanceof Trainer trainer) {
-            staffGymId = trainer.getGymId();
-        }
-
-        // Si es un empleado (tiene gymId) y no coincide con el buscado, lo bloqueamos
-        if (staffGymId != null && !staffGymId.equals(targetGymId)) {
-            throw new AccessDeniedException("No tienes permiso para ver los socios de otro gimnasio.");
-        }
     }
 
     private List<MemberResponse> mapToResponseList(List<Member> members) {

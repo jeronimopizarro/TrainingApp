@@ -25,23 +25,19 @@ public class UpdateMemberUseCase {
 
     @Transactional
     public MemberResponse execute(Long id, UpdateMemberRequest request) {
+        Member member = findMemberOrThrow(id);
         User currentUser = securityUtils.getCurrentUser();
 
-        validateOwnership(currentUser, id);
+        securityUtils.validateSameGym(member.getGymId());
 
-        Member member = findMemberOrThrow(id);
+        if (currentUser.getRole() == Role.MEMBER && !currentUser.getId().equals(member.getId())) {
+            throw new AccessDeniedException("Solo puedes modificar tu propio perfil.");
+        }
 
         updateMemberFields(member, request);
-
         Member updatedMember = memberRepository.save(member);
 
         return buildResponseFromMember(updatedMember);
-    }
-
-    private void validateOwnership(User currentUser, Long targetId) {
-        if (currentUser.getRole() == Role.MEMBER && !currentUser.getId().equals(targetId)) {
-            throw new AccessDeniedException("Solo puedes modificar tu propio perfil.");
-        }
     }
 
     private Member findMemberOrThrow(Long id) {

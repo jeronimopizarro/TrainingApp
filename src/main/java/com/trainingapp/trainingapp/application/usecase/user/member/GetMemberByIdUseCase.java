@@ -22,19 +22,16 @@ public class GetMemberByIdUseCase {
     }
 
     public MemberResponse execute(Long id) {
+        Member member = findMemberOrThrow(id);
         User currentUser = securityUtils.getCurrentUser();
 
-        validateAccess(currentUser, id);
+        securityUtils.validateSameGym(member.getGymId());
 
-        Member member = findMemberOrThrow(id);
-
-        return buildResponseFromMember(member);
-    }
-
-    private void validateAccess(User currentUser, Long targetId) {
-        if (currentUser.getRole() == Role.MEMBER && !currentUser.getId().equals(targetId)) {
+        if (currentUser.getRole() == Role.MEMBER && !currentUser.getId().equals(member.getId())) {
             throw new AccessDeniedException("Solo puedes ver tu propio perfil.");
         }
+
+        return buildResponseFromMember(member);
     }
 
     private Member findMemberOrThrow(Long id) {

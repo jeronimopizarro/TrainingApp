@@ -2,6 +2,7 @@ package com.trainingapp.trainingapp.application.usecase.user.member;
 
 import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.user.member.MemberResponse;
 import com.trainingapp.trainingapp.web.dto.user.member.RegisterMemberRequest;
 import jakarta.transaction.Transactional;
@@ -12,16 +13,20 @@ import org.springframework.stereotype.Service;
 public class RegisterMemberUseCase {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityUtils securityUtils;
 
-    public RegisterMemberUseCase(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+    public RegisterMemberUseCase(MemberRepository memberRepository, PasswordEncoder passwordEncoder,
+                                 SecurityUtils securityUtils) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
+        this.securityUtils = securityUtils;
     }
 
     @Transactional
     public MemberResponse execute(RegisterMemberRequest request) {
-        Member member = buildMemberFromRequest(request);
+        securityUtils.validateSameGym(request.gymId());
 
+        Member member = buildMemberFromRequest(request);
         Member savedMember = memberRepository.save(member);
 
         return buildResponseFromMember(savedMember);
