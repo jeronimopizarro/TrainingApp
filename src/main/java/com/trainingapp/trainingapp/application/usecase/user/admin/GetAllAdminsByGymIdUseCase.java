@@ -4,7 +4,6 @@ import com.trainingapp.trainingapp.domain.entity.user.Admin;
 import com.trainingapp.trainingapp.domain.repository.user.AdminRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.user.admin.AdminResponse;
-import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

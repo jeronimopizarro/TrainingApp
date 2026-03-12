@@ -2,19 +2,13 @@ package com.trainingapp.trainingapp.application.usecase.routine;
 
 import com.trainingapp.trainingapp.application.validator.RoutineAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
-import com.trainingapp.trainingapp.domain.entity.user.Admin;
-import com.trainingapp.trainingapp.domain.entity.user.Member;
-import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
-import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
 import com.trainingapp.trainingapp.web.dto.routine.DuplicateRoutineRequest;
 import jakarta.transaction.Transactional;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service

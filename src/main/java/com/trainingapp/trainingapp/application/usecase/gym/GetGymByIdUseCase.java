@@ -1,18 +1,11 @@
 package com.trainingapp.trainingapp.application.usecase.gym;
 
 import com.trainingapp.trainingapp.domain.entity.gym.Gym;
-import com.trainingapp.trainingapp.domain.entity.user.Admin;
-import com.trainingapp.trainingapp.domain.entity.user.Member;
-import com.trainingapp.trainingapp.domain.entity.user.Trainer;
-import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.gym.GymNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.gym.GymRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.gym.GymResponse;
 import jakarta.transaction.Transactional;
-import org.jspecify.annotations.NonNull;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service

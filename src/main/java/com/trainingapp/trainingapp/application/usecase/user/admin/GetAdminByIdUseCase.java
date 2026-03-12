@@ -1,13 +1,10 @@
 package com.trainingapp.trainingapp.application.usecase.user.admin;
 
 import com.trainingapp.trainingapp.domain.entity.user.Admin;
-import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.user.AdminNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.user.AdminRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.user.admin.AdminResponse;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service

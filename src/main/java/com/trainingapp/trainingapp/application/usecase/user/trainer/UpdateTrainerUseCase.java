@@ -1,6 +1,5 @@
 package com.trainingapp.trainingapp.application.usecase.user.trainer;
 
-import com.trainingapp.trainingapp.domain.entity.user.Admin;
 import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
@@ -26,14 +25,16 @@ public class UpdateTrainerUseCase {
 
     @Transactional
     public TrainerResponse execute(Long id, UpdateTrainerRequest request) {
+        Trainer trainer = findTrainerOrThrow(id);
         User currentUser = securityUtils.getCurrentUser();
 
-        Trainer trainer = findTrainerOrThrow(id);
+        securityUtils.validateSameGym(trainer.getGymId());
 
-        validateUpdateAccess(currentUser, trainer);
+        if (currentUser.getRole() == Role.TRAINER && !currentUser.getId().equals(trainer.getId())) {
+            throw new AccessDeniedException("Solo puedes modificar tu propio perfil.");
+        }
 
         updateTrainerFields(trainer, request);
-
         Trainer updatedTrainer = trainerRepository.save(trainer);
 
         return buildResponseFromTrainer(updatedTrainer);
@@ -43,19 +44,6 @@ public class UpdateTrainerUseCase {
         return trainerRepository.findById(id)
                 .orElseThrow(() -> new TrainerNotFoundException(
                         "Trainer with id " + id + " not found."));
-    }
-
-    private void validateUpdateAccess(User currentUser, Trainer targetTrainer) {
-        if (currentUser.getRole() == Role.TRAINER && !currentUser.getId().equals(targetTrainer.getId())) {
-            throw new AccessDeniedException("Solo puedes modificar tu propio perfil.");
-        }
-
-        if (currentUser.getRole() == Role.GYM_ADMIN) {
-            Admin admin = (Admin) currentUser;
-            if (!admin.getGymId().equals(targetTrainer.getGymId())) {
-                throw new AccessDeniedException("Solo puedes modificar el perfil de los entrenadores de tu gimnasio.");
-            }
-        }
     }
 
     private void updateTrainerFields(Trainer trainer, UpdateTrainerRequest request) {

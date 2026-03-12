@@ -1,8 +1,6 @@
 package com.trainingapp.trainingapp.application.usecase.exercise;
 
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
-import com.trainingapp.trainingapp.domain.entity.user.Admin;
-import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
@@ -11,7 +9,6 @@ import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security
 import com.trainingapp.trainingapp.web.dto.exercise.CreateExerciseRequest;
 import com.trainingapp.trainingapp.web.dto.exercise.ExerciseResponse;
 import jakarta.transaction.Transactional;
-import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 @Service

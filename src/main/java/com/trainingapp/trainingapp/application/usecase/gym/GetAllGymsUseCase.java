@@ -3,7 +3,6 @@ package com.trainingapp.trainingapp.application.usecase.gym;
 import com.trainingapp.trainingapp.domain.entity.gym.Gym;
 import com.trainingapp.trainingapp.domain.repository.gym.GymRepository;
 import com.trainingapp.trainingapp.web.dto.gym.GymResponse;
-import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

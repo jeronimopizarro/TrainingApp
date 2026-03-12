@@ -5,20 +5,12 @@ import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
 import com.trainingapp.trainingapp.domain.entity.routine.RoutineDetail;
 import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
-import com.trainingapp.trainingapp.domain.entity.user.Admin;
-import com.trainingapp.trainingapp.domain.entity.user.Member;
-import com.trainingapp.trainingapp.domain.entity.user.Trainer;
-import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
-import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.routine.RoutineDetailResponse;
 import com.trainingapp.trainingapp.web.dto.routine.RoutineDetailResponse.ExerciseItemResponse;
 import com.trainingapp.trainingapp.web.dto.routine.RoutineDetailResponse.DayDetailResponse;
-import org.jspecify.annotations.NonNull;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,15 +21,13 @@ public class GetRoutineByIdUseCase {
 
     private final RoutineRepository routineRepository;
     private final ExerciseRepository exerciseRepository;
-    private final SecurityUtils securityUtils;
     private final RoutineAccessValidator accessValidator;
 
     public GetRoutineByIdUseCase(RoutineRepository routineRepository,
-                                 ExerciseRepository exerciseRepository, SecurityUtils securityUtils,
+                                 ExerciseRepository exerciseRepository,
                                  RoutineAccessValidator accessValidator) {
         this.routineRepository = routineRepository;
         this.exerciseRepository = exerciseRepository;
-        this.securityUtils = securityUtils;
         this.accessValidator = accessValidator;
     }
 

@@ -5,7 +5,6 @@ import com.trainingapp.trainingapp.domain.repository.gym.GymRepository;
 import com.trainingapp.trainingapp.web.dto.gym.CreateGymRequest;
 import com.trainingapp.trainingapp.web.dto.gym.GymResponse;
 import jakarta.transaction.Transactional;
-import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 @Service

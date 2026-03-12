@@ -1,7 +1,5 @@
 package com.trainingapp.trainingapp.application.usecase.user.trainer;
 
-import com.trainingapp.trainingapp.domain.entity.user.Admin;
-import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
@@ -24,11 +22,14 @@ public class GetTrainerByIdUseCase {
     }
 
     public TrainerResponse execute(Long id) {
+        Trainer trainer = findTrainerOrThrow(id);
         User currentUser = securityUtils.getCurrentUser();
 
-        Trainer trainer = findTrainerOrThrow(id);
+        securityUtils.validateSameGym(trainer.getGymId());
 
-        validateAccess(currentUser, trainer);
+        if (currentUser.getRole() == Role.TRAINER && !currentUser.getId().equals(trainer.getId())) {
+            throw new AccessDeniedException("Solo puedes ver tu propio perfil.");
+        }
 
         return buildResponseFromTrainer(trainer);
     }
@@ -37,26 +38,6 @@ public class GetTrainerByIdUseCase {
         return trainerRepository.findById(id)
                 .orElseThrow(() -> new TrainerNotFoundException(
                         "Trainer with id " + id + " not found."));
-    }
-
-    private void validateAccess(User currentUser, Trainer targetTrainer) {
-        if (currentUser.getRole() == Role.TRAINER && !currentUser.getId().equals(targetTrainer.getId())) {
-            throw new AccessDeniedException("Solo puedes ver tu propio perfil.");
-        }
-
-        if (currentUser.getRole() == Role.MEMBER) {
-            Member member = (Member) currentUser;
-            if (!member.getGymId().equals(targetTrainer.getGymId())) {
-                throw new AccessDeniedException("Solo puedes ver información de los entrenadores de tu gimnasio.");
-            }
-        }
-
-        if (currentUser.getRole() == Role.GYM_ADMIN) {
-            Admin admin = (Admin) currentUser;
-            if (!admin.getGymId().equals(targetTrainer.getGymId())) {
-                throw new AccessDeniedException("Solo puedes ver información de los entrenadores de tu gimnasio.");
-            }
-        }
     }
 
     private TrainerResponse buildResponseFromTrainer(Trainer trainer) {

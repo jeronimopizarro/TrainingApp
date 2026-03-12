@@ -1,8 +1,6 @@
 package com.trainingapp.trainingapp.application.usecase.exercise;
 
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
-import com.trainingapp.trainingapp.domain.entity.user.Admin;
-import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
