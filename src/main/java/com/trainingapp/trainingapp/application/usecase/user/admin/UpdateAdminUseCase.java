@@ -25,23 +25,20 @@ public class UpdateAdminUseCase {
 
     @Transactional
     public AdminResponse execute(Long id, UpdateAdminRequest request) {
+        Admin admin = findAdminOrThrow(id);
         User currentUser = securityUtils.getCurrentUser();
 
-        validateOwnership(currentUser, id);
+        securityUtils.validateSameGym(admin.getGymId());
 
-        Admin admin = findAdminOrThrow(id);
+        if (currentUser.getRole() == Role.GYM_ADMIN && !currentUser.getId().equals(id)) {
+            throw new AccessDeniedException("Solo puedes modificar tu propio perfil.");
+        }
 
         updateAdminFields(admin, request);
 
         Admin updatedAdmin = adminRepository.save(admin);
 
         return buildResponseFromAdmin(updatedAdmin);
-    }
-
-    private void validateOwnership(User currentUser, Long targetId) {
-        if (currentUser.getRole() == Role.GYM_ADMIN && !currentUser.getId().equals(targetId)) {
-            throw new AccessDeniedException("Solo puedes modificar tu propio perfil.");
-        }
     }
 
     private Admin findAdminOrThrow(Long id) {

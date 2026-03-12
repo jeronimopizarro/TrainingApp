@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class GetAdminByIdUseCase {
 
     private final AdminRepository adminRepository;
-    private final SecurityUtils  securityUtils;
+    private final SecurityUtils securityUtils;
 
     public GetAdminByIdUseCase(AdminRepository adminRepository, SecurityUtils securityUtils) {
         this.adminRepository = adminRepository;
@@ -22,19 +22,11 @@ public class GetAdminByIdUseCase {
     }
 
     public AdminResponse execute(Long id) {
-        User currentUser = securityUtils.getCurrentUser();
-
-        validateAccess(currentUser, id);
-
         Admin admin = findAdminOrThrow(id);
 
-        return buildResponseFromAdmin(admin);
-    }
+        securityUtils.validateSameGym(admin.getGymId());
 
-    private void validateAccess(User currentUser, Long targetId) {
-        if (currentUser.getRole() == Role.GYM_ADMIN && !currentUser.getId().equals(targetId)) {
-            throw new AccessDeniedException("No tienes permiso para ver el perfil de otro administrador.");
-        }
+        return buildResponseFromAdmin(admin);
     }
 
     private Admin findAdminOrThrow(Long id) {
