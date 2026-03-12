@@ -24,6 +24,7 @@ public class RoutineMapper {
         entity.setMemberId(domain.getMemberId());
         entity.setTrainerId(domain.getTrainerId());
         entity.setCreatedByUserId(domain.getCreatedByUserId());
+        entity.setGymId(domain.getGymId());
         entity.setStatus(domain.getStatus());
 
         if (domain.getDays() != null) {
@@ -79,7 +80,7 @@ public class RoutineMapper {
         if (entity == null) return null;
 
         Routine domain = new Routine(entity.getName(), entity.getMemberId(), entity.getTrainerId(),
-                entity.getCreatedByUserId());
+                entity.getCreatedByUserId(), entity.getGymId());
 
         domain.setId(entity.getId());
         domain.setStartDate(entity.getStartDate());

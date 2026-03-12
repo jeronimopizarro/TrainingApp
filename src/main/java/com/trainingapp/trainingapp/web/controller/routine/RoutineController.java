@@ -50,12 +50,6 @@ public class RoutineController {
         this.getAllRoutinesByTrainerIdUseCase = getAllRoutinesByTrainerIdUseCase;
     }
 
-    //TODO: logica de negocio que valide que el member solo puede crear una rutina para el mismo, no para otro member.
-    //TODO: logica de negocio que valide que el member solo puede crear una rutina en su gimnasio.
-    //TODO: logica de negocio que valide que el trainer solo puede crear una rutina en su gimnasio.
-    //TODO: logica de negocio que valide que el trainer solo puede crear una rutina a un miembro de su gimnasio.
-    //TODO: logica de negocio que valide que el gym admin solo puede crear una rutina en su gimnasio.
-    //TODO: logica de negocio que valide que el gym admin solo puede crear una rutina a un miembro de su gimnasio.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @PostMapping
     public ResponseEntity<CreateRoutineResponse> createRoutine(
@@ -73,11 +67,6 @@ public class RoutineController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    //TODO: logica de negocio que valide que el gym admin solo obtener una rutina de su gimnasio.
-    //TODO: logica de negocio que valide que el trainer solo puede obtener una rutina de su gimnasio.
-    //TODO: logica de negocio que valide que el trainer solo puede obtener una rutina que el creó.
-    //TODO: logica de negocio que valide que el member solo puede obtener una rutina que el creó.
-    //TODO: logica de negocio que valide que el member solo puede obtener una rutina de su gimnasio.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping("/{id}")
     public ResponseEntity<RoutineDetailResponse> getRoutine(@PathVariable Long id) {
@@ -85,12 +74,6 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
-    //TODO: logica de negocio que valide que el member solo puede obtener todas sus rutinas.
-    //TODO: logica de negocio que valide que el member solo puede obtener todas sus rutinas del gimnasio al que asiste (redundate)
-    //TODO: logica de negocio que valide que el trainer solo puede obtener todas sus rutinas.
-    //TODO: logica de negocio que valide que el trainer solo puede obtener todas sus rutinas del gimnasio al que asiste (redundate)
-    //TODO: logica de negocio que valide que el gym admin solo puede obtener todas sus rutinas.
-    //TODO: logica de negocio que valide que el gym admin solo puede obtener todas sus rutinas del gimnasio al que asiste (redundate)
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping()
     public ResponseEntity<List<GetAllRoutinesByMemberIdResponse>> getAllRoutinesByMember(
@@ -100,8 +83,6 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
-    //TODO: logica de negocio que valide que el trainer solo puede obtener todas sus rutinas. No la de un compañero de trabajo.
-    //TODO: logica de negocio que valide que el gym admin solo puede obtener todas las rutinas de sus trainers de su gimnasio.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER')")
     @GetMapping(params = "trainerId")
     public ResponseEntity<List<GetAllRoutinesByTrainerIdResponse>> getAllRoutinesByTrainer(
@@ -112,9 +93,6 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
-    //TODO: logica de negocio que valide que el member solo puede obtener su propia rutina activa.
-    //TODO: logica de negocio que valide que el trainer solo puede obtener todas de los miembros de su gym donde trabaja.
-    //TODO: logica de negocio que valide que el gym admin solo puede obtener todas de los miembros de su propio gym.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping("/active")
     public ResponseEntity<RoutineResponse> getActiveRoutine(@RequestParam Long memberId) {
@@ -122,9 +100,6 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
-    //TODO: logica de negocio que valide que el member solo puede activar su propia rutina y de su mismo gym.
-    //TODO: logica de negocio que valide que el trainer solo puede activar una rutina que el creo y de su mismo gym.
-    //TODO: logica de negocio que valide que el gym admin solo puede activar una rutina que el creo y de su mismo gym.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @PatchMapping("/{id}/activate")
     public ResponseEntity<Void> activateRoutine(@PathVariable Long id,
@@ -134,9 +109,6 @@ public class RoutineController {
         return ResponseEntity.ok().build();
     }
 
-    //TODO: logica de negocio que valide que el member solo puede inactivar su propia rutina y de su mismo gym.
-    //TODO: logica de negocio que valide que el trainer solo puede inactivar una rutina que el creo y de su mismo gym.
-    //TODO: logica de negocio que valide que el gym admin solo puede inactivar una rutina que el creo y de su mismo gym.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @PatchMapping("/{id}/inactive")
     public ResponseEntity<Void> inactiveRoutine(@PathVariable Long id) {
@@ -144,9 +116,6 @@ public class RoutineController {
         return ResponseEntity.ok().build();
     }
 
-    //TODO: logica de negocio que valide que el member solo puede completar su propia rutina y de su mismo gym.
-    //TODO: logica de negocio que valide que el trainer solo puede completar una rutina que el creo y de su mismo gym.
-    //TODO: logica de negocio que valide que el gym admin solo puede completar una rutina de su mismo gym.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @PatchMapping("/{id}/complete")
     public ResponseEntity<Void> completeRoutine(@PathVariable Long id) {
@@ -154,9 +123,6 @@ public class RoutineController {
         return ResponseEntity.ok().build();
     }
 
-    //TODO: logica de negocio que valide que el member solo puede modificar su propia rutina y de su mismo gym.
-    //TODO: logica de negocio que valide que el trainer solo puede modificar una rutina que el creo y de su mismo gym.
-    //TODO: logica de negocio que valide que el gym admin solo puede modificar una rutina de su mismo gym.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @PutMapping("/{id}")
     public ResponseEntity<CreateRoutineResponse> updateRoutine(@PathVariable Long id,

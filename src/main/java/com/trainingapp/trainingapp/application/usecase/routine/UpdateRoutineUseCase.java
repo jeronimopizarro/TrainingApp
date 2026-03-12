@@ -1,8 +1,13 @@
 package com.trainingapp.trainingapp.application.usecase.routine;
 
+import com.trainingapp.trainingapp.application.validator.RoutineAccessValidator;
+import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
 import com.trainingapp.trainingapp.domain.entity.routine.RoutineDetail;
 import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
+import com.trainingapp.trainingapp.domain.entity.user.Admin;
+import com.trainingapp.trainingapp.domain.entity.user.Member;
+import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
@@ -27,24 +32,29 @@ public class UpdateRoutineUseCase {
     private final RoutineRepository routineRepository;
     private final ExerciseRepository exerciseRepository;
     private final SecurityUtils securityUtils;
+    private final RoutineAccessValidator accessValidator;
 
     public UpdateRoutineUseCase(RoutineRepository routineRepository,
-                                ExerciseRepository exerciseRepository, SecurityUtils securityUtils) {
+                                ExerciseRepository exerciseRepository, SecurityUtils securityUtils,
+                                RoutineAccessValidator accessValidator) {
         this.routineRepository = routineRepository;
         this.exerciseRepository = exerciseRepository;
         this.securityUtils = securityUtils;
+        this.accessValidator = accessValidator;
     }
 
     @Transactional
     public CreateRoutineResponse execute(Long routineId,
                                          UpdateRoutineRequest request) {
-        User currentUser = securityUtils.getCurrentUser();
-
         Routine routine = validateRoutine(routineId);
 
-        validateOwnership(currentUser, routine);
+        accessValidator.validateModificationPermission(routine);
 
-        validateExercises(request);
+        Long currentUserGymId = securityUtils.getCurrentUserGymId();
+
+        User currentUser = securityUtils.getCurrentUser();
+
+        validateExercises(request, currentUserGymId, currentUser);
 
         List<TrainingDay> mappedDays = mapToDomainDays(request.days());
 
@@ -55,34 +65,28 @@ public class UpdateRoutineUseCase {
         return new CreateRoutineResponse(updatedRoutine.getId(), "Routine updated successfully");
     }
 
-    private void validateOwnership(User currentUser, Routine routine) {
-        if (currentUser.getRole() == Role.MEMBER && !currentUser.getId().equals(routine.getMemberId())) {
-            throw new AccessDeniedException("Solo puedes modificar tus propias rutinas.");
-        }
-
-        if (currentUser.getRole() == Role.TRAINER) {
-            boolean isAssignedTrainer = routine.getTrainerId() != null && routine.getTrainerId().equals(currentUser.getId());
-            boolean isCreator = routine.getCreatedByUserId().equals(currentUser.getId());
-
-            if (!isAssignedTrainer && !isCreator) {
-                throw new AccessDeniedException("Solo puedes modificar rutinas que creaste o que te fueron asignadas.");
-            }
-        }
-    }
-
     private Routine validateRoutine(Long routineId) {
         return routineRepository.findById(routineId).orElseThrow(
                 () -> new RoutineNotFoundException(
                         "The routine with id " + routineId + " was not found"));
     }
 
-    private void validateExercises(UpdateRoutineRequest request) {
+    private void validateExercises(UpdateRoutineRequest request, Long gymId, User currentUser) {
         request.days().forEach(day -> {
             day.exercises().forEach(exReq -> {
-                exerciseRepository.findById(exReq.exerciseId())
+                Exercise exercise = exerciseRepository.findById(exReq.exerciseId())
                         .orElseThrow(() -> new ExerciseNotFoundException(
-                                "Cannot update routine: Exercise with ID " + exReq.exerciseId() + " does not exist in the catalog."
+                                "Cannot update routine: Exercise with ID " + exReq.exerciseId() + " does not exist."
                         ));
+
+                // Solo se permiten ejercicios de nuestro GYM.
+                if (currentUser.getRole() != Role.SUPER_ADMIN) {
+                    if (!exercise.getIsBase() && !exercise.getGymId().equals(gymId)) {
+                        throw new AccessDeniedException(
+                                "El ejercicio '" + exercise.getName() + "' no pertenece a tu gimnasio."
+                        );
+                    }
+                }
             });
         });
     }

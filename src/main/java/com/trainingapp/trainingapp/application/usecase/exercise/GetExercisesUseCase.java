@@ -43,16 +43,9 @@ public class GetExercisesUseCase {
                     : exerciseRepository.findAll();
         }
 
-        Long userGymId = extractGymIdFromUser(currentUser);
+        Long userGymId = securityUtils.getCurrentUserGymId();
 
         return exerciseRepository.findAllowedForGym(userGymId, muscleGroupId);
-    }
-
-    private Long extractGymIdFromUser(User user) {
-        if (user instanceof Admin admin) return admin.getGymId();
-        if (user instanceof Trainer trainer) return trainer.getGymId();
-        if (user instanceof Member member) return member.getGymId();
-        return null;
     }
 
     private ExerciseDetailResponse mapToResponse(Exercise exercise) {

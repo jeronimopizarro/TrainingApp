@@ -1,12 +1,18 @@
 package com.trainingapp.trainingapp.application.usecase.routine;
 
+import com.trainingapp.trainingapp.application.validator.RoutineAccessValidator;
+import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
 import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
+import com.trainingapp.trainingapp.domain.entity.user.Admin;
+import com.trainingapp.trainingapp.domain.entity.user.Member;
+import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
+import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineRequest;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
@@ -21,24 +27,28 @@ public class CreateRoutineUseCase {
     private final RoutineRepository routineRepository;
     private final ExerciseRepository exerciseRepository;
     private final SecurityUtils securityUtils;
+    private final RoutineAccessValidator accessValidator;
 
     public CreateRoutineUseCase(RoutineRepository routineRepository,
                                 ExerciseRepository exerciseRepository,
-                                SecurityUtils securityUtils) {
+                                SecurityUtils securityUtils, RoutineAccessValidator accessValidator) {
         this.routineRepository = routineRepository;
         this.exerciseRepository = exerciseRepository;
         this.securityUtils = securityUtils;
+        this.accessValidator = accessValidator;
     }
 
     @Transactional
     public CreateRoutineResponse execute(CreateRoutineRequest request) {
         User currentUser = securityUtils.getCurrentUser();
 
-        validateCreationPermission(currentUser, request.memberId());
+        Long creatorGymId = securityUtils.getCurrentUserGymId();
 
-        validateExercises(request);
+        accessValidator.validateTargetMemberAccess(request.memberId());
 
-        Routine routine = createRoutineEntity(request, currentUser.getId());
+        validateExercises(request, creatorGymId, currentUser);
+
+        Routine routine = createRoutineEntity(request, currentUser.getId(), creatorGymId);
 
         addTrainingStructure(request, routine);
 
@@ -48,26 +58,27 @@ public class CreateRoutineUseCase {
                 "Routine created successfully with all days and exercises");
     }
 
-    private void validateCreationPermission(User currentUser, Long targetMemberId) {
-        if (currentUser.getRole() == Role.MEMBER && !currentUser.getId().equals(targetMemberId)) {
-            throw new AccessDeniedException(
-                    "No tienes permiso para crearle una rutina a otro socio.");
-        }
-    }
-
-    private void validateExercises(CreateRoutineRequest request) {
+    private void validateExercises(CreateRoutineRequest request, Long gymId, User currentUser) {
         request.days().forEach(day -> {
             day.exercises().forEach(exReq -> {
-                exerciseRepository.findById(exReq.exerciseId())
-                        .orElseThrow(() -> new ExerciseNotFoundException(
-                                "Cannot create routine: Exercise with ID " + exReq.exerciseId() + " does not exist in the catalog."
+                Exercise exercise = exerciseRepository.findById(exReq.exerciseId())
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "Cannot create routine: Exercise with ID " + exReq.exerciseId() + " does not exist."
                         ));
+
+                if (currentUser.getRole() != Role.SUPER_ADMIN) {
+                    if (!exercise.getIsBase() && !exercise.getGymId().equals(gymId)) {
+                        throw new AccessDeniedException(
+                                "El ejercicio '" + exercise.getName() + "' no pertenece a tu gimnasio."
+                        );
+                    }
+                }
             });
         });
     }
 
-    private Routine createRoutineEntity(CreateRoutineRequest request, Long creatorId) {
-        return new Routine(request.name(), request.memberId(), request.trainerId(), creatorId);
+    private Routine createRoutineEntity(CreateRoutineRequest request, Long creatorId, Long gymId) {
+        return new Routine(request.name(), request.memberId(), request.trainerId(), creatorId, gymId);
     }
 
     private static void addTrainingStructure(CreateRoutineRequest request, Routine routine) {

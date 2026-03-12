@@ -40,6 +40,9 @@ public class RoutineJpaEntity {
     @Column(name = "created_by_user_id", nullable = false)
     private Long createdByUserId;
 
+    @Column(name = "gym_id", nullable = false)
+    private Long gymId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
     private RoutineStatus status;

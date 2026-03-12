@@ -56,17 +56,14 @@ public class UpdateExerciseUseCase {
     private void validateOwnership(User currentUser, Exercise exercise) {
         if (currentUser.getRole() == Role.SUPER_ADMIN) return;
 
-        // Solo SuperAdmin puede edita un ejercicio global
+        // Solo SuperAdmin puede editar un ejercicio global
         if (exercise.getIsBase()) {
             throw new AccessDeniedException("No puedes modificar ejercicios base del sistema.");
         }
 
-        Long userGymId = extractGymId(currentUser);
-        if (!exercise.getGymId().equals(userGymId)) {
-            throw new AccessDeniedException("No puedes modificar ejercicios de otro gimnasio.");
-        }
+        securityUtils.validateSameGym(exercise.getGymId());
 
-        // REGLA 3: El Trainer solo modifica sus propios ejercicios (El Admin puede todos los de su gym)
+        // El Trainer solo modifica sus propios ejercicios
         if (currentUser.getRole() == Role.TRAINER) {
             boolean isCreator = exercise.getCreatedByUserId() != null
                     && exercise.getCreatedByUserId().equals(currentUser.getId());
@@ -75,12 +72,6 @@ public class UpdateExerciseUseCase {
                 throw new AccessDeniedException("Solo puedes modificar los ejercicios creados por ti.");
             }
         }
-    }
-
-    private Long extractGymId(User user) {
-        if (user instanceof Admin admin) return admin.getGymId();
-        if (user instanceof Trainer trainer) return trainer.getGymId();
-        return null;
     }
 
     private void validateMuscleGroupsExist(UpdateExerciseRequest request) {

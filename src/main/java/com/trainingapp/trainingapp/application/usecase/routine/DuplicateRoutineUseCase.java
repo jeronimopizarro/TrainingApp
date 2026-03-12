@@ -1,32 +1,45 @@
 package com.trainingapp.trainingapp.application.usecase.routine;
 
+import com.trainingapp.trainingapp.application.validator.RoutineAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
+import com.trainingapp.trainingapp.domain.entity.user.Admin;
+import com.trainingapp.trainingapp.domain.entity.user.Member;
+import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
+import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
+import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
 import com.trainingapp.trainingapp.web.dto.routine.DuplicateRoutineRequest;
 import jakarta.transaction.Transactional;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DuplicateRoutineUseCase {
     private final RoutineRepository routineRepository;
     private final SecurityUtils securityUtils;
+    private final RoutineAccessValidator accessValidator;
 
-    public DuplicateRoutineUseCase(RoutineRepository routineRepository, SecurityUtils securityUtils) {
+    public DuplicateRoutineUseCase(RoutineRepository routineRepository, SecurityUtils securityUtils,
+                                   RoutineAccessValidator accessValidator) {
         this.routineRepository = routineRepository;
         this.securityUtils = securityUtils;
+        this.accessValidator = accessValidator;
     }
 
     @Transactional
     public CreateRoutineResponse execute(Long sourceRoutineId, DuplicateRoutineRequest request) {
+        User currentUser = securityUtils.getCurrentUser();
         Routine sourceRoutine = findRoutineOrThrow(sourceRoutineId);
+
+        securityUtils.validateSameGym(sourceRoutine.getGymId());
+
+        accessValidator.validateTargetMemberAccess(request.targetMemberId());
         // Determinamos quien es el entrenador.
         Long targetTrainerId = resolveTargetTrainer(request, sourceRoutine);
-
-        User currentUser = securityUtils.getCurrentUser();
 
         Routine newRoutine = sourceRoutine.duplicate(request.newName(), request.targetMemberId(),
                 targetTrainerId, currentUser.getId());
@@ -36,13 +49,13 @@ public class DuplicateRoutineUseCase {
         return new CreateRoutineResponse(savedRoutine.getId(), "Routine duplicated successfully");
     }
 
-    private static Long resolveTargetTrainer(DuplicateRoutineRequest request, Routine sourceRoutine) {
-        return request.trainerId() != null ? request.trainerId() : sourceRoutine.getTrainerId();
-    }
-
     private Routine findRoutineOrThrow(Long sourceRoutineId) {
         return routineRepository.findById(sourceRoutineId).orElseThrow(
                 () -> new RoutineNotFoundException(
                         "The routine with id " + sourceRoutineId + " was not found"));
+    }
+
+    private static Long resolveTargetTrainer(DuplicateRoutineRequest request, Routine sourceRoutine) {
+        return request.trainerId() != null ? request.trainerId() : sourceRoutine.getTrainerId();
     }
 }

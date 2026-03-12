@@ -54,7 +54,8 @@ public class CreateExerciseUseCase {
 
     private Exercise buildExerciseEntity(CreateExerciseRequest request, User user) {
         boolean isBase = (user.getRole() == Role.SUPER_ADMIN) && (request.isBase() != null && request.isBase());
-        Long gymId = extractGymId(user);
+
+        Long gymId = isBase ? null : securityUtils.getCurrentUserGymId();
 
         return new Exercise(
                 request.name(),
@@ -65,16 +66,6 @@ public class CreateExerciseUseCase {
                 user.getId(),
                 gymId
         );
-    }
-
-    private Long extractGymId(User user) {
-        if (user instanceof Admin admin) return admin.getGymId();
-        if (user instanceof Trainer trainer) return trainer.getGymId();
-
-        if (user.getRole() != Role.SUPER_ADMIN) {
-            throw new IllegalStateException("Error crítico: El empleado no tiene un gimnasio asignado.");
-        }
-        return null;
     }
 
     private static void addMuscleGroups(CreateExerciseRequest request, Exercise exercise) {

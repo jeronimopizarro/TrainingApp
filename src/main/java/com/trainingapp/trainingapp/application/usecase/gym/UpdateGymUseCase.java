@@ -24,11 +24,9 @@ public class UpdateGymUseCase {
     }
 
     public GymResponse execute(Long id, UpdateGymRequest request) {
-        User currentUser = securityUtils.getCurrentUser();
-
         Gym gym = findGymOrThrow(id);
 
-        validateUpdatePermission(currentUser, gym.getId());
+        securityUtils.validateSameGym(gym.getId());
 
         gym.updateDetails(request.name(), request.address(), request.phone());
 
@@ -40,16 +38,6 @@ public class UpdateGymUseCase {
     private Gym findGymOrThrow(Long id) {
         return gymRepository.findById(id).orElseThrow(
                 () -> new GymNotFoundException("The gym with id " + id + " was not found."));
-    }
-
-    private void validateUpdatePermission(User user, Long requestedGymId) {
-        if (user.getRole() == Role.SUPER_ADMIN) return;
-
-        // Si llegó aca si o si es un GYM_ADMIN.
-        Admin admin = (Admin) user;
-        if (!requestedGymId.equals(admin.getGymId())) {
-            throw new AccessDeniedException("No tienes permiso para modificar los datos de otro gimnasio.");
-        }
     }
 
     private GymResponse mapToResponse(Gym updatedGym) {

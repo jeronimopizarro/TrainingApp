@@ -41,25 +41,12 @@ public class GetExerciseByIdUseCase {
     }
 
     private void validateReadPermission(User user, Exercise exercise) {
-        // REGLA: Los ejercicios BASE son públicos para todos.
-        // El SUPER_ADMIN puede ver absolutamente todo.
+        // Los ejercicios BASE y el SUPER_ADMIN pasan directo
         if (user.getRole() == Role.SUPER_ADMIN || exercise.getIsBase()) {
             return;
         }
 
-        // REGLA: Si no es base, el gymId del ejercicio debe coincidir con el del usuario.
-        Long userGymId = extractGymIdFromUser(user);
-
-        if (exercise.getGymId() == null || !exercise.getGymId().equals(userGymId)) {
-            throw new AccessDeniedException("No tienes permiso para ver este ejercicio personalizado de otro gimnasio.");
-        }
-    }
-
-    private Long extractGymIdFromUser(User user) {
-        if (user instanceof Admin admin) return admin.getGymId();
-        if (user instanceof Trainer trainer) return trainer.getGymId();
-        if (user instanceof Member member) return member.getGymId();
-        return null;
+        securityUtils.validateSameGym(exercise.getGymId());
     }
 
     private ExerciseDetailResponse mapToResponse(Exercise exercise) {

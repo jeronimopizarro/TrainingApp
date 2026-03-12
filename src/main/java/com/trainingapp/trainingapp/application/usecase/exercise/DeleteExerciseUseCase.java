@@ -47,10 +47,7 @@ public class DeleteExerciseUseCase {
             throw new AccessDeniedException("No se pueden eliminar ejercicios base del sistema.");
         }
 
-        Long userGymId = extractGymId(user);
-        if (!exercise.getGymId().equals(userGymId)) {
-            throw new AccessDeniedException("No tienes permiso para eliminar ejercicios de otro gimnasio.");
-        }
+        securityUtils.validateSameGym(exercise.getGymId());
 
         if (user.getRole() == Role.TRAINER) {
             boolean isCreator = exercise.getCreatedByUserId() != null
@@ -60,11 +57,5 @@ public class DeleteExerciseUseCase {
                 throw new AccessDeniedException("Solo puedes eliminar los ejercicios que tú creaste.");
             }
         }
-    }
-
-    private Long extractGymId(User user) {
-        if (user instanceof Admin admin) return admin.getGymId();
-        if (user instanceof Trainer trainer) return trainer.getGymId();
-        return null;
     }
 }

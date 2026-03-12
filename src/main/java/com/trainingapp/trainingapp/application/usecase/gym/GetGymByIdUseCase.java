@@ -28,11 +28,9 @@ public class GetGymByIdUseCase {
 
     @Transactional
     public GymResponse execute(Long id) {
-        User currentUser = securityUtils.getCurrentUser();
-
         Gym gym = findGymOrThrow(id);
 
-        validateReadPermission(currentUser, gym.getId());
+        securityUtils.validateSameGym(gym.getId());
 
         return mapToResponse(gym);
     }
@@ -41,22 +39,6 @@ public class GetGymByIdUseCase {
         return gymRepository.findById(id)
                 .orElseThrow(() -> new GymNotFoundException(
                         "The gym with id " + id + " was not found."));
-    }
-
-    private void validateReadPermission(User user, Long requestedGymId) {
-        if (user.getRole() == Role.SUPER_ADMIN) return;
-
-        Long userGymId = extractGymId(user);
-        if (!requestedGymId.equals(userGymId)) {
-            throw new AccessDeniedException("No tienes permiso para ver la información de otro gimnasio.");
-        }
-    }
-
-    private Long extractGymId(User user) {
-        if (user instanceof Admin admin) return admin.getGymId();
-        if (user instanceof Trainer trainer) return trainer.getGymId();
-        if (user instanceof Member member) return member.getGymId();
-        return null;
     }
 
     private GymResponse mapToResponse(Gym gym) {
