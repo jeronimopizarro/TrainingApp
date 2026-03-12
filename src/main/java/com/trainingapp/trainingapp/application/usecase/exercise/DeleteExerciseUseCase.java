@@ -2,6 +2,7 @@ package com.trainingapp.trainingapp.application.usecase.exercise;
 
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.user.Admin;
+import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
@@ -46,10 +47,24 @@ public class DeleteExerciseUseCase {
             throw new AccessDeniedException("No se pueden eliminar ejercicios base del sistema.");
         }
 
-        // Sabemos que es ADMIN, ya que el controlador no permite otro rol.
-        Admin admin = (Admin) user;
-        if (!exercise.getGymId().equals(admin.getGymId())) {
+        Long userGymId = extractGymId(user);
+        if (!exercise.getGymId().equals(userGymId)) {
             throw new AccessDeniedException("No tienes permiso para eliminar ejercicios de otro gimnasio.");
         }
+
+        if (user.getRole() == Role.TRAINER) {
+            boolean isCreator = exercise.getCreatedByUserId() != null
+                    && exercise.getCreatedByUserId().equals(user.getId());
+
+            if (!isCreator) {
+                throw new AccessDeniedException("Solo puedes eliminar los ejercicios que tú creaste.");
+            }
+        }
+    }
+
+    private Long extractGymId(User user) {
+        if (user instanceof Admin admin) return admin.getGymId();
+        if (user instanceof Trainer trainer) return trainer.getGymId();
+        return null;
     }
 }

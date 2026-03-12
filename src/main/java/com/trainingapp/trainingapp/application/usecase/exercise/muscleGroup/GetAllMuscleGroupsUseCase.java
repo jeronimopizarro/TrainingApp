@@ -19,10 +19,10 @@ public class GetAllMuscleGroupsUseCase {
     public List<MuscleGroupResponse> execute() {
         List<MuscleGroup> muscleGroups = muscleGroupRepository.findAll();
 
-        return mapToReposponseList(muscleGroups);
+        return mapToResponseList(muscleGroups);
     }
 
-    private List<MuscleGroupResponse> mapToReposponseList(List<MuscleGroup> muscleGroups) {
+    private List<MuscleGroupResponse> mapToResponseList(List<MuscleGroup> muscleGroups) {
         return muscleGroups.stream().map(mg -> new MuscleGroupResponse(mg.getId(), mg.getName(),
                 mg.getDescription())).toList();
     }

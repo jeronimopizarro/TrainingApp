@@ -12,4 +12,5 @@ public interface ExerciseRepository {
     List<Exercise> findByMuscleGroupId(Long muscleGroupId);
     void delete(Exercise exercise);
     List<Exercise> findAllById(List<Long> ids);
+    List<Exercise> findAllowedForGym(Long gymId, Long muscleGroupId);
 }

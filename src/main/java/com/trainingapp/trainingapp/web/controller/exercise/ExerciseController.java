@@ -19,18 +19,18 @@ public class ExerciseController {
 
     private final CreateExerciseUseCase createExerciseUseCase;
     private final GetExerciseByIdUseCase getExerciseByIdUseCase;
-    private final GetAllExercisesByGroupIdUseCase getAllExercisesByGroupIdUseCase;
+    private final GetExercisesUseCase getExercisesUseCase;
     private final UpdateExerciseUseCase updateExerciseUseCase;
     private final DeleteExerciseUseCase deleteExerciseUseCase;
 
     public ExerciseController(CreateExerciseUseCase createExerciseUseCase,
                               GetExerciseByIdUseCase getByIdUseCase,
-                              GetAllExercisesByGroupIdUseCase getAllExercisesByGroupIdUseCase,
+                              GetExercisesUseCase getExercisesUseCase,
                               UpdateExerciseUseCase updateExerciseUseCase,
                               DeleteExerciseUseCase deleteExerciseUseCase) {
         this.createExerciseUseCase = createExerciseUseCase;
         this.getExerciseByIdUseCase = getByIdUseCase;
-        this.getAllExercisesByGroupIdUseCase = getAllExercisesByGroupIdUseCase;
+        this.getExercisesUseCase = getExercisesUseCase;
         this.updateExerciseUseCase = updateExerciseUseCase;
         this.deleteExerciseUseCase = deleteExerciseUseCase;
     }
@@ -48,18 +48,13 @@ public class ExerciseController {
         return ResponseEntity.ok(getExerciseByIdUseCase.execute(id));
     }
 
-    //TODO: logica de negocio para que el member pueda solicitar todos los ejercicio de su gimnasio donde esta registrado.
-    //TODO: logica de negocio para que el trainer pueda solicitar todos los ejercicio de su gimnasio donde trabaja.
-    //TODO: logica de negocio para que el gym admin pueda solicitar todos los ejercicio de su propio gimnasio.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping
     public ResponseEntity<List<ExerciseDetailResponse>> getAllByMuscleGroup(
             @RequestParam(required = false) Long muscleGroupId) {
-        return ResponseEntity.ok(getAllExercisesByGroupIdUseCase.execute(muscleGroupId));
+        return ResponseEntity.ok(getExercisesUseCase.execute(muscleGroupId));
     }
 
-    //TODO: logica de negocio para que el trainer pueda modificar si el ejercicio es solo del gimnasio donde trabaja.
-    //TODO: logica de negocio para que el gym admin pueda modificar si el ejercicio es de su propio gimnasio.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER')")
     @PutMapping("/{id}")
     public ResponseEntity<ExerciseResponse> update(
@@ -69,8 +64,7 @@ public class ExerciseController {
         return ResponseEntity.ok(response);
     }
 
-    //TODO: logica de negocio para que el gym admin pueda eliminar el ejercicio de su propio gimnasio.
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         deleteExerciseUseCase.execute(id);

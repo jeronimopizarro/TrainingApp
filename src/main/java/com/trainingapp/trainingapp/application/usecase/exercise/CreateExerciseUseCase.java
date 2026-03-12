@@ -61,7 +61,7 @@ public class CreateExerciseUseCase {
                 request.description(),
                 request.imageUrl(),
                 request.videoUrl(),
-                request.isBase(),
+                isBase,
                 user.getId(),
                 gymId
         );

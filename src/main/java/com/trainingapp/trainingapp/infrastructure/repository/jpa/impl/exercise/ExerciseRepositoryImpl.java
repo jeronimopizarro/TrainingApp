@@ -99,4 +99,12 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
                 .map(mapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public List<Exercise> findAllowedForGym(Long gymId, Long muscleGroupId) {
+        return jpaRepository.findAllowedForGym(gymId, muscleGroupId)
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
 }

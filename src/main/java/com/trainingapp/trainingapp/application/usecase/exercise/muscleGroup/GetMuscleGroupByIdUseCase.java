@@ -24,7 +24,7 @@ public class GetMuscleGroupByIdUseCase {
     private MuscleGroup findMuscleGroupsOrThrow(Long id) {
         return muscleGroupRepository.findById(id).orElseThrow(
                 () -> new MuscleGroupNotFoundException(
-                        "The muscle group with id" + id + " was not found."));
+                        "The muscle group with id " + id + " was not found."));
     }
 
     private MuscleGroupResponse mapToResponse(MuscleGroup muscleGroup) {
