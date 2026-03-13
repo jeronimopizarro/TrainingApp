@@ -29,7 +29,9 @@ public class DeleteExerciseUseCase {
 
         validateDeletePermission(currentUser, exercise);
 
-        exerciseRepository.delete(exercise);
+        exercise.deactivate();
+
+        exerciseRepository.save(exercise);
     }
 
     private Exercise findExerciseOrThrow(Long id) {
@@ -52,7 +54,8 @@ public class DeleteExerciseUseCase {
                     && exercise.getCreatedByUserId().equals(user.getId());
 
             if (!isCreator) {
-                throw new AccessDeniedException("Solo puedes eliminar los ejercicios que tú creaste.");
+                throw new AccessDeniedException(
+                        "Solo puedes eliminar los ejercicios que tú creaste.");
             }
         }
     }

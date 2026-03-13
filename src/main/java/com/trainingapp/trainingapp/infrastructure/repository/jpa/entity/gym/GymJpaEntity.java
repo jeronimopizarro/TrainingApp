@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -15,7 +14,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@SQLRestriction("deleted_At IS NULL") // Ignora los gyms con fecha de borrado seteada.
 public class GymJpaEntity {
 
     @Id
@@ -31,6 +29,9 @@ public class GymJpaEntity {
 
     @Column(length = 20)
     private String phone;
+
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

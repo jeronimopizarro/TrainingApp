@@ -20,11 +20,11 @@ public class DeleteMembershipPlanUseCase {
 
     @Transactional
     public void execute(Long id) {
-        MembershipPlan plan = findMemberShipOrThrow(id);
+        MembershipPlan membershipPlan = findMemberShipOrThrow(id);
+        securityUtils.validateSameGym(membershipPlan.getGymId());
 
-        securityUtils.validateSameGym(plan.getGymId());
-
-        planRepository.delete(plan);
+        membershipPlan.deactivate();
+        planRepository.save(membershipPlan);
     }
 
     private MembershipPlan findMemberShipOrThrow(Long id) {

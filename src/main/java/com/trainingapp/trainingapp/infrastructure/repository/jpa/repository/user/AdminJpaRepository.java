@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface AdminJpaRepository extends JpaRepository<AdminJpaEntity, Long> {
 
-    List<AdminJpaEntity> findByGymId(Long gymId);
+    List<AdminJpaEntity> findByGymIdAndActiveTrue(Long gymId);
 }

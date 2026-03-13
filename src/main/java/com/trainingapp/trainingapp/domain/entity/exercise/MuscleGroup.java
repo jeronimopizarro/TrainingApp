@@ -1,10 +1,8 @@
 package com.trainingapp.trainingapp.domain.entity.exercise;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class MuscleGroup {
 
     private Long id;
@@ -17,5 +15,9 @@ public class MuscleGroup {
         }
         this.name = name;
         this.description = description;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

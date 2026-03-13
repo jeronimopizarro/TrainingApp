@@ -84,7 +84,7 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
 
     @Override
     public List<Exercise> findByMuscleGroupId(Long muscleGroupId) {
-        List<ExerciseJpaEntity> exerciseFound = jpaRepository.findByMuscleGroupId(muscleGroupId);
+        List<ExerciseJpaEntity> exerciseFound = jpaRepository.findByMuscleGroupIdAndActiveTrue(muscleGroupId);
         return exerciseFound.stream().map(mapper::toDomain).toList();
     }
 
@@ -102,7 +102,7 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
 
     @Override
     public List<Exercise> findAllowedForGym(Long gymId, Long muscleGroupId) {
-        return jpaRepository.findAllowedForGym(gymId, muscleGroupId)
+        return jpaRepository.findAllowedForGymAndActiveTrue(gymId, muscleGroupId)
                 .stream()
                 .map(mapper::toDomain)
                 .toList();

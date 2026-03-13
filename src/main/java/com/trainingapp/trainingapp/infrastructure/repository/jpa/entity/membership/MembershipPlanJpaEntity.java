@@ -6,9 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -18,9 +15,6 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-// Hibernate hará este UPDATE en lugar de un DELETE real
-@SQLDelete(sql = "UPDATE membership_plans SET deleted_at = CURRENT_TIMESTAMP WHERE plan_id = ?")
-@SQLRestriction("deleted_at IS NULL")
 public class MembershipPlanJpaEntity {
 
     @Id
@@ -42,6 +36,9 @@ public class MembershipPlanJpaEntity {
 
     @Column(name = "gym_id", nullable = false)
     private Long gymId;
+
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

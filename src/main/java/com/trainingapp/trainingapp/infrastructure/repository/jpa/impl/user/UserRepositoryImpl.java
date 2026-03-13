@@ -9,25 +9,25 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class UserRespositoryImpl implements UserRepository {
+public class UserRepositoryImpl implements UserRepository {
 
     private final UserJpaRepository userJpaRepository;
     private final UserMapper userMapper;
 
-    public UserRespositoryImpl(UserJpaRepository userJpaRepository, UserMapper userMapper) {
+    public UserRepositoryImpl(UserJpaRepository userJpaRepository, UserMapper userMapper) {
         this.userJpaRepository = userJpaRepository;
         this.userMapper = userMapper;
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return userJpaRepository.findByEmail(email)
+        return userJpaRepository.findByEmailAndActiveTrue(email)
                 .map(userMapper::toDomain);
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        return userJpaRepository.findById(id)
+        return userJpaRepository.findByIdAndActiveTrue(id)
                 .map(userMapper::toDomain);
     }
 }

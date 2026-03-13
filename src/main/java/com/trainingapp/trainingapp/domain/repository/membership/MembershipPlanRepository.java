@@ -8,5 +8,4 @@ public interface MembershipPlanRepository {
     MembershipPlan save(MembershipPlan plan);
     Optional<MembershipPlan> findById(Long id);
     List<MembershipPlan> findByGymId(Long gymId);
-    void delete(MembershipPlan plan);
 }

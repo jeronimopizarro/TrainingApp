@@ -2,10 +2,8 @@ package com.trainingapp.trainingapp.domain.entity.user;
 
 import com.trainingapp.trainingapp.domain.enums.user.Role;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class Trainer extends User{
 
     private Long gymId;
@@ -22,10 +20,11 @@ public class Trainer extends User{
         this.specialization = specialization;
     }
 
-    public void updateSpecialization(String newSpecialization) {
-        if (newSpecialization == null || newSpecialization.isBlank()) {
-            throw new IllegalArgumentException("Specialization cannot be empty.");
+    public void updateProfile(String firstName, String lastName, String specialization) {
+        super.updateBasicProfile(firstName, lastName);
+        if (specialization != null) {
+            if (specialization.isBlank()) throw new IllegalArgumentException("Specialization cannot be empty.");
+            this.specialization = specialization;
         }
-        this.specialization = newSpecialization;
     }
 }

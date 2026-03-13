@@ -6,6 +6,7 @@ import com.trainingapp.trainingapp.domain.repository.gym.GymRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.gym.GymResponse;
 import com.trainingapp.trainingapp.web.dto.gym.UpdateGymRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +19,7 @@ public class UpdateGymUseCase {
         this.securityUtils = securityUtils;
     }
 
+    @Transactional
     public GymResponse execute(Long id, UpdateGymRequest request) {
         Gym gym = findGymOrThrow(id);
 

@@ -10,10 +10,9 @@ public class GymMapper {
 
     public Gym toDomain(GymJpaEntity jpaEntity) {
         if (jpaEntity == null) return null;
-        boolean isActive = jpaEntity.getDeletedAt() == null;
 
         return new Gym(jpaEntity.getId(), jpaEntity.getName(), jpaEntity.getAddress(),
-                jpaEntity.getPhone(),  isActive);
+                jpaEntity.getPhone(),  jpaEntity.isActive());
     }
 
     public GymJpaEntity toJpaEntity(Gym gym) {

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoutineRepository {
-
     Routine save(Routine routine);
     Optional<Routine> findById(Long id);
     Boolean existsByMemberIdAndStatus(Long memberId, RoutineStatus status);

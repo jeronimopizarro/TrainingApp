@@ -35,7 +35,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
 
     @Override
     public List<Trainer> findByGymId(Long gymId) {
-        return jpaRepository.findByGymId(gymId).stream()
+        return jpaRepository.findByGymIdAndActiveTrue(gymId).stream()
                 .map(mapper::toDomain)
                 .toList();
     }

@@ -17,6 +17,7 @@ public class ExerciseMapper {
                 entity.getCreatedByUserId(), entity.getGymId());
 
         domain.setId(entity.getId());
+        domain.setActive(entity.isActive());
 
         if (entity.getMuscleGroups() != null) {
             entity.getMuscleGroups().forEach(
@@ -38,6 +39,7 @@ public class ExerciseMapper {
         entity.setIsBase(domain.getIsBase());
         entity.setCreatedByUserId(domain.getCreatedByUserId());
         entity.setGymId(domain.getGymId());
+        entity.setActive(domain.isActive());
 
         if (domain.getMuscleGroups() != null) {
             domain.getMuscleGroups().forEach(mgDomain -> {

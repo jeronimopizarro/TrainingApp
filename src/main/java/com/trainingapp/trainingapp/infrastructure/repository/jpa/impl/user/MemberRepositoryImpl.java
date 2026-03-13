@@ -35,13 +35,13 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public List<Member> findByGymId(Long gymId) {
-        return jpaRepository.findByGymId(gymId).stream()
+        return jpaRepository.findByGymIdAndActiveTrue(gymId).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
 
     @Override
     public Optional<Member> findByQrAccessCode(String qrAccessCode) {
-        return jpaRepository.findByQrAccessCode(qrAccessCode).map(mapper::toDomain);
+        return jpaRepository.findByQrAccessCodeAndActiveTrue(qrAccessCode).map(mapper::toDomain);
     }
 }

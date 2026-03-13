@@ -34,7 +34,7 @@ public class UpdateAdminUseCase {
             throw new AccessDeniedException("Solo puedes modificar tu propio perfil.");
         }
 
-        updateAdminFields(admin, request);
+        admin.updateProfile(request.firstName(), request.lastName());
 
         Admin updatedAdmin = adminRepository.save(admin);
 
@@ -47,14 +47,6 @@ public class UpdateAdminUseCase {
                         "Admin with id " + id + " was not found."));
     }
 
-    private void updateAdminFields(Admin admin, UpdateAdminRequest request) {
-        if (request.firstName() != null && !request.firstName().isBlank()) {
-            admin.setFirstName(request.firstName());
-        }
-        if (request.lastName() != null && !request.lastName().isBlank()) {
-            admin.setLastName(request.lastName());
-        }
-    }
 
     private AdminResponse buildResponseFromAdmin(Admin admin) {
         return new AdminResponse(

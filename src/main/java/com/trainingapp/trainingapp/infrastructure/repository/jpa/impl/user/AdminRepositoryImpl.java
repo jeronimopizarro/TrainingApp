@@ -36,7 +36,7 @@ public class AdminRepositoryImpl implements AdminRepository {
 
     @Override
     public List<Admin> findByGymId(Long gymId) {
-        return jpaRepository.findByGymId(gymId).stream()
+        return jpaRepository.findByGymIdAndActiveTrue(gymId).stream()
                 .map(mapper::toDomain)
                 .toList();
     }

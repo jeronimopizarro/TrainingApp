@@ -30,19 +30,12 @@ public class MembershipPlanRepositoryImpl implements MembershipPlanRepository {
 
     @Override
     public Optional<MembershipPlan> findById(Long id) {
-        return jpaRepository.findById(id).map(mapper::toDomainEntity);
+        return jpaRepository.findByIdAndActiveTrue(id).map(mapper::toDomainEntity);
     }
 
     @Override
     public List<MembershipPlan> findByGymId(Long gymId) {
-        return jpaRepository.findByGymId(gymId)
-                .stream()
-                .map(mapper::toDomainEntity)
-                .toList();
-    }
-
-    @Override
-    public void delete(MembershipPlan plan) {
-        jpaRepository.deleteById(plan.getId());
+        return jpaRepository.findByGymIdAndActiveTrue(gymId)
+                .stream().map(mapper::toDomainEntity).toList();
     }
 }

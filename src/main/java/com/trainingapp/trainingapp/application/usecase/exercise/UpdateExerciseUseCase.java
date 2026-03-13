@@ -81,19 +81,22 @@ public class UpdateExerciseUseCase {
     }
 
     private void updateExerciseData(Exercise exercise, UpdateExerciseRequest request, User currentUser) {
-        exercise.setName(request.name());
-        exercise.setDescription(request.description());
-        exercise.setImageUrl(request.imageUrl());
-        exercise.setVideoUrl(request.videoUrl());
+        exercise.updateDetails(
+                request.name(),
+                request.description(),
+                request.imageUrl(),
+                request.videoUrl()
+        );
 
         if (request.isBase() != null && currentUser.getRole() == Role.SUPER_ADMIN) {
             exercise.setIsBase(request.isBase());
         }
-
-        // Actualización de la relación n-n
+        
         exercise.clearMuscleGroups();
-        request.muscleGroups().forEach(mgRequest ->
-                exercise.addMuscleGroup(mgRequest.muscleGroupId(), mgRequest.isPrimary())
-        );
+        if (request.muscleGroups() != null) {
+            request.muscleGroups().forEach(mgRequest ->
+                    exercise.addMuscleGroup(mgRequest.muscleGroupId(), mgRequest.isPrimary())
+            );
+        }
     }
 }

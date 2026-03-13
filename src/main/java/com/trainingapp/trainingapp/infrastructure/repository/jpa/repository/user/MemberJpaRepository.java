@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface MemberJpaRepository extends JpaRepository<MemberJpaEntity, Long> {
 
-    List<MemberJpaEntity> findByGymId(Long gymId);
+    List<MemberJpaEntity> findByGymIdAndActiveTrue(Long gymId);
 
-    Optional<MemberJpaEntity> findByQrAccessCode(String qrAccessCode);
+    Optional<MemberJpaEntity> findByQrAccessCodeAndActiveTrue(String qrAccessCode);
 }

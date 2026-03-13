@@ -4,7 +4,7 @@ import com.trainingapp.trainingapp.domain.entity.gym.Gym;
 import com.trainingapp.trainingapp.domain.repository.gym.GymRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.gym.GymJpaEntity;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.gym.GymMapper;
-import com.trainingapp.trainingapp.infrastructure.repository.jpa.repository.gym.GymJpaRespository;
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.repository.gym.GymJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,11 +13,11 @@ import java.util.Optional;
 @Repository
 public class GymRepositoryImpl implements GymRepository {
 
-    private final GymJpaRespository JpaRespository;
+    private final GymJpaRepository JpaRepository;
     private final GymMapper mapper;
 
-    public GymRepositoryImpl(GymJpaRespository JpaRespository, GymMapper mapper) {
-        this.JpaRespository = JpaRespository;
+    public GymRepositoryImpl(GymJpaRepository JpaRepository, GymMapper mapper) {
+        this.JpaRepository = JpaRepository;
         this.mapper = mapper;
     }
 
@@ -25,18 +25,20 @@ public class GymRepositoryImpl implements GymRepository {
     public Gym save(Gym gym) {
         GymJpaEntity jpaEntity = mapper.toJpaEntity(gym);
 
-        GymJpaEntity savedGym = JpaRespository.save(jpaEntity);
+        GymJpaEntity savedGym = JpaRepository.save(jpaEntity);
 
         return mapper.toDomain(savedGym);
     }
 
     @Override
     public Optional<Gym> findById(Long id) {
-        return JpaRespository.findById(id).map(mapper::toDomain);
+        return JpaRepository.findByIdAndActiveTrue(id).map(mapper::toDomain);
     }
 
     @Override
     public List<Gym> findAll() {
-        return JpaRespository.findAll().stream().map(mapper::toDomain).toList();
+        return JpaRepository.findAllByActiveTrue().stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }

@@ -40,7 +40,6 @@ public class MemberMapper {
     public Member toDomain(MemberJpaEntity entity) {
         if (entity == null) return null;
 
-        // Usamos el constructor estricto del Dominio
         Member member = new Member(
                 entity.getFirstName(),
                 entity.getLastName(),
@@ -52,11 +51,9 @@ public class MemberMapper {
         );
 
         member.setId(entity.getId());
-        member.setQrAccessCode(entity.getQrAccessCode()); // Respetamos el QR generado previamente
+        member.setQrAccessCode(entity.getQrAccessCode());
 
-        if (!entity.isActive()) {
-            member.deactivate();
-        }
+        member.setActive(entity.isActive());
 
         return member;
     }

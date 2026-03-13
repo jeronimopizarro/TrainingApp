@@ -2,10 +2,8 @@ package com.trainingapp.trainingapp.domain.entity.user;
 
 import com.trainingapp.trainingapp.domain.enums.user.Role;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public abstract class User {
 
     private Long id;
@@ -38,11 +36,30 @@ public abstract class User {
             throw new IllegalArgumentException("Password must be at least 6 characters.");
     }
 
+    protected void updateBasicProfile(String firstName, String lastName) {
+        if (firstName != null) {
+            if (firstName.isBlank()) throw new IllegalArgumentException("First name cannot be empty.");
+            this.firstName = firstName;
+        }
+        if (lastName != null) {
+            if (lastName.isBlank()) throw new IllegalArgumentException("Last name cannot be empty.");
+            this.lastName = lastName;
+        }
+    }
+
     public void deactivate() {
         this.active = false;
     }
 
     public void activate() {
         this.active = true;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

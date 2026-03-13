@@ -2,10 +2,8 @@ package com.trainingapp.trainingapp.domain.entity.user;
 
 import com.trainingapp.trainingapp.domain.enums.user.Role;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class Admin extends User {
 
     private Long gymId;
@@ -24,5 +22,9 @@ public class Admin extends User {
         }
 
         this.gymId = gymId;
+    }
+
+    public void updateProfile(String firstName, String lastName) {
+        super.updateBasicProfile(firstName, lastName);
     }
 }

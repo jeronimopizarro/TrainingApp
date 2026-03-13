@@ -43,7 +43,8 @@ public class TrainerMapper {
         );
 
         trainer.setId(entity.getId());
-        if (!entity.isActive()) trainer.deactivate();
+
+        trainer.setActive(entity.isActive());
 
         return trainer;
     }

@@ -29,12 +29,12 @@ public class UpdateMemberUseCase {
         User currentUser = securityUtils.getCurrentUser();
 
         securityUtils.validateSameGym(member.getGymId());
-
         if (currentUser.getRole() == Role.MEMBER && !currentUser.getId().equals(member.getId())) {
             throw new AccessDeniedException("Solo puedes modificar tu propio perfil.");
         }
 
-        updateMemberFields(member, request);
+        member.updateProfile(request.firstName(), request.lastName(), request.primaryGoal());
+
         Member updatedMember = memberRepository.save(member);
 
         return buildResponseFromMember(updatedMember);
@@ -44,18 +44,6 @@ public class UpdateMemberUseCase {
         return memberRepository.findById(id)
                 .orElseThrow(
                         () -> new MemberNotFoundException("Member with id " + id + " not found."));
-    }
-
-    private void updateMemberFields(Member member, UpdateMemberRequest request) {
-        if (request.firstName() != null && !request.firstName().isBlank()) {
-            member.setFirstName(request.firstName());
-        }
-        if (request.lastName() != null && !request.lastName().isBlank()) {
-            member.setLastName(request.lastName());
-        }
-        if (request.primaryGoal() != null) {
-            member.updateGoal(request.primaryGoal());
-        }
     }
 
     private MemberResponse buildResponseFromMember(Member member) {

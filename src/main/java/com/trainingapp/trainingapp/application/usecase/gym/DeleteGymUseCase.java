@@ -16,7 +16,7 @@ public class DeleteGymUseCase {
     public void execute(Long id) {
         Gym gym = findGymOrThrow(id);
 
-        gym.desactive();
+        gym.deactivate();
 
         gymRepository.save(gym);
     }

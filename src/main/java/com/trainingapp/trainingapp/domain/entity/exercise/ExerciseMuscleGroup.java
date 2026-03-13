@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class ExerciseMuscleGroup {
 
     private Long muscleGroupId;
@@ -16,5 +15,9 @@ public class ExerciseMuscleGroup {
         }
         this.muscleGroupId = muscleGroupId;
         this.isPrimary = isPrimary;
+    }
+
+    public void setPrimary(boolean primary) {
+        this.isPrimary = primary;
     }
 }

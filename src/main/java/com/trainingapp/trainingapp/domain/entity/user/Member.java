@@ -2,12 +2,10 @@ package com.trainingapp.trainingapp.domain.entity.user;
 
 import com.trainingapp.trainingapp.domain.enums.user.Role;
 import lombok.Getter;
-import lombok.Setter;
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
-@Setter
 public class Member extends User {
 
     private Long gymId;
@@ -28,11 +26,18 @@ public class Member extends User {
         this.qrAccessCode = generateQrCode();
     }
 
+    public void updateProfile(String firstName, String lastName, String primaryGoal) {
+        super.updateBasicProfile(firstName, lastName);
+        if (primaryGoal != null) {
+            this.primaryGoal = primaryGoal;
+        }
+    }
+
     private String generateQrCode() {
         return "QR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
-    public void updateGoal(String newGoal) {
-        this.primaryGoal = newGoal;
+    public void setQrAccessCode(String qrAccessCode) {
+        this.qrAccessCode = qrAccessCode;
     }
 }

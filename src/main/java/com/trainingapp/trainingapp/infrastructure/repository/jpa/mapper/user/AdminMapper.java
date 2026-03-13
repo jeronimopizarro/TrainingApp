@@ -42,7 +42,7 @@ public class AdminMapper {
         );
 
         admin.setId(entity.getId());
-        if (!entity.isActive()) admin.deactivate();
+        admin.setActive(entity.isActive());
 
         return admin;
     }

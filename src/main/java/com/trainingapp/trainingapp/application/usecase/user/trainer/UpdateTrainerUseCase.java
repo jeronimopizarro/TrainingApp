@@ -34,7 +34,7 @@ public class UpdateTrainerUseCase {
             throw new AccessDeniedException("Solo puedes modificar tu propio perfil.");
         }
 
-        updateTrainerFields(trainer, request);
+        trainer.updateProfile(request.firstName(), request.lastName(), request.specialization());
         Trainer updatedTrainer = trainerRepository.save(trainer);
 
         return buildResponseFromTrainer(updatedTrainer);
@@ -44,18 +44,6 @@ public class UpdateTrainerUseCase {
         return trainerRepository.findById(id)
                 .orElseThrow(() -> new TrainerNotFoundException(
                         "Trainer with id " + id + " not found."));
-    }
-
-    private void updateTrainerFields(Trainer trainer, UpdateTrainerRequest request) {
-        if (request.firstName() != null && !request.firstName().isBlank()) {
-            trainer.setFirstName(request.firstName());
-        }
-        if (request.lastName() != null && !request.lastName().isBlank()) {
-            trainer.setLastName(request.lastName());
-        }
-        if (request.specialization() != null) {
-            trainer.updateSpecialization(request.specialization());
-        }
     }
 
     private TrainerResponse buildResponseFromTrainer(Trainer trainer) {

@@ -1,12 +1,12 @@
 package com.trainingapp.trainingapp.domain.entity.membership;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Getter
-@Setter
+@AllArgsConstructor
 public class MembershipPlan {
 
     private Long id;
@@ -31,6 +31,18 @@ public class MembershipPlan {
         this.active = true;
     }
 
+    private void validateFields(String name, BigDecimal price, Integer durationDays) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("El nombre del plan es obligatorio.");
+        }
+        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("El precio no puede ser negativo.");
+        }
+        if (durationDays == null || durationDays <= 0) {
+            throw new IllegalArgumentException("La duración del plan debe ser mayor a 0 días.");
+        }
+    }
+
     public void update(String newName, String newDescription, BigDecimal newPrice, Integer newDurationDays) {
         validateFields(newName, newPrice, newDurationDays);
 
@@ -47,15 +59,5 @@ public class MembershipPlan {
         this.active = false;
     }
 
-    private void validateFields(String name, BigDecimal price, Integer durationDays) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("El nombre del plan es obligatorio.");
-        }
-        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("El precio no puede ser negativo.");
-        }
-        if (durationDays == null || durationDays <= 0) {
-            throw new IllegalArgumentException("La duración del plan debe ser mayor a 0 días.");
-        }
-    }
+    public void setId(Long id) { this.id = id; }
 }
