@@ -9,8 +9,8 @@ import java.util.List;
 
 @Component
 public class RoutineResponseMapper {
-    // Este es el único método público que los Casos de Uso van a llamar
-    public RoutineResponse toDto(Routine routine) {
+
+    public RoutineResponse toResponse(Routine routine) {
         List<RoutineResponse.TrainingDayResponse> daysResponse = routine.getDays().stream()
                 .map(this::toTrainingDayResponse)
                 .toList();
@@ -22,7 +22,6 @@ public class RoutineResponseMapper {
         );
     }
 
-    // Métodos privados internos para mantener el código limpio
     private RoutineResponse.TrainingDayResponse toTrainingDayResponse(TrainingDay day) {
         List<RoutineResponse.RoutineDetailResponse> detailsResponse = day.getDetails().stream()
                 .map(this::toRoutineDetailResponse)

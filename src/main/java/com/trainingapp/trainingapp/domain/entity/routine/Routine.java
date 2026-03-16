@@ -18,14 +18,12 @@ public class Routine {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
-
     private Long memberId;
     private Long trainerId;
     private Long createdByUserId;
     private Long gymId;
-
     private RoutineStatus status;
-
+    private boolean active;
     private List<TrainingDay> days;
 
     public Routine(String name, Long memberId, Long trainerId, Long createdByUserId, Long gymId) {
@@ -68,18 +66,7 @@ public class Routine {
         this.status = RoutineStatus.ACTIVE;
         this.startDate = startDate;
         this.endDate = endDate;
-    }
-
-    public void inactive() {
-        if (this.status == RoutineStatus.INACTIVE) {
-            throw new IllegalStateException("The routine is already archived.");
-        }
-
-        if (this.status == RoutineStatus.ACTIVE) {
-            this.endDate = LocalDate.now();
-        }
-
-        this.status = RoutineStatus.INACTIVE;
+        this.active = true;
     }
 
     public Routine duplicate(String newName, Long targetMemberId, Long targetTrainerId,
@@ -142,6 +129,25 @@ public class Routine {
                         });
             }
         }
+    }
+
+    public void deactivate() {
+        if (!this.active) {
+            throw new IllegalStateException("The routine is already deleted from the system.");
+        }
+        this.active = false;
+    }
+
+    public void inactive() {
+        if (this.status == RoutineStatus.INACTIVE) {
+            throw new IllegalStateException("The routine is already archived.");
+        }
+
+        if (this.status == RoutineStatus.ACTIVE) {
+            this.endDate = LocalDate.now();
+        }
+
+        this.status = RoutineStatus.INACTIVE;
     }
 
     public void validateForDeletion() {

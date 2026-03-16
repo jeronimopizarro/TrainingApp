@@ -162,7 +162,6 @@ public class RoutineMapper {
         return routine;
     }
 
-    // 🔥 NUEVO: Transforma los días de un UpdateRequest a entidades de dominio
     public List<TrainingDay> toDomainDays(
             List<UpdateRoutineRequest.UpdateTrainingDayRequest> dayRequests) {
         if (dayRequests == null) return new java.util.ArrayList<>();

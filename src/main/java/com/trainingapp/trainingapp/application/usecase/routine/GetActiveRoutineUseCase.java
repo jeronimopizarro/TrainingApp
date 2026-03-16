@@ -30,7 +30,7 @@ public class GetActiveRoutineUseCase {
 
         Routine routine = findActiveRoutineOrThrow(memberId);
 
-        return mapper.toDto(routine);
+        return mapper.toResponse(routine);
     }
 
 

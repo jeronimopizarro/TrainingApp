@@ -22,10 +22,9 @@ public class DeleteRoutineUseCase {
     @Transactional
     public void execute(Long id) {
         Routine routine = findRoutineOrThrow(id);
-
         accessValidator.validateModificationPermission(routine);
 
-        routine.validateForDeletion();
+        routine.deactivate();
 
         routineRepository.delete(routine);
     }
