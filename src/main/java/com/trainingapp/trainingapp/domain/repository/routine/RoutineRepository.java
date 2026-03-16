@@ -14,4 +14,5 @@ public interface RoutineRepository {
     void delete(Routine routine);
     List<RoutineSummary> findAllSummariesByMemberId(Long memberId);
     List<RoutineSummary> findAllSummariesByTrainerId(Long trainerId);
+    boolean existsActiveByMemberId(Long memberId);
 }

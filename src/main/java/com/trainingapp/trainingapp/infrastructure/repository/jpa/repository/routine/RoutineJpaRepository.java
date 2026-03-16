@@ -26,4 +26,6 @@ public interface RoutineJpaRepository extends JpaRepository<RoutineJpaEntity, Lo
     @Query("SELECT new com.trainingapp.trainingapp.domain.entity.routine.RoutineSummary(r.id, r.name, r.status, r.memberId) " +
             "FROM RoutineJpaEntity r WHERE r.trainerId = :trainerId")
     List<RoutineSummary> findAllSummariesByTrainerId(@Param("trainerId") Long trainerId);
+
+    boolean existsByMemberIdAndStatusAndActiveTrue(Long memberId, RoutineStatus status);
 }

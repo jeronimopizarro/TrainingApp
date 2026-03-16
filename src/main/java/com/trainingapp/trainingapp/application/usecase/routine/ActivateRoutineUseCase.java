@@ -2,6 +2,7 @@ package com.trainingapp.trainingapp.application.usecase.routine;
 
 import com.trainingapp.trainingapp.application.validator.RoutineAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
+import com.trainingapp.trainingapp.domain.exception.routine.ActiveRoutineAlreadyExistsException;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.web.dto.routine.ActivateRoutineRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,8 +24,8 @@ public class ActivateRoutineUseCase {
     @Transactional
     public void execute(Long id, ActivateRoutineRequest request) {
         Routine routine = findRoutineOrThrow(id);
-
         accessValidator.validateModificationPermission(routine);
+        validateNoOtherActiveRoutine(routine.getMemberId());
 
         routine.activate(request.startDate(), request.endDate());
 
@@ -35,5 +36,12 @@ public class ActivateRoutineUseCase {
     private Routine findRoutineOrThrow(Long id) {
         return routineRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Routine with id " + id + " not found."));
+    }
+
+    private void validateNoOtherActiveRoutine(Long memberId) {
+        if (routineRepository.existsActiveByMemberId(memberId)) {
+            throw new ActiveRoutineAlreadyExistsException(
+                    "El socio ya tiene una rutina activa. Debe marcarla como completada o inactiva antes de iniciar una nueva.");
+        }
     }
 }
