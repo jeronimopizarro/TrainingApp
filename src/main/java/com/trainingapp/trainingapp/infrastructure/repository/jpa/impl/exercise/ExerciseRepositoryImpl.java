@@ -112,4 +112,14 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
     public boolean existsBaseExerciseByName(String name) {
         return jpaRepository.existsByNameAndIsBaseTrueAndActiveTrue(name);
     }
+
+    @Override
+    public boolean existsByNameAndGymIdAndIdNot(String name, Long gymId, Long id) {
+        return jpaRepository.existsByNameAndGymIdAndIdNotAndActiveTrue(name, gymId, id);
+    }
+
+    @Override
+    public boolean existsBaseExerciseByNameAndIdNot(String name, Long id) {
+        return jpaRepository.existsByNameAndIsBaseTrueAndIdNotAndActiveTrue(name, id);
+    }
 }

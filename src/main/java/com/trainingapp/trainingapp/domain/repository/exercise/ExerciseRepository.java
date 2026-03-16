@@ -14,4 +14,6 @@ public interface ExerciseRepository {
     List<Exercise> findAllowedForGym(Long gymId, Long muscleGroupId);
     boolean existsByNameAndGymId(String name, Long gymId);
     boolean existsBaseExerciseByName(String name);
+    boolean existsByNameAndGymIdAndIdNot(String name, Long gymId, Long id);
+    boolean existsBaseExerciseByNameAndIdNot(String name, Long id);
 }

@@ -71,6 +71,15 @@ public class Exercise {
         if (videoUrl != null) this.videoUrl = videoUrl;
     }
 
+    public void updateBaseStatus(Boolean isBase) {
+        if (isBase != null) {
+            this.isBase = isBase;
+            if (this.isBase) {
+                this.gymId = null;
+            }
+        }
+    }
+
     public void clearMuscleGroups() {
         this.muscleGroups.clear();
     }
