@@ -1,6 +1,6 @@
 package com.trainingapp.trainingapp.web.controller.user;
 
-import com.trainingapp.trainingapp.application.usecase.user.member.*;
+import com.trainingapp.trainingapp.application.useCase.user.member.*;
 import com.trainingapp.trainingapp.web.dto.user.member.MemberResponse;
 import com.trainingapp.trainingapp.web.dto.user.member.RegisterMemberRequest;
 import com.trainingapp.trainingapp.web.dto.user.member.UpdateMemberRequest;

@@ -47,6 +47,9 @@ public class RoutineJpaEntity {
     @Column(name = "status", nullable = false, length = 30)
     private RoutineStatus status;
 
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
+
     @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TrainingDayJpaEntity> days = new ArrayList<>();
 

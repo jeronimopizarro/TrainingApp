@@ -47,29 +47,4 @@ public class AdminMapper {
 
         return admin;
     }
-
-    public Admin toDomain(RegisterAdminRequest request, String encodedPassword) {
-        if (request == null) return null;
-        return new Admin(
-                request.firstName(),
-                request.lastName(),
-                request.email(),
-                encodedPassword,
-                request.role(),
-                request.gymId()
-        );
-    }
-
-    public AdminResponse toResponse(Admin admin) {
-        if (admin == null) return null;
-        return new AdminResponse(
-                admin.getId(),
-                admin.getFirstName(),
-                admin.getLastName(),
-                admin.getEmail(),
-                admin.getRole(),
-                admin.getGymId(),
-                admin.isActive()
-        );
-    }
 }

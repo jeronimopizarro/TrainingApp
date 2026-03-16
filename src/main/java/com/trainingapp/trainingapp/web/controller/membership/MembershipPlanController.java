@@ -1,9 +1,9 @@
 package com.trainingapp.trainingapp.web.controller.membership;
 
-import com.trainingapp.trainingapp.application.usecase.membership.CreateMembershipPlanUseCase;
-import com.trainingapp.trainingapp.application.usecase.membership.DeleteMembershipPlanUseCase;
-import com.trainingapp.trainingapp.application.usecase.membership.GetAllMembershipPlansByGymIdUseCase;
-import com.trainingapp.trainingapp.application.usecase.membership.UpdateMembershipPlanUseCase;
+import com.trainingapp.trainingapp.application.useCase.membership.CreateMembershipPlanUseCase;
+import com.trainingapp.trainingapp.application.useCase.membership.DeleteMembershipPlanUseCase;
+import com.trainingapp.trainingapp.application.useCase.membership.GetAllMembershipPlansByGymIdUseCase;
+import com.trainingapp.trainingapp.application.useCase.membership.UpdateMembershipPlanUseCase;
 import com.trainingapp.trainingapp.web.dto.membership.CreateMembershipPlanRequest;
 import com.trainingapp.trainingapp.web.dto.membership.MembershipPlanResponse;
 import com.trainingapp.trainingapp.web.dto.membership.UpdateMembershipPlanRequest;

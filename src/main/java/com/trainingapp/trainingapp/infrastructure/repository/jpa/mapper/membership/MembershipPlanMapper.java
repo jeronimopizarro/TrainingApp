@@ -41,30 +41,4 @@ public class MembershipPlanMapper {
 
         return jpaEntity;
     }
-
-    public MembershipPlan toDomain(CreateMembershipPlanRequest request) {
-        if (request == null) return null;
-
-        return new MembershipPlan(
-                request.name(),
-                request.description(),
-                request.price(),
-                request.durationDays(),
-                request.gymId()
-        );
-    }
-
-    public MembershipPlanResponse toResponse(MembershipPlan domainEntity) {
-        if (domainEntity == null) return null;
-
-        return new MembershipPlanResponse(
-                domainEntity.getId(),
-                domainEntity.getName(),
-                domainEntity.getDescription(),
-                domainEntity.getPrice(),
-                domainEntity.getDurationDays(),
-                domainEntity.getGymId(),
-                domainEntity.isActive()
-        );
-    }
 }

@@ -15,4 +15,6 @@ public interface GymJpaRepository extends JpaRepository<GymJpaEntity, Long> {
     boolean existsByNameAndActiveTrue(String name);
 
     boolean existsByNameAndIdNotAndActiveTrue(String name, Long id);
+
+    boolean existsByIdAndActiveTrue(Long id);
 }

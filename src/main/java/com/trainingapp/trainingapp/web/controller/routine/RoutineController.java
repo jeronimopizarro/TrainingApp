@@ -1,6 +1,6 @@
 package com.trainingapp.trainingapp.web.controller.routine;
 
-import com.trainingapp.trainingapp.application.usecase.routine.*;
+import com.trainingapp.trainingapp.application.useCase.routine.*;
 import com.trainingapp.trainingapp.web.dto.routine.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.trainingapp.trainingapp.web.controller.gym;
 
-import com.trainingapp.trainingapp.application.usecase.gym.*;
+import com.trainingapp.trainingapp.application.useCase.gym.*;
 import com.trainingapp.trainingapp.web.dto.gym.CreateGymRequest;
 import com.trainingapp.trainingapp.web.dto.gym.GymResponse;
 import com.trainingapp.trainingapp.web.dto.gym.UpdateGymRequest;

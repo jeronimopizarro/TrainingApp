@@ -48,29 +48,4 @@ public class TrainerMapper {
 
         return trainer;
     }
-
-    public Trainer toDomain(RegisterTrainerRequest request, String encodedPassword) {
-        if (request == null) return null;
-        return new Trainer(
-                request.firstName(),
-                request.lastName(),
-                request.email(),
-                encodedPassword,
-                request.gymId(),
-                request.specialization()
-        );
-    }
-
-    public TrainerResponse toResponse(Trainer trainer) {
-        if (trainer == null) return null;
-        return new TrainerResponse(
-                trainer.getId(),
-                trainer.getFirstName(),
-                trainer.getLastName(),
-                trainer.getEmail(),
-                trainer.getGymId(),
-                trainer.getSpecialization(),
-                trainer.isActive()
-        );
-    }
 }

@@ -10,4 +10,5 @@ public interface GymRepository {
     List<Gym> findAll();
     boolean existsByName(String name);
     boolean existsByNameAndIdNot(String name, Long id);
+    boolean existsById(Long id);
 }

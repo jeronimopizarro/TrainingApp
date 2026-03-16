@@ -1,6 +1,6 @@
 package com.trainingapp.trainingapp.web.controller.auth;
 
-import com.trainingapp.trainingapp.application.usecase.auth.LoginUseCase;
+import com.trainingapp.trainingapp.application.useCase.auth.LoginUseCase;
 import com.trainingapp.trainingapp.web.dto.auth.AuthResponse;
 import com.trainingapp.trainingapp.web.dto.auth.LoginRequest;
 import org.springframework.http.ResponseEntity;

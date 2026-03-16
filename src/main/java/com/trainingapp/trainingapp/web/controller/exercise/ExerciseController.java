@@ -1,6 +1,6 @@
 package com.trainingapp.trainingapp.web.controller.exercise;
 
-import com.trainingapp.trainingapp.application.usecase.exercise.*;
+import com.trainingapp.trainingapp.application.useCase.exercise.*;
 import com.trainingapp.trainingapp.web.dto.exercise.CreateExerciseRequest;
 import com.trainingapp.trainingapp.web.dto.exercise.ExerciseDetailResponse;
 import com.trainingapp.trainingapp.web.dto.exercise.ExerciseResponse;

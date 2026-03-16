@@ -32,20 +32,4 @@ public class GymMapper {
         }
         return jpaEntity;
     }
-
-    public Gym toDomain(CreateGymRequest request) {
-        if (request == null) return null;
-        return new Gym(request.name(), request.address(), request.phone());
-    }
-
-    public GymResponse toResponse(Gym gym) {
-        if (gym == null) return null;
-        return new GymResponse(
-                gym.getId(),
-                gym.getName(),
-                gym.getAddress(),
-                gym.getPhone(),
-                gym.isActive()
-        );
-    }
 }

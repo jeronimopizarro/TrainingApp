@@ -51,4 +51,9 @@ public class GymRepositoryImpl implements GymRepository {
     public boolean existsByNameAndIdNot(String name, Long id) {
         return jpaRepository.existsByNameAndIdNotAndActiveTrue(name, id);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return jpaRepository.existsByIdAndActiveTrue(id);
+    }
 }
