@@ -2,6 +2,8 @@ package com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.user;
 
 import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.user.MemberJpaEntity;
+import com.trainingapp.trainingapp.web.dto.user.member.MemberResponse;
+import com.trainingapp.trainingapp.web.dto.user.member.RegisterMemberRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -14,7 +16,6 @@ public class MemberMapper {
 
         MemberJpaEntity entity = new MemberJpaEntity();
 
-        // Datos del Padre (User)
         entity.setId(domain.getId());
         entity.setFirstName(domain.getFirstName());
         entity.setLastName(domain.getLastName());
@@ -22,14 +23,11 @@ public class MemberMapper {
         entity.setPassword(domain.getPassword());
         entity.setRole(domain.getRole());
         entity.setActive(domain.isActive());
-
-        // Datos del Hijo (Member)
         entity.setGymId(domain.getGymId());
         entity.setBirthDate(domain.getBirthDate());
         entity.setPrimaryGoal(domain.getPrimaryGoal());
         entity.setQrAccessCode(domain.getQrAccessCode());
 
-        // Lógica del Soft Delete (Borrado Lógico)
         if (!domain.isActive()) {
             entity.setDeletedAt(LocalDateTime.now());
         }
@@ -56,5 +54,31 @@ public class MemberMapper {
         member.setActive(entity.isActive());
 
         return member;
+    }
+
+    public Member toDomain(RegisterMemberRequest request, String encodedPassword) {
+        if (request == null) return null;
+        return new Member(
+                request.firstName(),
+                request.lastName(),
+                request.email(),
+                encodedPassword,
+                request.gymId(),
+                request.birthDate(),
+                request.primaryGoal()
+        );
+    }
+
+    public MemberResponse toResponse(Member member) {
+        if (member == null) return null;
+        return new MemberResponse(
+                member.getId(),
+                member.getFirstName(),
+                member.getLastName(),
+                member.getEmail(),
+                member.getGymId(),
+                member.getQrAccessCode(),
+                member.isActive()
+        );
     }
 }

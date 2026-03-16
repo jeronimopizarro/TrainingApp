@@ -22,4 +22,7 @@ public interface ExerciseJpaRepository extends JpaRepository<ExerciseJpaEntity, 
             @Param("gymId") Long gymId,
             @Param("muscleGroupId") Long muscleGroupId
     );
+
+    boolean existsByNameAndGymIdAndActiveTrue(String name, Long gymId);
+    boolean existsByNameAndIsBaseTrueAndActiveTrue(String name);
 }

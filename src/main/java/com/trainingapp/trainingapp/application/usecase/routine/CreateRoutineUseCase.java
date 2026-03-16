@@ -9,6 +9,7 @@ import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.routine.RoutineMapper;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineRequest;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
 import jakarta.transaction.Transactional;
@@ -22,34 +23,32 @@ public class CreateRoutineUseCase {
     private final ExerciseRepository exerciseRepository;
     private final SecurityUtils securityUtils;
     private final RoutineAccessValidator accessValidator;
+    private final RoutineMapper routineMapper;
 
     public CreateRoutineUseCase(RoutineRepository routineRepository,
                                 ExerciseRepository exerciseRepository,
-                                SecurityUtils securityUtils, RoutineAccessValidator accessValidator) {
+                                SecurityUtils securityUtils, RoutineAccessValidator accessValidator,
+                                RoutineMapper routineMapper) {
         this.routineRepository = routineRepository;
         this.exerciseRepository = exerciseRepository;
         this.securityUtils = securityUtils;
         this.accessValidator = accessValidator;
+        this.routineMapper = routineMapper;
     }
 
     @Transactional
     public CreateRoutineResponse execute(CreateRoutineRequest request) {
         User currentUser = securityUtils.getCurrentUser();
-
         Long creatorGymId = securityUtils.getCurrentUserGymId();
 
         accessValidator.validateTargetMemberAccess(request.memberId());
-
         validateExercises(request, creatorGymId, currentUser);
 
-        Routine routine = createRoutineEntity(request, currentUser.getId(), creatorGymId);
-
-        addTrainingStructure(request, routine);
+        Routine routine = routineMapper.toDomain(request, currentUser.getId(), creatorGymId);
 
         Routine savedRoutine = routineRepository.save(routine);
 
-        return new CreateRoutineResponse(savedRoutine.getId(),
-                "Routine created successfully with all days and exercises");
+        return routineMapper.toResponse(savedRoutine, "Routine created successfully");
     }
 
     private void validateExercises(CreateRoutineRequest request, Long gymId, User currentUser) {
@@ -67,28 +66,6 @@ public class CreateRoutineUseCase {
                         );
                     }
                 }
-            });
-        });
-    }
-
-    private Routine createRoutineEntity(CreateRoutineRequest request, Long creatorId, Long gymId) {
-        return new Routine(request.name(), request.memberId(), request.trainerId(), creatorId, gymId);
-    }
-
-    private static void addTrainingStructure(CreateRoutineRequest request, Routine routine) {
-        request.days().forEach(dayRequest -> {
-            TrainingDay createdDay = routine.addDay(dayRequest.dayName());
-
-            dayRequest.exercises().forEach(exerciseReq -> {
-                createdDay.addDetails(
-                        exerciseReq.exerciseId(),
-                        exerciseReq.sets(),
-                        exerciseReq.repsMin(),
-                        exerciseReq.repsMax(),
-                        exerciseReq.targetRIR(),
-                        exerciseReq.suggestedWeight(),
-                        exerciseReq.notes()
-                );
             });
         });
     }

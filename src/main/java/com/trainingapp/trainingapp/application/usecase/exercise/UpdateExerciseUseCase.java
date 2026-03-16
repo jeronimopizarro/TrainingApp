@@ -91,7 +91,7 @@ public class UpdateExerciseUseCase {
         if (request.isBase() != null && currentUser.getRole() == Role.SUPER_ADMIN) {
             exercise.setIsBase(request.isBase());
         }
-        
+
         exercise.clearMuscleGroups();
         if (request.muscleGroups() != null) {
             request.muscleGroups().forEach(mgRequest ->

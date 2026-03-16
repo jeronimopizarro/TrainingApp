@@ -4,6 +4,8 @@ import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.exercise.ExerciseJpaEntity;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.exercise.ExerciseMuscleGroupJpaEntity;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.exercise.MuscleGroupJpaEntity;
+import com.trainingapp.trainingapp.web.dto.exercise.CreateExerciseRequest;
+import com.trainingapp.trainingapp.web.dto.exercise.ExerciseResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -58,5 +60,33 @@ public class ExerciseMapper {
         }
 
         return entity;
+    }
+
+    public Exercise toDomain(CreateExerciseRequest request, boolean isBase, Long gymId, Long userId) {
+        if (request == null) return null;
+
+        Exercise exercise = new Exercise(
+                request.name(),
+                request.description(),
+                request.imageUrl(),
+                request.videoUrl(),
+                isBase,
+                userId,
+                gymId
+        );
+
+        if (request.muscleGroups() != null) {
+            request.muscleGroups().forEach(mgRequest ->
+                    exercise.addMuscleGroup(mgRequest.muscleGroupId(), mgRequest.isPrimary())
+            );
+        }
+
+        return exercise;
+    }
+
+    public ExerciseResponse toResponse(Exercise exercise) {
+        if (exercise == null) return null;
+
+        return new ExerciseResponse(exercise.getId(), "Exercise created successfully");
     }
 }

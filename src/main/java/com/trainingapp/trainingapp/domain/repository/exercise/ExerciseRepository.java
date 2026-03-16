@@ -10,7 +10,8 @@ public interface ExerciseRepository {
     Optional<Exercise> findById(Long id);
     List<Exercise> findAll();
     List<Exercise> findByMuscleGroupId(Long muscleGroupId);
-    void delete(Exercise exercise);
     List<Exercise> findAllById(List<Long> ids);
     List<Exercise> findAllowedForGym(Long gymId, Long muscleGroupId);
+    boolean existsByNameAndGymId(String name, Long gymId);
+    boolean existsBaseExerciseByName(String name);
 }

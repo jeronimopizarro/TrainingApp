@@ -8,4 +8,5 @@ public interface GymRepository {
     Gym save(Gym gym);
     Optional<Gym> findById(Long id);
     List<Gym> findAll();
+    boolean existsByName(String name);
 }

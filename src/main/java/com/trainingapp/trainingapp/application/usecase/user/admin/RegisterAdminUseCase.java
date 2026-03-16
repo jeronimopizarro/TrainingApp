@@ -1,7 +1,10 @@
 package com.trainingapp.trainingapp.application.usecase.user.admin;
 
+import com.trainingapp.trainingapp.application.validator.UserRegistrationValidator;
 import com.trainingapp.trainingapp.domain.entity.user.Admin;
 import com.trainingapp.trainingapp.domain.repository.user.AdminRepository;
+import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.user.AdminMapper;
 import com.trainingapp.trainingapp.web.dto.user.admin.AdminResponse;
 import com.trainingapp.trainingapp.web.dto.user.admin.RegisterAdminRequest;
 import jakarta.transaction.Transactional;
@@ -13,41 +16,27 @@ public class RegisterAdminUseCase {
 
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AdminMapper adminMapper;
+    private final UserRegistrationValidator registrationValidator;
 
-    public RegisterAdminUseCase(AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
+    public RegisterAdminUseCase(AdminRepository adminRepository, PasswordEncoder passwordEncoder,
+                                AdminMapper adminMapper,
+                                UserRegistrationValidator registrationValidator) {
         this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
+        this.adminMapper = adminMapper;
+        this.registrationValidator = registrationValidator;
     }
 
     @Transactional
     public AdminResponse execute(RegisterAdminRequest request) {
-        Admin admin = buildAdminFromRequest(request);
+        registrationValidator.validateEmailIsUnique(request.email());
+
+        String encodedPassword = passwordEncoder.encode(request.password());
+        Admin admin = adminMapper.toDomain(request, encodedPassword);
 
         Admin savedAdmin = adminRepository.save(admin);
 
-        return buildResponseFromAdmin(savedAdmin);
-    }
-
-    private Admin buildAdminFromRequest(RegisterAdminRequest request) {
-        return new Admin(
-                request.firstName(),
-                request.lastName(),
-                request.email(),
-                passwordEncoder.encode(request.password()),
-                request.role(),
-                request.gymId()
-        );
-    }
-
-    private AdminResponse buildResponseFromAdmin(Admin admin) {
-        return new AdminResponse(
-                admin.getId(),
-                admin.getFirstName(),
-                admin.getLastName(),
-                admin.getEmail(),
-                admin.getRole(),
-                admin.getGymId(),
-                admin.isActive()
-        );
+        return adminMapper.toResponse(savedAdmin);
     }
 }

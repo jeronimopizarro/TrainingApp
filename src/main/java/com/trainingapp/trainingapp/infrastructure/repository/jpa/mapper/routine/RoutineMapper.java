@@ -6,7 +6,12 @@ import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine.RoutineDetailJpaEntity;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine.RoutineJpaEntity;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine.TrainingDayJpaEntity;
+import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineRequest;
+import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
+import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,7 +43,6 @@ public class RoutineMapper {
         return entity;
     }
 
-    // 2. MÉTODO DE AYUDA PARA EL DÍA
     private TrainingDayJpaEntity mapDayToEntity(TrainingDay dayDomain, RoutineJpaEntity parentRoutine) {
         TrainingDayJpaEntity dayEntity = new TrainingDayJpaEntity();
         dayEntity.setId(dayDomain.getId());
@@ -58,7 +62,6 @@ public class RoutineMapper {
         return dayEntity;
     }
 
-    // 3. MÉTODO DE AYUDA PARA EL EJERCICIO (Detalle)
     private RoutineDetailJpaEntity mapDetailToEntity(RoutineDetail detailDomain, TrainingDayJpaEntity parentDay) {
         RoutineDetailJpaEntity detailEntity = new RoutineDetailJpaEntity();
         detailEntity.setId(detailDomain.getId());
@@ -99,7 +102,6 @@ public class RoutineMapper {
         return domain;
     }
 
-    // 2. MÉTODO DE AYUDA PARA EL DÍA
     private TrainingDay mapDayToDomain(TrainingDayJpaEntity dayEntity) {
         TrainingDay dayDomain = new TrainingDay(dayEntity.getName(), dayEntity.getOrderNumber());
         dayDomain.setId(dayEntity.getId());
@@ -114,7 +116,7 @@ public class RoutineMapper {
         }
         return dayDomain;
     }
-    // 3. MÉTODO DE AYUDA PARA EL EJERCICIO (Detalle)
+
     private RoutineDetail mapDetailToDomain(RoutineDetailJpaEntity detailEntity) {
 
         RoutineDetail detailDomain = new RoutineDetail(
@@ -131,5 +133,66 @@ public class RoutineMapper {
         detailDomain.setId(detailEntity.getId());
 
         return detailDomain;
+    }
+
+    public Routine toDomain(CreateRoutineRequest request, Long creatorId, Long gymId) {
+        if (request == null) return null;
+
+        Routine routine = new Routine(request.name(), request.memberId(), request.trainerId(), creatorId, gymId);
+
+        if (request.days() != null) {
+            request.days().forEach(dayRequest -> {
+                TrainingDay createdDay = routine.addDay(dayRequest.dayName());
+
+                if (dayRequest.exercises() != null) {
+                    dayRequest.exercises().forEach(exerciseReq -> {
+                        createdDay.addDetails(
+                                exerciseReq.exerciseId(),
+                                exerciseReq.sets(),
+                                exerciseReq.repsMin(),
+                                exerciseReq.repsMax(),
+                                exerciseReq.targetRIR(),
+                                exerciseReq.suggestedWeight(),
+                                exerciseReq.notes()
+                        );
+                    });
+                }
+            });
+        }
+        return routine;
+    }
+
+    // 🔥 NUEVO: Transforma los días de un UpdateRequest a entidades de dominio
+    public List<TrainingDay> toDomainDays(
+            List<UpdateRoutineRequest.UpdateTrainingDayRequest> dayRequests) {
+        if (dayRequests == null) return new java.util.ArrayList<>();
+
+        List<TrainingDay> domainDays = new java.util.ArrayList<>();
+        int dayOrder = 1;
+
+        for (UpdateRoutineRequest.UpdateTrainingDayRequest dayReq : dayRequests) {
+            TrainingDay day = new TrainingDay(dayReq.dayName(), dayOrder++);
+            day.setId(dayReq.id());
+
+            if (dayReq.exercises() != null) {
+                for (UpdateRoutineRequest.UpdateRoutineDetailRequest exReq : dayReq.exercises()) {
+                    RoutineDetail detail = new RoutineDetail(
+                            exReq.exerciseId(),
+                            0, // El orden se recalcula adentro de Routine
+                            exReq.sets(), exReq.repsMin(), exReq.repsMax(),
+                            exReq.targetRIR(), exReq.suggestedWeight(), exReq.notes()
+                    );
+                    detail.setId(exReq.id());
+                    day.getDetails().add(detail);
+                }
+            }
+            domainDays.add(day);
+        }
+        return domainDays;
+    }
+
+    public CreateRoutineResponse toResponse(Routine routine, String message) {
+        if (routine == null) return null;
+        return new CreateRoutineResponse(routine.getId(), message);
     }
 }

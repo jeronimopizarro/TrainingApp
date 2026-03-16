@@ -89,11 +89,6 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
     }
 
     @Override
-    public void delete(Exercise exercise) {
-        jpaRepository.deleteById(exercise.getId());
-    }
-
-    @Override
     public List<Exercise> findAllById(List<Long> ids) {
         return jpaRepository.findAllById(ids).stream()
                 .map(mapper::toDomain)
@@ -106,5 +101,15 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
                 .stream()
                 .map(mapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public boolean existsByNameAndGymId(String name, Long gymId) {
+        return jpaRepository.existsByNameAndGymIdAndActiveTrue(name, gymId);
+    }
+
+    @Override
+    public boolean existsBaseExerciseByName(String name) {
+        return jpaRepository.existsByNameAndIsBaseTrueAndActiveTrue(name);
     }
 }

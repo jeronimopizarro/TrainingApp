@@ -6,6 +6,7 @@ import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.exercise.MuscleGroupRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.exercise.ExerciseMapper;
 import com.trainingapp.trainingapp.web.dto.exercise.CreateExerciseRequest;
 import com.trainingapp.trainingapp.web.dto.exercise.ExerciseResponse;
 import jakarta.transaction.Transactional;
@@ -17,13 +18,15 @@ public class CreateExerciseUseCase {
     private final ExerciseRepository exerciseRepository;
     private final MuscleGroupRepository muscleGroupRepository;
     private final SecurityUtils securityUtils;
+    private final ExerciseMapper exerciseMapper;
 
     public CreateExerciseUseCase(ExerciseRepository exerciseRepository,
                                  MuscleGroupRepository muscleGroupRepository,
-                                 SecurityUtils securityUtils) {
+                                 SecurityUtils securityUtils, ExerciseMapper exerciseMapper) {
         this.exerciseRepository = exerciseRepository;
         this.muscleGroupRepository = muscleGroupRepository;
         this.securityUtils = securityUtils;
+        this.exerciseMapper = exerciseMapper;
     }
 
     @Transactional
@@ -32,13 +35,16 @@ public class CreateExerciseUseCase {
 
         validateMuscleGroupExist(request);
 
-        Exercise exercise = buildExerciseEntity(request, currentUser);
+        boolean isBase = (currentUser.getRole() == Role.SUPER_ADMIN) &&
+                (request.isBase() != null && request.isBase());
+        Long gymId = isBase ? null : securityUtils.getCurrentUserGymId();
 
-        addMuscleGroups(request, exercise);
+        validateExerciseNameIsUnique(request.name(), isBase, gymId);
+
+        Exercise exercise = exerciseMapper.toDomain(request, isBase, gymId, currentUser.getId());
 
         Exercise savedExercise = exerciseRepository.save(exercise);
-
-        return new ExerciseResponse(savedExercise.getId(), "Exercise created successfully");
+        return exerciseMapper.toResponse(savedExercise);
     }
 
     private void validateMuscleGroupExist(CreateExerciseRequest request) {
@@ -49,25 +55,17 @@ public class CreateExerciseUseCase {
         });
     }
 
-    private Exercise buildExerciseEntity(CreateExerciseRequest request, User user) {
-        boolean isBase = (user.getRole() == Role.SUPER_ADMIN) && (request.isBase() != null && request.isBase());
-
-        Long gymId = isBase ? null : securityUtils.getCurrentUserGymId();
-
-        return new Exercise(
-                request.name(),
-                request.description(),
-                request.imageUrl(),
-                request.videoUrl(),
-                isBase,
-                user.getId(),
-                gymId
-        );
-    }
-
-    private static void addMuscleGroups(CreateExerciseRequest request, Exercise exercise) {
-        request.muscleGroups().forEach(mgRequest ->
-                exercise.addMuscleGroup(mgRequest.muscleGroupId(), mgRequest.isPrimary())
-        );
+    private void validateExerciseNameIsUnique(String name, boolean isBase, Long gymId) {
+        if (isBase) {
+            if (exerciseRepository.existsBaseExerciseByName(name)) {
+                throw new IllegalArgumentException(
+                        "Ya existe un ejercicio base con el nombre: " + name);
+            }
+        } else {
+            if (exerciseRepository.existsByNameAndGymId(name, gymId)) {
+                throw new IllegalArgumentException(
+                        "Ya existe un ejercicio con ese nombre en tu gimnasio.");
+            }
+        }
     }
 }

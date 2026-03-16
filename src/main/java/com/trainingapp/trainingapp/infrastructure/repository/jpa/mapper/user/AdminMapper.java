@@ -2,6 +2,8 @@ package com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.user;
 
 import com.trainingapp.trainingapp.domain.entity.user.Admin;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.user.AdminJpaEntity;
+import com.trainingapp.trainingapp.web.dto.user.admin.AdminResponse;
+import com.trainingapp.trainingapp.web.dto.user.admin.RegisterAdminRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -21,7 +23,6 @@ public class AdminMapper {
         entity.setPassword(domain.getPassword());
         entity.setRole(domain.getRole());
         entity.setActive(domain.isActive());
-
         entity.setGymId(domain.getGymId());
 
         if (!domain.isActive()) entity.setDeletedAt(LocalDateTime.now());
@@ -45,5 +46,30 @@ public class AdminMapper {
         admin.setActive(entity.isActive());
 
         return admin;
+    }
+
+    public Admin toDomain(RegisterAdminRequest request, String encodedPassword) {
+        if (request == null) return null;
+        return new Admin(
+                request.firstName(),
+                request.lastName(),
+                request.email(),
+                encodedPassword,
+                request.role(),
+                request.gymId()
+        );
+    }
+
+    public AdminResponse toResponse(Admin admin) {
+        if (admin == null) return null;
+        return new AdminResponse(
+                admin.getId(),
+                admin.getFirstName(),
+                admin.getLastName(),
+                admin.getEmail(),
+                admin.getRole(),
+                admin.getGymId(),
+                admin.isActive()
+        );
     }
 }

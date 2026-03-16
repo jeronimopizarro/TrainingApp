@@ -30,4 +30,9 @@ public class UserRepositoryImpl implements UserRepository {
         return userJpaRepository.findByIdAndActiveTrue(id)
                 .map(userMapper::toDomain);
     }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userJpaRepository.existsByEmailAndActiveTrue(email);
+    }
 }
