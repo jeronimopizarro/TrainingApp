@@ -1,7 +1,7 @@
 package com.trainingapp.trainingapp.application.usecase.gym;
 
 import com.trainingapp.trainingapp.domain.entity.gym.Gym;
-import com.trainingapp.trainingapp.domain.exception.gym.DuplicateGymException;
+import com.trainingapp.trainingapp.domain.exception.gym.DuplicateGymNameException;
 import com.trainingapp.trainingapp.domain.exception.gym.GymNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.gym.GymRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
@@ -44,7 +44,7 @@ public class UpdateGymUseCase {
 
     private void validateGymNameIsUniqueForUpdate(String name, Long currentId) {
         if (gymRepository.existsByNameAndIdNot(name, currentId)){
-            throw new DuplicateGymException("The gym with name " + name + " already exists.");
+            throw new DuplicateGymNameException("The gym with name " + name + " already exists.");
         }
     }
 }

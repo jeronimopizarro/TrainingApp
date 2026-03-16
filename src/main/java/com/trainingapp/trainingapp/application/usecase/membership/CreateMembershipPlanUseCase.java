@@ -3,6 +3,7 @@ package com.trainingapp.trainingapp.application.usecase.membership;
 import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
 import com.trainingapp.trainingapp.domain.repository.membership.MembershipPlanRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.membership.MembershipPlanMapper;
 import com.trainingapp.trainingapp.web.dto.membership.CreateMembershipPlanRequest;
 import com.trainingapp.trainingapp.web.dto.membership.MembershipPlanResponse;
 import jakarta.transaction.Transactional;
@@ -13,36 +14,29 @@ public class CreateMembershipPlanUseCase {
 
     private final MembershipPlanRepository planRepository;
     private final SecurityUtils securityUtils;
+    private final MembershipPlanMapper membershipPlanMapper;
 
     public CreateMembershipPlanUseCase(MembershipPlanRepository planRepository,
-                                       SecurityUtils securityUtils) {
+                                       SecurityUtils securityUtils,
+                                       MembershipPlanMapper membershipPlanMapper) {
         this.planRepository = planRepository;
         this.securityUtils = securityUtils;
+        this.membershipPlanMapper = membershipPlanMapper;
     }
 
     @Transactional
     public MembershipPlanResponse execute(CreateMembershipPlanRequest request) {
         securityUtils.validateSameGym(request.gymId());
+        validatePlanNameIsUnique(request.name(), request.gymId());
 
-        MembershipPlan plan = buildPlanFromRequest(request);
-
+        MembershipPlan plan = membershipPlanMapper.toDomain(request);
         MembershipPlan savedPlan = planRepository.save(plan);
-
-        return mapToResponse(savedPlan);
+        return membershipPlanMapper.toResponse(savedPlan);
     }
 
-    private MembershipPlan buildPlanFromRequest(CreateMembershipPlanRequest request) {
-        return new MembershipPlan(
-                request.name(),
-                request.description(),
-                request.price(),
-                request.durationDays(),
-                request.gymId()
-        );
-    }
-
-    private MembershipPlanResponse mapToResponse(MembershipPlan plan) {
-        return new MembershipPlanResponse(plan.getId(), plan.getName(), plan.getDescription(),
-                plan.getPrice(), plan.getDurationDays(), plan.getGymId(), plan.isActive());
+    private void validatePlanNameIsUnique(String name, Long gymId) {
+        if (planRepository.existsByNameAndGymId(name, gymId)) {
+            throw new IllegalArgumentException("Ya existe un plan activo con el nombre '" + name + "' en tu gimnasio.");
+        }
     }
 }

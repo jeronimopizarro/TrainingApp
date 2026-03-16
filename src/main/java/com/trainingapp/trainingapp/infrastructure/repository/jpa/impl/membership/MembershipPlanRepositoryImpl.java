@@ -23,19 +23,29 @@ public class MembershipPlanRepositoryImpl implements MembershipPlanRepository {
 
     @Override
     public MembershipPlan save(MembershipPlan plan) {
-        MembershipPlanJpaEntity jpaEntity = mapper.toJpaEntity(plan);
+        MembershipPlanJpaEntity jpaEntity = mapper.toEntity(plan);
         MembershipPlanJpaEntity savedEntity = jpaRepository.save(jpaEntity);
-        return mapper.toDomainEntity(savedEntity);
+        return mapper.toDomain(savedEntity);
     }
 
     @Override
     public Optional<MembershipPlan> findById(Long id) {
-        return jpaRepository.findByIdAndActiveTrue(id).map(mapper::toDomainEntity);
+        return jpaRepository.findByIdAndActiveTrue(id).map(mapper::toDomain);
     }
 
     @Override
     public List<MembershipPlan> findByGymId(Long gymId) {
         return jpaRepository.findByGymIdAndActiveTrue(gymId)
-                .stream().map(mapper::toDomainEntity).toList();
+                .stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public boolean existsByNameAndGymId(String name, Long gymId) {
+        return jpaRepository.existsByNameAndGymIdAndActiveTrue(name, gymId);
+    }
+
+    @Override
+    public boolean existsByNameAndGymIdAndIdNot(String name, Long gymId, Long id) {
+        return jpaRepository.existsByNameAndGymIdAndIdNotAndActiveTrue(name, gymId, id);
     }
 }
