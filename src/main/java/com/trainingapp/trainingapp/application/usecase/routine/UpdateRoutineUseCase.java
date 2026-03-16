@@ -56,9 +56,7 @@ public class UpdateRoutineUseCase {
         List<TrainingDay> mappedDays = routineMapper.toDomainDays(request.days());
 
         routine.update(request.name(), request.trainerId(), mappedDays);
-
         Routine updatedRoutine = routineRepository.save(routine);
-
         return routineMapper.toResponse(updatedRoutine, "Routine updated successfully");
     }
 
