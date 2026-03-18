@@ -41,17 +41,12 @@ public class RoutineRepositoryImpl implements RoutineRepository {
     @Override
     public Boolean existsByMemberIdAndStatus(Long memberId, RoutineStatus status) {
 
-        return jpaRepository.existsByMemberIdAndStatus(memberId, status);
+        return jpaRepository.existsByMemberIdAndStatusAndActiveTrue(memberId, status);
     }
 
     @Override
     public Optional<Routine> findByMemberIdAndStatus(Long memberId, RoutineStatus status) {
-        return jpaRepository.findByMemberIdAndStatus(memberId, status).map(mapper::toDomain);
-    }
-
-    @Override
-    public void delete(Routine routineDomain) {
-        jpaRepository.deleteById(routineDomain.getId());
+        return jpaRepository.findByMemberIdAndStatusAndActiveTrue(memberId, status).map(mapper::toDomain);
     }
 
     @Override

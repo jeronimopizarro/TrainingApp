@@ -11,13 +11,13 @@ import java.util.Optional;
 
 public interface RoutineJpaRepository extends JpaRepository<RoutineJpaEntity, Long> {
 
-    List<RoutineJpaEntity> findAllByMemberId(Long memberId);
+    List<RoutineJpaEntity> findAllByMemberIdAndActiveTrue(Long memberId);
 
-    boolean existsByMemberIdAndStatus(Long memberId, RoutineStatus status);
+    boolean existsByMemberIdAndStatusAndActiveTrue(Long memberId, RoutineStatus status);
 
-    Optional<RoutineJpaEntity> findByMemberIdAndStatus(Long memberId, RoutineStatus status);
+    Optional<RoutineJpaEntity> findByMemberIdAndStatusAndActiveTrue(Long memberId, RoutineStatus status);
 
-    List<RoutineJpaEntity> findAllByTrainerId(Long trainerId);
+    List<RoutineJpaEntity> findAllByTrainerIdAndActive(Long trainerId);
 
     @Query("SELECT new com.trainingapp.trainingapp.domain.entity.routine.RoutineSummary(r.id, r.name, r.status, r.memberId) " +
             "FROM RoutineJpaEntity r WHERE r.memberId = :memberId")
@@ -26,6 +26,4 @@ public interface RoutineJpaRepository extends JpaRepository<RoutineJpaEntity, Lo
     @Query("SELECT new com.trainingapp.trainingapp.domain.entity.routine.RoutineSummary(r.id, r.name, r.status, r.memberId) " +
             "FROM RoutineJpaEntity r WHERE r.trainerId = :trainerId")
     List<RoutineSummary> findAllSummariesByTrainerId(@Param("trainerId") Long trainerId);
-
-    boolean existsByMemberIdAndStatusAndActiveTrue(Long memberId, RoutineStatus status);
 }

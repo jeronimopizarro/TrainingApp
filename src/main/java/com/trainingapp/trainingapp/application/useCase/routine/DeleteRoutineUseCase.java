@@ -24,9 +24,10 @@ public class DeleteRoutineUseCase {
         Routine routine = findRoutineOrThrow(id);
         accessValidator.validateModificationPermission(routine);
 
+        routine.validateForDeletion();
         routine.deactivate();
 
-        routineRepository.delete(routine);
+        routineRepository.save(routine);
     }
 
     private Routine findRoutineOrThrow(Long id) {
