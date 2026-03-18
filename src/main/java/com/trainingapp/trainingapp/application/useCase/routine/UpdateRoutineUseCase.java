@@ -81,7 +81,7 @@ public class UpdateRoutineUseCase {
                         ));
 
                 // Solo se permiten ejercicios de nuestro GYM.
-                if (currentUser.getRole() != Role.SUPER_ADMIN) {
+                if (!currentUser.isSuperAdmin()) {
                     if (!exercise.getIsBase() && !gymId.equals(exercise.getGymId())) {
                         throw new AccessDeniedException(
                                 "El ejercicio '" + exercise.getName() + "' no pertenece a tu gimnasio."

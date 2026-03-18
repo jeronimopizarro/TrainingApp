@@ -42,11 +42,11 @@ public class GetTrainerByIdUseCase {
     }
 
     private void validateReadPermission(User currentUser, Trainer targetTrainer) {
-        boolean isSuperAdmin = currentUser.getRole() == Role.SUPER_ADMIN;
-        boolean isAdmin = currentUser.getRole() == Role.GYM_ADMIN;
-        boolean isSelfTrainer = currentUser.getRole() == Role.TRAINER && currentUser.getId()
+        boolean isSuperAdmin = currentUser.isSuperAdmin();
+        boolean isAdmin = currentUser.isGymAdmin();
+        boolean isSelfTrainer = currentUser.isTrainer() && currentUser.getId()
                 .equals(targetTrainer.getId());
-        boolean isMemberOfGym = currentUser.getRole() == Role.MEMBER;
+        boolean isMemberOfGym = currentUser.isMember();
 
         if (!isSuperAdmin && !isAdmin && !isSelfTrainer && !isMemberOfGym) {
             throw new AccessDeniedException(

@@ -19,8 +19,7 @@ public class ExerciseAccessValidator {
     public void validateWriteAccess(Exercise exercise) {
         User currentUser = securityUtils.getCurrentUser();
 
-        // SuperAdmin puede hacer todo
-        if (currentUser.getRole() == Role.SUPER_ADMIN) return;
+        if (currentUser.isSuperAdmin()) return;
 
         // Ejercicios Base: Solo SuperAdmin puede tocarlos
         if (exercise.getIsBase()) {
@@ -29,8 +28,7 @@ public class ExerciseAccessValidator {
 
         securityUtils.validateSameGym(exercise.getGymId());
 
-        // Entrenadores: Solo pueden tocar los ejercicios que ellos mismos crearon
-        if (currentUser.getRole() == Role.TRAINER) {
+        if (currentUser.isTrainer()) {
             boolean isCreator = exercise.getCreatedByUserId() != null
                     && exercise.getCreatedByUserId().equals(currentUser.getId());
 

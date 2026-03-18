@@ -37,6 +37,7 @@ public class DuplicateRoutineUseCase {
         accessValidator.validateTargetMemberAccess(request.targetMemberId());
         // Determinamos quien es el entrenador.
         Long targetTrainerId = resolveTargetTrainer(request, sourceRoutine);
+        accessValidator.validateTargetTrainerAccess(targetTrainerId);
 
         Routine newRoutine = sourceRoutine.duplicate(request.newName(), request.targetMemberId(),
                 targetTrainerId, currentUser.getId());

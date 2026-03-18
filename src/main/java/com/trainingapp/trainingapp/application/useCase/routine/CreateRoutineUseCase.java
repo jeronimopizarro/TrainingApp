@@ -61,7 +61,7 @@ public class CreateRoutineUseCase {
                                 "Cannot create routine: Exercise with ID " + exReq.exerciseId() + " does not exist."
                         ));
 
-                if (currentUser.getRole() != Role.SUPER_ADMIN) {
+                if (!currentUser.isSuperAdmin()) {
                     if (!exercise.getIsBase() && !exercise.getGymId().equals(gymId)) {
                         throw new AccessDeniedException(
                                 "El ejercicio '" + exercise.getName() + "' no pertenece a tu gimnasio."

@@ -64,4 +64,20 @@ public abstract class User {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+    public boolean isSuperAdmin() {
+        return this.role == Role.SUPER_ADMIN;
+    }
+
+    public boolean isGymAdmin() {
+        return this.role == Role.GYM_ADMIN;
+    }
+
+    public boolean isTrainer() {
+        return this.role == Role.TRAINER;
+    }
+
+    public boolean isMember() {
+        return this.role == Role.MEMBER;
+    }
 }

@@ -84,7 +84,7 @@ public class UpdateExerciseUseCase {
                 request.videoUrl()
         );
 
-        if (request.isBase() != null && currentUser.getRole() == Role.SUPER_ADMIN) {
+        if (request.isBase() != null && currentUser.isSuperAdmin()) {
             exercise.setIsBase(request.isBase());
         }
 

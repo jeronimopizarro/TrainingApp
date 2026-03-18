@@ -41,7 +41,7 @@ public class GetExerciseByIdUseCase {
 
     private void validateReadPermission(User user, Exercise exercise) {
         // Los ejercicios BASE y el SUPER_ADMIN pasan directo
-        if (user.getRole() == Role.SUPER_ADMIN || exercise.getIsBase()) {
+        if (user.isSuperAdmin() || exercise.getIsBase()) {
             return;
         }
 

@@ -30,4 +30,6 @@ public interface ExerciseJpaRepository extends JpaRepository<ExerciseJpaEntity, 
     boolean existsByNameAndGymIdAndIdNotAndActiveTrue(String name, Long gymId, Long id);
 
     boolean existsByNameAndIsBaseTrueAndIdNotAndActiveTrue(String name, Long id);
+
+    List<ExerciseJpaEntity> findByGymIdAndActiveTrue(Long gymId);
 }

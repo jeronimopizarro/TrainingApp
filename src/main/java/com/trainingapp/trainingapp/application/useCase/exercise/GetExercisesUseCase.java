@@ -40,7 +40,7 @@ public class GetExercisesUseCase {
     }
 
     private List<Exercise> fetchAllowedExercises(User currentUser, Long muscleGroupId) {
-        if (currentUser.getRole() == Role.SUPER_ADMIN) {
+        if (currentUser.isSuperAdmin()) {
             // SuperAdmin ve todo, con o sin filtro de músculo
             return (muscleGroupId != null)
                     ? exerciseRepository.findByMuscleGroupId(muscleGroupId)

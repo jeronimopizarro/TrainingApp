@@ -42,10 +42,10 @@ public class GetMemberByIdUseCase {
     }
 
     private void validateReadPermission(User currentUser, Member targetMember) {
-        boolean isSuperAdmin = currentUser.getRole() == Role.SUPER_ADMIN;
-        boolean isAdmin = currentUser.getRole() == Role.GYM_ADMIN;
-        boolean isTrainer = currentUser.getRole() == Role.TRAINER;
-        boolean isSelfMember = currentUser.getRole() == Role.MEMBER && currentUser.getId().equals(targetMember.getId());
+        boolean isSuperAdmin = currentUser.isSuperAdmin();
+        boolean isAdmin = currentUser.isGymAdmin();
+        boolean isTrainer = currentUser.isTrainer();
+        boolean isSelfMember = currentUser.isMember() && currentUser.getId().equals(targetMember.getId());
 
         if (!isSuperAdmin && !isAdmin && !isTrainer && !isSelfMember) {
             throw new AccessDeniedException("No tienes permisos para ver el perfil de este socio.");

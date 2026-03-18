@@ -24,15 +24,15 @@ public class RoutineAccessValidator {
 
     public void validateModificationPermission(Routine routine) {
         User currentUser = securityUtils.getCurrentUser();
-        if (currentUser.getRole() == Role.SUPER_ADMIN) return;
+        if (currentUser.isSuperAdmin()) return;
 
         securityUtils.validateSameGym(routine.getGymId());
 
-        if (currentUser.getRole() == Role.MEMBER) {
+        if (currentUser.isMember()) {
             if (!routine.getMemberId().equals(currentUser.getId())) {
                 throw new AccessDeniedException("Solo puedes modificar tus propias rutinas.");
             }
-        } else if (currentUser.getRole() == Role.TRAINER) {
+        } else if (currentUser.isTrainer()) {
             boolean isCreator = routine.getCreatedByUserId().equals(currentUser.getId());
             boolean isAssigned = routine.getTrainerId() != null && routine.getTrainerId().equals(currentUser.getId());
 
@@ -44,11 +44,11 @@ public class RoutineAccessValidator {
 
     public void validateReadPermission(Routine routine) {
         User currentUser = securityUtils.getCurrentUser();
-        if (currentUser.getRole() == Role.SUPER_ADMIN) return;
+        if (currentUser.isSuperAdmin()) return;
 
         securityUtils.validateSameGym(routine.getGymId());
 
-        if (currentUser.getRole() == Role.MEMBER) {
+        if (currentUser.isMember()) {
             if (!routine.getMemberId().equals(currentUser.getId())) {
                 throw new AccessDeniedException("Solo puedes ver tus propias rutinas.");
             }
@@ -57,9 +57,9 @@ public class RoutineAccessValidator {
 
     public void validateTargetMemberAccess(Long targetMemberId) {
         User currentUser = securityUtils.getCurrentUser();
-        if (currentUser.getRole() == Role.SUPER_ADMIN) return;
+        if (currentUser.isSuperAdmin()) return;
 
-        if (currentUser.getRole() == Role.MEMBER) {
+        if (currentUser.isMember()) {
             if (!currentUser.getId().equals(targetMemberId)) {
                 throw new AccessDeniedException("No puedes consultar rutinas de otro socio.");
             }
@@ -73,9 +73,9 @@ public class RoutineAccessValidator {
 
     public void validateTargetTrainerAccess(Long targetTrainerId) {
         User currentUser = securityUtils.getCurrentUser();
-        if (currentUser.getRole() == Role.SUPER_ADMIN) return;
+        if (currentUser.isSuperAdmin()) return;
 
-        if (currentUser.getRole() == Role.TRAINER) {
+        if (currentUser.isTrainer()) {
             if (!currentUser.getId().equals(targetTrainerId)) {
                 throw new AccessDeniedException("No puedes auditar rutinas de otro entrenador.");
             }

@@ -28,7 +28,7 @@ public class SecurityUtils {
     // ¿El usuario actual pertenece a este gimnasio?
     public void validateSameGym(Long targetGymId) {
         User currentUser = getCurrentUser();
-        if (currentUser.getRole() == Role.SUPER_ADMIN) return;
+        if (currentUser.isSuperAdmin()) return;
 
         Long currentUserGymId = getCurrentUserGymId();
         if (!targetGymId.equals(currentUserGymId)) {

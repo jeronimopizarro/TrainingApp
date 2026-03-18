@@ -59,7 +59,7 @@ public class CreateExerciseUseCase {
     }
 
     private boolean isBaseExerciseCreation(User currentUser, CreateExerciseRequest request) {
-        return currentUser.getRole() == Role.SUPER_ADMIN && Boolean.TRUE.equals(request.isBase());
+        return currentUser.isSuperAdmin() && Boolean.TRUE.equals(request.isBase());
     }
 
     private void validateExerciseNameIsUnique(String name, boolean isBase, Long gymId) {

@@ -15,15 +15,14 @@ public class UserAccessValidator {
         this.securityUtils = securityUtils;
     }
 
-    public void validateWritePermission(Long targetUserId){
+    public void validateWritePermission(Long targetUserId) {
         User currentUser = securityUtils.getCurrentUser();
 
-        if (currentUser.getRole() == Role.SUPER_ADMIN || currentUser.getRole() == Role.GYM_ADMIN) {
-            return;
-        }
+        if (currentUser.isSuperAdmin() || currentUser.isGymAdmin()) return;
 
         if (!currentUser.getId().equals(targetUserId)) {
-            throw new AccessDeniedException("Acceso denegado: Solo tienes permiso para modificar tu propio perfil.");
+            throw new AccessDeniedException(
+                    "Acceso denegado: Solo tienes permiso para modificar tu propio perfil.");
         }
     }
 }
