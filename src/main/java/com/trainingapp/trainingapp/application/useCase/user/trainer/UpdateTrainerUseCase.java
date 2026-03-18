@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.application.useCase.user.trainer;
 
 import com.trainingapp.trainingapp.application.mapper.trainer.TrainerDTOMapper;
+import com.trainingapp.trainingapp.application.validator.UserAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
@@ -19,21 +20,23 @@ public class UpdateTrainerUseCase {
     private final TrainerRepository trainerRepository;
     private final SecurityUtils securityUtils;
     private final TrainerDTOMapper trainerDTOMapper;
+    private final UserAccessValidator userAccessValidator;
 
     public UpdateTrainerUseCase(TrainerRepository trainerRepository, SecurityUtils securityUtils,
-                                TrainerDTOMapper trainerDTOMapper) {
+                                TrainerDTOMapper trainerDTOMapper,
+                                UserAccessValidator userAccessValidator) {
         this.trainerRepository = trainerRepository;
         this.securityUtils = securityUtils;
         this.trainerDTOMapper = trainerDTOMapper;
+        this.userAccessValidator = userAccessValidator;
     }
 
     @Transactional
     public TrainerResponse execute(Long id, UpdateTrainerRequest request) {
         Trainer trainer = findTrainerOrThrow(id);
-        User currentUser = securityUtils.getCurrentUser();
 
         securityUtils.validateSameGym(trainer.getGymId());
-        validateModificationPermission(currentUser, trainer);
+        userAccessValidator.validateWritePermission(trainer.getId());
 
         trainer.updateProfile(request.firstName(), request.lastName(), request.specialization());
         Trainer updatedTrainer = trainerRepository.save(trainer);
@@ -45,15 +48,5 @@ public class UpdateTrainerUseCase {
         return trainerRepository.findById(id)
                 .orElseThrow(() -> new TrainerNotFoundException(
                         "Trainer with id " + id + " not found."));
-    }
-
-    private void validateModificationPermission(User currentUser, Trainer targetTrainer) {
-        boolean isSuperAdmin = currentUser.getRole() == Role.SUPER_ADMIN;
-        boolean isAdmin = currentUser.getRole() == Role.GYM_ADMIN;
-        boolean isSelfTrainer = currentUser.getRole() == Role.TRAINER && currentUser.getId().equals(targetTrainer.getId());
-
-        if (!isSuperAdmin && !isAdmin && !isSelfTrainer) {
-            throw new AccessDeniedException("No tienes permisos para modificar el perfil de este entrenador.");
-        }
     }
 }

@@ -1,5 +1,6 @@
 package com.trainingapp.trainingapp.application.useCase.user.trainer;
 
+import com.trainingapp.trainingapp.application.validator.UserAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.exception.user.TrainerNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.user.TrainerRepository;
@@ -12,10 +13,13 @@ public class DeleteTrainerUseCase {
 
     private final TrainerRepository trainerRepository;
     private final SecurityUtils securityUtils;
+    private final UserAccessValidator userAccessValidator;
 
-    public DeleteTrainerUseCase(TrainerRepository trainerRepository, SecurityUtils securityUtils) {
+    public DeleteTrainerUseCase(TrainerRepository trainerRepository, SecurityUtils securityUtils,
+                                UserAccessValidator userAccessValidator) {
         this.trainerRepository = trainerRepository;
         this.securityUtils = securityUtils;
+        this.userAccessValidator = userAccessValidator;
     }
 
     @Transactional
@@ -23,6 +27,7 @@ public class DeleteTrainerUseCase {
         Trainer trainer = findTrainerOrThrow(id);
 
         securityUtils.validateSameGym(trainer.getGymId());
+        userAccessValidator.validateWritePermission(trainer.getId());
 
         trainer.deactivate();
         trainerRepository.save(trainer);
