@@ -11,13 +11,9 @@ import java.util.Optional;
 
 public interface RoutineJpaRepository extends JpaRepository<RoutineJpaEntity, Long> {
 
-    List<RoutineJpaEntity> findAllByMemberIdAndActiveTrue(Long memberId);
-
     boolean existsByMemberIdAndStatusAndActiveTrue(Long memberId, RoutineStatus status);
 
     Optional<RoutineJpaEntity> findByMemberIdAndStatusAndActiveTrue(Long memberId, RoutineStatus status);
-
-    List<RoutineJpaEntity> findAllByTrainerIdAndActive(Long trainerId);
 
     @Query("SELECT new com.trainingapp.trainingapp.domain.entity.routine.RoutineSummary(r.id, r.name, r.status, r.memberId) " +
             "FROM RoutineJpaEntity r WHERE r.memberId = :memberId AND r.active = true")

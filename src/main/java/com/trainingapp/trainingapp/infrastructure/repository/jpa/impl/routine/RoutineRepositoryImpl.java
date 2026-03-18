@@ -39,12 +39,6 @@ public class RoutineRepositoryImpl implements RoutineRepository {
     }
 
     @Override
-    public Boolean existsByMemberIdAndStatus(Long memberId, RoutineStatus status) {
-
-        return jpaRepository.existsByMemberIdAndStatusAndActiveTrue(memberId, status);
-    }
-
-    @Override
     public Optional<Routine> findByMemberIdAndStatus(Long memberId, RoutineStatus status) {
         return jpaRepository.findByMemberIdAndStatusAndActiveTrue(memberId, status).map(mapper::toDomain);
     }

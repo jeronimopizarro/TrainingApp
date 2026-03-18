@@ -102,11 +102,11 @@ public class RoutineController {
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @PatchMapping("/{id}/activate")
-    public ResponseEntity<Void> activateRoutine(@PathVariable Long id,
+    public ResponseEntity<RoutineResponse> activateRoutine(@PathVariable Long id,
                                                 @Valid @RequestBody
                                                 ActivateRoutineRequest request) {
-        activateRoutineUseCase.execute(id, request);
-        return ResponseEntity.ok().build();
+        RoutineResponse response = activateRoutineUseCase.execute(id, request);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")

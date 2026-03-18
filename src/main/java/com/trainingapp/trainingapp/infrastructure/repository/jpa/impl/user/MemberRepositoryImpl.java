@@ -39,9 +39,4 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .map(mapper::toDomain)
                 .toList();
     }
-
-    @Override
-    public Optional<Member> findByQrAccessCode(String qrAccessCode) {
-        return jpaRepository.findByQrAccessCodeAndActiveTrue(qrAccessCode).map(mapper::toDomain);
-    }
 }

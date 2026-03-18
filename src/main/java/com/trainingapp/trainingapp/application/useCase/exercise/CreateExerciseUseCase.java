@@ -36,15 +36,12 @@ public class CreateExerciseUseCase {
     public ExerciseResponse execute(CreateExerciseRequest request) {
         User currentUser = securityUtils.getCurrentUser();
         validateMuscleGroupExist(request);
-
-        boolean isBase = (currentUser.getRole() == Role.SUPER_ADMIN) &&
-                (request.isBase() != null && request.isBase());
+        boolean isBase = isBaseExerciseCreation(currentUser, request);
         Long gymId = isBase ? null : securityUtils.getCurrentUserGymId();
 
         if (!isBase) {
             gymValidator.validateExists(gymId);
         }
-
         validateExerciseNameIsUnique(request.name(), isBase, gymId);
 
         Exercise exercise = exerciseDTOMapper.toDomain(request, isBase, gymId, currentUser.getId());
@@ -59,6 +56,10 @@ public class CreateExerciseUseCase {
                     .orElseThrow(() -> new IllegalArgumentException(
                             "Muscle group with ID " + mgRequest.muscleGroupId() + " does not exist."));
         });
+    }
+
+    private boolean isBaseExerciseCreation(User currentUser, CreateExerciseRequest request) {
+        return currentUser.getRole() == Role.SUPER_ADMIN && Boolean.TRUE.equals(request.isBase());
     }
 
     private void validateExerciseNameIsUnique(String name, boolean isBase, Long gymId) {

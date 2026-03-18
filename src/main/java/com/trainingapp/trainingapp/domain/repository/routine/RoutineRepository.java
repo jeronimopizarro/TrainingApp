@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface RoutineRepository {
     Routine save(Routine routine);
     Optional<Routine> findById(Long id);
-    Boolean existsByMemberIdAndStatus(Long memberId, RoutineStatus status);
     Optional<Routine> findByMemberIdAndStatus(Long memberId, RoutineStatus status);
     List<RoutineSummary> findAllSummariesByMemberId(Long memberId);
     List<RoutineSummary> findAllSummariesByTrainerId(Long trainerId);

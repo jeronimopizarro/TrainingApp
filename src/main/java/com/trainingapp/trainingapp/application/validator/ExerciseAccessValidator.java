@@ -5,7 +5,9 @@ import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ExerciseAccessValidator {
 
     private final SecurityUtils securityUtils;
