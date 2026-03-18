@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.application.useCase.exercise;
 
 import com.trainingapp.trainingapp.application.mapper.exercise.ExerciseDTOMapper;
+import com.trainingapp.trainingapp.application.validator.ExerciseAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
@@ -21,14 +22,17 @@ public class UpdateExerciseUseCase {
     private final MuscleGroupRepository muscleGroupRepository;
     private final SecurityUtils securityUtils;
     private final ExerciseDTOMapper exerciseDTOMapper;
+    private final ExerciseAccessValidator exerciseAccessValidator;
 
     public UpdateExerciseUseCase(ExerciseRepository exerciseRepository,
                                  MuscleGroupRepository muscleGroupRepository,
-                                 SecurityUtils securityUtils, ExerciseDTOMapper exerciseDTOMapper) {
+                                 SecurityUtils securityUtils, ExerciseDTOMapper exerciseDTOMapper,
+                                 ExerciseAccessValidator exerciseAccessValidator) {
         this.exerciseRepository = exerciseRepository;
         this.muscleGroupRepository = muscleGroupRepository;
         this.securityUtils = securityUtils;
         this.exerciseDTOMapper = exerciseDTOMapper;
+        this.exerciseAccessValidator = exerciseAccessValidator;
     }
 
     @Transactional
@@ -36,7 +40,7 @@ public class UpdateExerciseUseCase {
         User currentUser = securityUtils.getCurrentUser();
         Exercise exercise = findExerciseOrThrow(id);
 
-        validateOwnership(currentUser, exercise);
+        exerciseAccessValidator.validateWriteAccess(exercise);
         validateExerciseNameIsUniqueForUpdate(request.name(), exercise.getIsBase(), exercise.getGymId(), id);
         validateMuscleGroupsExist(request);
 
@@ -50,25 +54,6 @@ public class UpdateExerciseUseCase {
         return exerciseRepository.findById(id)
                 .orElseThrow(() -> new ExerciseNotFoundException(
                         "The exercise with id " + id + " was not found."));
-    }
-
-    private void validateOwnership(User currentUser, Exercise exercise) {
-        if (currentUser.getRole() == Role.SUPER_ADMIN) return;
-
-        if (exercise.getIsBase()) {
-            throw new AccessDeniedException("No puedes modificar ejercicios base del sistema.");
-        }
-
-        securityUtils.validateSameGym(exercise.getGymId());
-
-        if (currentUser.getRole() == Role.TRAINER) {
-            boolean isCreator = exercise.getCreatedByUserId() != null
-                    && exercise.getCreatedByUserId().equals(currentUser.getId());
-
-            if (!isCreator) {
-                throw new AccessDeniedException("Solo puedes modificar los ejercicios creados por ti.");
-            }
-        }
     }
 
     private void validateExerciseNameIsUniqueForUpdate(String name, boolean isBase, Long gymId, Long currentId) {

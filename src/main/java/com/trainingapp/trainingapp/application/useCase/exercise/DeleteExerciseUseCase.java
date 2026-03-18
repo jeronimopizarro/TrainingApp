@@ -1,5 +1,6 @@
 package com.trainingapp.trainingapp.application.useCase.exercise;
 
+import com.trainingapp.trainingapp.application.validator.ExerciseAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
@@ -14,23 +15,21 @@ import org.springframework.stereotype.Service;
 public class DeleteExerciseUseCase {
 
     private final ExerciseRepository exerciseRepository;
-    private final SecurityUtils securityUtils;
+    private final ExerciseAccessValidator exerciseAccessValidator;
 
-    public DeleteExerciseUseCase(ExerciseRepository exerciseRepository, SecurityUtils securityUtils) {
+    public DeleteExerciseUseCase(ExerciseRepository exerciseRepository,
+                                 ExerciseAccessValidator exerciseAccessValidator) {
         this.exerciseRepository = exerciseRepository;
-        this.securityUtils = securityUtils;
+        this.exerciseAccessValidator = exerciseAccessValidator;
     }
 
     @Transactional
     public void execute(Long id) {
-        User currentUser = securityUtils.getCurrentUser();
-
         Exercise exercise = findExerciseOrThrow(id);
 
-        validateDeletePermission(currentUser, exercise);
+        exerciseAccessValidator.validateWriteAccess(exercise);
 
         exercise.deactivate();
-
         exerciseRepository.save(exercise);
     }
 
@@ -38,25 +37,5 @@ public class DeleteExerciseUseCase {
         return exerciseRepository.findById(id)
                 .orElseThrow(() -> new ExerciseNotFoundException(
                         "The exercise with id " + id + " was not found."));
-    }
-
-    private void validateDeletePermission(User user, Exercise exercise) {
-        if (user.getRole() == Role.SUPER_ADMIN) return;
-
-        if (exercise.getIsBase()) {
-            throw new AccessDeniedException("No se pueden eliminar ejercicios base del sistema.");
-        }
-
-        securityUtils.validateSameGym(exercise.getGymId());
-
-        if (user.getRole() == Role.TRAINER) {
-            boolean isCreator = exercise.getCreatedByUserId() != null
-                    && exercise.getCreatedByUserId().equals(user.getId());
-
-            if (!isCreator) {
-                throw new AccessDeniedException(
-                        "Solo puedes eliminar los ejercicios que tú creaste.");
-            }
-        }
     }
 }
