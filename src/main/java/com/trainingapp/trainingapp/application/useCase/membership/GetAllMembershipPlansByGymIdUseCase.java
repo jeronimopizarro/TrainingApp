@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.application.useCase.membership;
 
 import com.trainingapp.trainingapp.application.mapper.membershipPlan.MembershipPlanDTOMapper;
+import com.trainingapp.trainingapp.application.validator.GymValidator;
 import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
 import com.trainingapp.trainingapp.domain.repository.membership.MembershipPlanRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
@@ -14,16 +15,20 @@ public class GetAllMembershipPlansByGymIdUseCase {
 
     private final MembershipPlanRepository planRepository;
     private final SecurityUtils securityUtils;
+    private final GymValidator gymValidator;
     private final MembershipPlanDTOMapper membershipPlanDTOMapper;
 
     public GetAllMembershipPlansByGymIdUseCase(MembershipPlanRepository planRepository, SecurityUtils securityUtils,
+                                               GymValidator gymValidator,
                                                MembershipPlanDTOMapper membershipPlanDTOMapper) {
         this.planRepository = planRepository;
         this.securityUtils = securityUtils;
+        this.gymValidator = gymValidator;
         this.membershipPlanDTOMapper = membershipPlanDTOMapper;
     }
 
     public List<MembershipPlanResponse> execute(Long gymId) {
+        gymValidator.validateExists(gymId);
         securityUtils.validateSameGym(gymId);
 
         List<MembershipPlan> plans = planRepository.findByGymId(gymId);

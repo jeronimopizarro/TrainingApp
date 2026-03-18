@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.application.useCase.exercise;
 
 import com.trainingapp.trainingapp.application.mapper.exercise.ExerciseDTOMapper;
+import com.trainingapp.trainingapp.application.validator.GymValidator;
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
@@ -17,12 +18,15 @@ public class GetExercisesUseCase {
     private final ExerciseRepository exerciseRepository;
     private final SecurityUtils securityUtils;
     private final ExerciseDTOMapper exerciseDTOMapper;
+    private final GymValidator gymValidator;
 
     public GetExercisesUseCase(ExerciseRepository exerciseRepository,
-                               SecurityUtils securityUtils, ExerciseDTOMapper exerciseDTOMapper) {
+                               SecurityUtils securityUtils, ExerciseDTOMapper exerciseDTOMapper,
+                               GymValidator gymValidator) {
         this.exerciseRepository = exerciseRepository;
         this.securityUtils = securityUtils;
         this.exerciseDTOMapper = exerciseDTOMapper;
+        this.gymValidator = gymValidator;
     }
 
     public List<ExerciseDetailResponse> execute(Long muscleGroupId) {
@@ -44,6 +48,7 @@ public class GetExercisesUseCase {
         }
 
         Long userGymId = securityUtils.getCurrentUserGymId();
+        gymValidator.validateExists(userGymId);
 
         return exerciseRepository.findAllowedForGym(userGymId, muscleGroupId);
     }

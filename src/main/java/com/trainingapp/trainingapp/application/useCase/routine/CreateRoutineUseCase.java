@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.application.useCase.routine;
 
 import com.trainingapp.trainingapp.application.mapper.routine.RoutineDTOMapper;
+import com.trainingapp.trainingapp.application.validator.GymValidator;
 import com.trainingapp.trainingapp.application.validator.RoutineAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
@@ -23,16 +24,18 @@ public class CreateRoutineUseCase {
     private final SecurityUtils securityUtils;
     private final RoutineAccessValidator accessValidator;
     private final RoutineDTOMapper routineDTOMapper;
+    private final GymValidator gymValidator;
 
     public CreateRoutineUseCase(RoutineRepository routineRepository,
                                 ExerciseRepository exerciseRepository,
                                 SecurityUtils securityUtils, RoutineAccessValidator accessValidator,
-                                RoutineDTOMapper routineDTOMapper) {
+                                RoutineDTOMapper routineDTOMapper, GymValidator gymValidator) {
         this.routineRepository = routineRepository;
         this.exerciseRepository = exerciseRepository;
         this.securityUtils = securityUtils;
         this.accessValidator = accessValidator;
         this.routineDTOMapper = routineDTOMapper;
+        this.gymValidator = gymValidator;
     }
 
     @Transactional
@@ -40,6 +43,7 @@ public class CreateRoutineUseCase {
         User currentUser = securityUtils.getCurrentUser();
         Long creatorGymId = securityUtils.getCurrentUserGymId();
 
+        gymValidator.validateExists(creatorGymId);
         accessValidator.validateTargetMemberAccess(request.memberId());
         validateExercises(request, creatorGymId, currentUser);
 
