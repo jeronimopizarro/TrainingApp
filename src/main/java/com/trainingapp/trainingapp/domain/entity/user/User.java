@@ -49,6 +49,8 @@ public abstract class User {
 
     public void deactivate() {
         this.active = false;
+        //Evitamos errores con el UNIQUE de la BDD.
+        this.email = this.email + "_deleted_" + System.currentTimeMillis();
     }
 
     public void activate() {
