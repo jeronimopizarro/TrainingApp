@@ -3,8 +3,12 @@ package com.trainingapp.trainingapp.web.exception;
 import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.exercise.MuscleGroupNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.gym.GymNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.membership.MembershipNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.subscription.ActiveSubscriptionAlreadyExistsException;
+import com.trainingapp.trainingapp.domain.exception.subscription.ActiveSubscriptionNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.user.AdminNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.user.MemberAccessDeniedException;
 import com.trainingapp.trainingapp.domain.exception.user.MemberNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.user.TrainerNotFoundException;
 import com.trainingapp.trainingapp.web.dto.routine.ApiErrorResponse;
@@ -29,7 +33,9 @@ public class GlobalExceptionHandler {
             GymNotFoundException.class,
             TrainerNotFoundException.class,
             MemberNotFoundException.class,
-            AdminNotFoundException.class})
+            AdminNotFoundException.class,
+            MembershipNotFoundException.class,
+            ActiveSubscriptionNotFoundException.class})
     public ResponseEntity<ApiErrorResponse> handleNotFoundExceptions(RuntimeException ex) {
 
         ApiErrorResponse errorDetails = new ApiErrorResponse(HttpStatus.NOT_FOUND.value(), // 404
@@ -69,5 +75,24 @@ public class GlobalExceptionHandler {
                 "Bad Request - Invalid Argument", ex.getMessage(), LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
+    }
+
+    @ExceptionHandler(ActiveSubscriptionAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorResponse> handleSubscriptionConflict(ActiveSubscriptionAlreadyExistsException ex) {
+
+        ApiErrorResponse errorDetails = new ApiErrorResponse(HttpStatus.CONFLICT.value(), // 409
+                "Conflict - Active Subscription Exists", ex.getMessage(), LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDetails);
+    }
+
+    // Atrapa cuando falla el MemberAccessValidator (ej: un admin queriendo ver un socio de otro gym)
+    @ExceptionHandler(MemberAccessDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleAccessDenied(MemberAccessDeniedException ex) {
+
+        ApiErrorResponse errorDetails = new ApiErrorResponse(HttpStatus.FORBIDDEN.value(), // 403
+                "Forbidden - Access Denied", ex.getMessage(), LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorDetails);
     }
 }

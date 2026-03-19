@@ -37,6 +37,7 @@ public class CreateExerciseUseCase {
         User currentUser = securityUtils.getCurrentUser();
         validateMuscleGroupExist(request);
         boolean isBase = isBaseExerciseCreation(currentUser, request);
+
         Long gymId = isBase ? null : securityUtils.getCurrentUserGymId();
 
         if (!isBase) {

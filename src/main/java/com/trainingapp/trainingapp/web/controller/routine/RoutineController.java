@@ -131,9 +131,6 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
-    //TODO: logica de negocio que valide que el member solo puede eliminar su propia rutina y de su mismo gym.
-    //TODO: logica de negocio que valide que el trainer solo puede eliminar una rutina que el creo y de su mismo gym.
-    //TODO: logica de negocio que valide que el gym admin solo puede eliminar una rutina de su mismo gym.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoutine(@PathVariable Long id) {
