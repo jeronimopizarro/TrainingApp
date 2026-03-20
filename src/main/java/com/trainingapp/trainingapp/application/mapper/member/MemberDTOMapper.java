@@ -15,6 +15,7 @@ public class MemberDTOMapper {
                 request.lastName(),
                 request.email(),
                 encodedPassword,
+                request.dni(),
                 request.gymId(),
                 request.birthDate(),
                 request.primaryGoal()
@@ -28,8 +29,8 @@ public class MemberDTOMapper {
                 member.getFirstName(),
                 member.getLastName(),
                 member.getEmail(),
+                member.getDni(),
                 member.getGymId(),
-                member.getQrAccessCode(),
                 member.isActive()
         );
     }

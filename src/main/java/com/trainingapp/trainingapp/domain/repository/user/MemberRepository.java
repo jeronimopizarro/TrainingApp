@@ -8,4 +8,5 @@ public interface MemberRepository {
     Member save(Member member);
     Optional<Member> findById(Long id);
     List<Member> findByGymId(Long gymId);
+    Optional<Member> findByDni(String dni);
 }

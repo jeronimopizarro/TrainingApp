@@ -8,8 +8,8 @@ public class Admin extends User {
 
     private Long gymId;
 
-    public Admin(String firstName, String lastName, String email, String password, Role role, Long gymId) {
-        super(firstName, lastName, email, password, role);
+    public Admin(String firstName, String lastName, String email, String password, String dni, Role role, Long gymId) {
+        super(firstName, lastName, email, password, dni, role);
 
         if (role == Role.SUPER_ADMIN && gymId != null) {
             throw new IllegalArgumentException("A SUPER_ADMIN cannot be tied to a specific gym.");

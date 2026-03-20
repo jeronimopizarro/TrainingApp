@@ -23,7 +23,4 @@ public class MemberJpaEntity extends UserJpaEntity {
 
     @Column(name = "primary_goal", length = 255)
     private String primaryGoal;
-
-    @Column(name = "qr_access_code", length = 255, unique = true)
-    private String qrAccessCode;
 }

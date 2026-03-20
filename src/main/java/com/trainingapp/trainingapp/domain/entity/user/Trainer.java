@@ -4,13 +4,14 @@ import com.trainingapp.trainingapp.domain.enums.user.Role;
 import lombok.Getter;
 
 @Getter
-public class Trainer extends User{
+public class Trainer extends User {
 
     private Long gymId;
     private String specialization;
 
-    public Trainer(String firstName, String lastName, String email, String password, Long gymId, String specialization){
-        super(firstName, lastName, email, password, Role.TRAINER);
+    public Trainer(String firstName, String lastName, String email, String password, String dni,
+                   Long gymId, String specialization) {
+        super(firstName, lastName, email, password, dni, Role.TRAINER);
 
         if (gymId == null || gymId <= 0) {
             throw new IllegalArgumentException("A trainer must be associated with a valid Gym.");
@@ -23,7 +24,8 @@ public class Trainer extends User{
     public void updateProfile(String firstName, String lastName, String specialization) {
         super.updateBasicProfile(firstName, lastName);
         if (specialization != null) {
-            if (specialization.isBlank()) throw new IllegalArgumentException("Specialization cannot be empty.");
+            if (specialization.isBlank())
+                throw new IllegalArgumentException("Specialization cannot be empty.");
             this.specialization = specialization;
         }
     }

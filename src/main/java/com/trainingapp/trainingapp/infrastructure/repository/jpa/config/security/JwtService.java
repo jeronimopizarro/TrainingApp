@@ -75,4 +75,19 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    public String generateQrToken(Long memberId) {
+        return Jwts.builder()
+                .setClaims(new HashMap<>())
+                .setSubject(memberId.toString())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public Long extractMemberIdFromQr(String token) {
+        String subject = extractClaim(token, Claims::getSubject);
+        return Long.parseLong(subject);
+    }
 }

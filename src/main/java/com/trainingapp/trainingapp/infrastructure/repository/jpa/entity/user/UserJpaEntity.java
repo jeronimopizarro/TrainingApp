@@ -35,6 +35,9 @@ public class UserJpaEntity {
     @Column(nullable = false, length = 255)
     private String password;
 
+    @Column(nullable = false, unique = true, length = 50)
+    private String dni;
+
     @Enumerated(EnumType.STRING) // Guarda el texto 'SUPER_ADMIN', 'MEMBER', etc.
     @Column(nullable = false, length = 50)
     private Role role;

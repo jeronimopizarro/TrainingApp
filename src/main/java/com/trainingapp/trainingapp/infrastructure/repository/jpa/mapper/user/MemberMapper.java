@@ -21,12 +21,12 @@ public class MemberMapper {
         entity.setLastName(domain.getLastName());
         entity.setEmail(domain.getEmail());
         entity.setPassword(domain.getPassword());
+        entity.setDni(domain.getDni());
         entity.setRole(domain.getRole());
         entity.setActive(domain.isActive());
         entity.setGymId(domain.getGymId());
         entity.setBirthDate(domain.getBirthDate());
         entity.setPrimaryGoal(domain.getPrimaryGoal());
-        entity.setQrAccessCode(domain.getQrAccessCode());
 
         if (!domain.isActive()) {
             entity.setDeletedAt(LocalDateTime.now());
@@ -43,14 +43,12 @@ public class MemberMapper {
                 entity.getLastName(),
                 entity.getEmail(),
                 entity.getPassword(),
+                entity.getDni(),
                 entity.getGymId(),
                 entity.getBirthDate(),
                 entity.getPrimaryGoal()
         );
-
         member.setId(entity.getId());
-        member.setQrAccessCode(entity.getQrAccessCode());
-
         member.setActive(entity.isActive());
 
         return member;

@@ -15,6 +15,7 @@ public class AdminDTOMapper {
                 request.lastName(),
                 request.email(),
                 encodedPassword,
+                request.dni(),
                 request.role(),
                 request.gymId()
         );
@@ -27,6 +28,7 @@ public class AdminDTOMapper {
                 admin.getFirstName(),
                 admin.getLastName(),
                 admin.getEmail(),
+                admin.getDni(),
                 admin.getRole(),
                 admin.getGymId(),
                 admin.isActive()

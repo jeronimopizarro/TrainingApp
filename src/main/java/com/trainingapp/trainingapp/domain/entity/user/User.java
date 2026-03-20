@@ -11,21 +11,25 @@ public abstract class User {
     private String lastName;
     private String email;
     private String password;
+    private String dni;
     private Role role;
     private boolean active;
 
-    protected User(String firstName, String lastName, String email, String password, Role role) {
-        validateBasicData(firstName, lastName, email, password);
+
+    protected User(String firstName, String lastName, String email, String password, String dni,Role role) {
+        validateBasicData(firstName, lastName, email, password, dni);
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.dni = dni;
         this.role = role;
         this.active = true;
     }
 
     private void validateBasicData(String firstName, String lastName, String email,
-                                   String password) {
+                                   String password, String dni) {
         if (firstName == null || firstName.isBlank())
             throw new IllegalArgumentException("First name cannot be empty.");
         if (lastName == null || lastName.isBlank())
@@ -34,6 +38,8 @@ public abstract class User {
             throw new IllegalArgumentException("Invalid email format.");
         if (password == null || password.length() < 6)
             throw new IllegalArgumentException("Password must be at least 6 characters.");
+        if (dni == null || dni.isBlank())
+            throw new IllegalArgumentException("DNI cannot be empty.");
     }
 
     protected void updateBasicProfile(String firstName, String lastName) {

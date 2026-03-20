@@ -39,4 +39,10 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .map(mapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public Optional<Member> findByDni(String dni) {
+        return jpaRepository.findByDni(dni)
+                .map(mapper::toDomain);
+    }
 }

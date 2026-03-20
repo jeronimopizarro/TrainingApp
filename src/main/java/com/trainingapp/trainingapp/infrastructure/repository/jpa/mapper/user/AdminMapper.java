@@ -21,6 +21,7 @@ public class AdminMapper {
         entity.setLastName(domain.getLastName());
         entity.setEmail(domain.getEmail());
         entity.setPassword(domain.getPassword());
+        entity.setDni(domain.getDni());
         entity.setRole(domain.getRole());
         entity.setActive(domain.isActive());
         entity.setGymId(domain.getGymId());
@@ -38,6 +39,7 @@ public class AdminMapper {
                 entity.getLastName(),
                 entity.getEmail(),
                 entity.getPassword(),
+                entity.getDni(),
                 entity.getRole(),
                 entity.getGymId()
         );

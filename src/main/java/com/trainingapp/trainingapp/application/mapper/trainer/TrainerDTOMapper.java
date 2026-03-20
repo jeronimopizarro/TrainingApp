@@ -15,6 +15,7 @@ public class TrainerDTOMapper {
                 request.lastName(),
                 request.email(),
                 encodedPassword,
+                request.dni(),
                 request.gymId(),
                 request.specialization()
         );

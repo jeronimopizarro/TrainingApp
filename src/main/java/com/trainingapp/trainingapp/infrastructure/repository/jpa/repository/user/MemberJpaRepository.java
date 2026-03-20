@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface MemberJpaRepository extends JpaRepository<MemberJpaEntity, Long> {
 
     List<MemberJpaEntity> findByGymIdAndActiveTrue(Long gymId);
+
+    Optional<MemberJpaEntity> findByDni(String dni);
 }

@@ -11,11 +11,10 @@ public class Member extends User {
     private Long gymId;
     private LocalDate birthDate;
     private String primaryGoal;
-    private String qrAccessCode;
 
-    public Member(String firstName, String lastName, String email, String password, Long gymId,
+    public Member(String firstName, String lastName, String email, String password, String dni, Long gymId,
                      LocalDate birthDate, String primaryGoal) {
-        super(firstName, lastName, email, password, Role.MEMBER);
+        super(firstName, lastName, email, password, dni, Role.MEMBER);
 
         if (gymId == null || gymId <= 0) {
             throw new IllegalArgumentException("A member must be associated with a valid Gym.");
@@ -23,7 +22,6 @@ public class Member extends User {
         this.gymId = gymId;
         this.birthDate = birthDate;
         this.primaryGoal = primaryGoal;
-        this.qrAccessCode = generateQrCode();
     }
 
     public void updateProfile(String firstName, String lastName, String primaryGoal) {
@@ -31,13 +29,5 @@ public class Member extends User {
         if (primaryGoal != null) {
             this.primaryGoal = primaryGoal;
         }
-    }
-
-    private String generateQrCode() {
-        return "QR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-    }
-
-    public void setQrAccessCode(String qrAccessCode) {
-        this.qrAccessCode = qrAccessCode;
     }
 }

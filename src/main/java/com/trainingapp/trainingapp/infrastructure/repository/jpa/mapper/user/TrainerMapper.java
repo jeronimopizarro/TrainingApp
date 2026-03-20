@@ -39,6 +39,7 @@ public class TrainerMapper {
                 entity.getLastName(),
                 entity.getEmail(),
                 entity.getPassword(),
+                entity.getDni(),
                 entity.getGymId(),
                 entity.getSpecialization()
         );
