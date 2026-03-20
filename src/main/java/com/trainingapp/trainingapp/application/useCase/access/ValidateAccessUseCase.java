@@ -32,33 +32,30 @@ public class ValidateAccessUseCase {
 
     @Transactional
     public ValidateAccessResponse execute(ValidateAccessRequest request) {
-        Long currentGymId = securityUtils.getCurrentUserGymId();
-        Member member;
-
         try {
+            Member member;
+
             if (request.method() == AccessMethod.QR) {
                 Long memberId = jwtService.extractMemberIdFromQr(request.identifier());
-
-                Optional<Member> memberOpt = memberRepository.findById(memberId);
-                if (memberOpt.isEmpty()) {
-                    return new ValidateAccessResponse(false, "Desconocido", "Socio no encontrado.");
-                }
-                member = memberOpt.get();
-
-            } else {
-                Optional<Member> memberOpt = memberRepository.findByDni(request.identifier());
-                if (memberOpt.isEmpty()) {
-                    return new ValidateAccessResponse(false, "Desconocido", "No existe un socio con ese DNI en este gimnasio.");
-                }
-                member = memberOpt.get();
+                member = memberRepository.findById(memberId)
+                        .orElseThrow(() -> new IllegalArgumentException("Socio no encontrado."));
+            } else { //DNI
+                member = memberRepository.findByDni(request.identifier().trim())
+                        .orElseThrow(() -> new IllegalArgumentException("No existe ningún socio registrado con ese DNI."));
             }
 
+            return validateBusinessRules(member, securityUtils.getCurrentUserGymId());
+
+        } catch (IllegalArgumentException e) {
+            return new ValidateAccessResponse(false, "Desconocido", e.getMessage());
         } catch (ExpiredJwtException e) {
             return new ValidateAccessResponse(false, "Desconocido", "El código QR expiró. Por favor, genere uno nuevo.");
         } catch (Exception e) {
             return new ValidateAccessResponse(false, "Desconocido", "Código de acceso inválido.");
         }
+    }
 
+    private ValidateAccessResponse validateBusinessRules(Member member, Long currentGymId) {
         String fullName = member.getFirstName() + " " + member.getLastName();
 
         if (!member.isActive()) {
@@ -70,7 +67,6 @@ public class ValidateAccessUseCase {
         }
 
         boolean hasActiveSubscription = subscriptionRepository.findActiveByMemberId(member.getId()).isPresent();
-
         if (!hasActiveSubscription) {
             return new ValidateAccessResponse(false, fullName, "Cuota vencida o sin membresía activa.");
         }
