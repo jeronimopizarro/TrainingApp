@@ -31,8 +31,8 @@ public class MembershipPlanJpaEntity {
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "duration_days", nullable = false)
-    private Integer durationDays;
+    @Column(name = "duration_months", nullable = false)
+    private int durationMonths;
 
     @Column(name = "gym_id", nullable = false)
     private Long gymId;

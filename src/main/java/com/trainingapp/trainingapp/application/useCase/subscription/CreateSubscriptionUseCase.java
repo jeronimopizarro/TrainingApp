@@ -5,11 +5,8 @@ import com.trainingapp.trainingapp.application.validator.GymValidator;
 import com.trainingapp.trainingapp.application.validator.MemberAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
 import com.trainingapp.trainingapp.domain.entity.subscription.Subscription;
-import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.domain.exception.membership.MembershipNotFoundException;
-import com.trainingapp.trainingapp.domain.exception.membership.MembershipPlanAccessDeniedException;
 import com.trainingapp.trainingapp.domain.exception.subscription.ActiveSubscriptionAlreadyExistsException;
-import com.trainingapp.trainingapp.domain.exception.user.MemberNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.membership.MembershipPlanRepository;
 import com.trainingapp.trainingapp.domain.repository.subscription.SubscriptionRepository;
 import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
@@ -64,7 +61,7 @@ public class CreateSubscriptionUseCase {
         validateSubscriptionRules(request);
 
         Subscription subscription = subscriptionDTOMapper.toDomain(
-                request, plan.getName(), plan.getDurationDays());
+                request, plan.getName(), plan.getDurationMonths());
 
         Subscription savedSubscription = subscriptionRepository.save(subscription);
         return subscriptionDTOMapper.toResponse(savedSubscription);

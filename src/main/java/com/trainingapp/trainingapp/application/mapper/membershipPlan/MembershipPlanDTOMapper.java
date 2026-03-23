@@ -15,7 +15,7 @@ public class MembershipPlanDTOMapper {
                 request.name(),
                 request.description(),
                 request.price(),
-                request.durationDays(),
+                request.durationMonths(),
                 request.gymId()
         );
     }
@@ -28,7 +28,7 @@ public class MembershipPlanDTOMapper {
                 domainEntity.getName(),
                 domainEntity.getDescription(),
                 domainEntity.getPrice(),
-                domainEntity.getDurationDays(),
+                domainEntity.getDurationMonths(),
                 domainEntity.getGymId(),
                 domainEntity.isActive()
         );

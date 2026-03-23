@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class SubscriptionRepositoryImpl implements SubscriptionRepository {
@@ -46,5 +47,23 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
         return jpaRepository.findAllByMemberIdOrderByStartDateDesc(memberId).stream()
                 .map(mapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public List<Subscription> findByStatusAndEndDateBefore(SubscriptionStatus status, LocalDate date) {
+        return jpaRepository.findByStatusAndEndDateBefore(status, date).stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Subscription> saveAll(List<Subscription> subscriptions) {
+        List<SubscriptionJpaEntity> entities = subscriptions.stream()
+                .map(mapper::toEntity)
+                .collect(Collectors.toList());
+
+        return jpaRepository.saveAll(entities).stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
     }
 }

@@ -32,7 +32,7 @@ public class UpdateMembershipPlanUseCase {
         securityUtils.validateSameGym(plan.getGymId());
         validatePlanNameIsUniqueForUpdate(request.name(), plan.getGymId(), id);
 
-        plan.update(request.name(), request.description(), request.price(), request.durationDays());
+        plan.update(request.name(), request.description(), request.price(), request.durationMonths());
 
         MembershipPlan updatedPlan = planRepository.save(plan);
         return membershipPlanDTOMapper.toResponse(updatedPlan);

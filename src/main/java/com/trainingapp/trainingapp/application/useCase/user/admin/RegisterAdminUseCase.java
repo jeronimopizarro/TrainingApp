@@ -4,6 +4,7 @@ import com.trainingapp.trainingapp.application.mapper.admin.AdminDTOMapper;
 import com.trainingapp.trainingapp.application.validator.GymValidator;
 import com.trainingapp.trainingapp.application.validator.UserRegistrationValidator;
 import com.trainingapp.trainingapp.domain.entity.user.Admin;
+import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.repository.user.AdminRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.user.admin.AdminResponse;
@@ -36,8 +37,10 @@ public class RegisterAdminUseCase {
 
     @Transactional
     public AdminResponse execute(RegisterAdminRequest request) {
-        gymValidator.validateExists(request.gymId());
-        securityUtils.validateSameGym(request.gymId());
+        if (request.role() == Role.GYM_ADMIN) {
+            gymValidator.validateExists(request.gymId());
+            securityUtils.validateSameGym(request.gymId());
+        }
         registrationValidator.validateEmailIsUnique(request.email());
 
         String encodedPassword = passwordEncoder.encode(request.password());

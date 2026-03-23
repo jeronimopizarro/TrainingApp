@@ -21,4 +21,6 @@ public interface SubscriptionJpaRepository extends JpaRepository<SubscriptionJpa
             @Param("status") SubscriptionStatus status,
             @Param("currentDate") LocalDate currentDate
     );
+
+    List<SubscriptionJpaEntity> findByStatusAndEndDateBefore(SubscriptionStatus status, LocalDate date);
 }

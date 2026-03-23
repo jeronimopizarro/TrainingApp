@@ -18,14 +18,14 @@ public class Subscription {
     private Long planId;
     private String planName;
 
-    public Subscription(Long memberId, Long planId, String planName, LocalDate startDate, Integer planDurationDays) {
-        validateSubscriptionData(memberId, planId, startDate, planDurationDays);
+    public Subscription(Long memberId, Long planId, String planName, LocalDate startDate, Integer planDurationMonths) {
+        validateSubscriptionData(memberId, planId, startDate, planDurationMonths);
 
         this.memberId = memberId;
         this.planId = planId;
         this.planName = planName;
         this.startDate = startDate;
-        this.endDate = startDate.plusDays(planDurationDays);
+        this.endDate = startDate.plusMonths(planDurationMonths);
         this.status = SubscriptionStatus.ACTIVE;
     }
 
@@ -96,5 +96,11 @@ public class Subscription {
         }
         long days = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), this.endDate);
         return days > 0 ? (int) days : 0;
+    }
+
+    public void markAsExpired() {
+        if (this.status == SubscriptionStatus.ACTIVE) {
+            this.status = SubscriptionStatus.EXPIRED;
+        }
     }
 }

@@ -2,8 +2,6 @@ package com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.members
 
 import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.membership.MembershipPlanJpaEntity;
-import com.trainingapp.trainingapp.web.dto.membership.CreateMembershipPlanRequest;
-import com.trainingapp.trainingapp.web.dto.membership.MembershipPlanResponse;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -19,7 +17,7 @@ public class MembershipPlanMapper {
                 jpaEntity.getName(),
                 jpaEntity.getDescription(),
                 jpaEntity.getPrice(),
-                jpaEntity.getDurationDays(),
+                jpaEntity.getDurationMonths(),
                 jpaEntity.getGymId(),
                 jpaEntity.isActive()
         );
@@ -33,7 +31,7 @@ public class MembershipPlanMapper {
         jpaEntity.setName(domainEntity.getName());
         jpaEntity.setDescription(domainEntity.getDescription());
         jpaEntity.setPrice(domainEntity.getPrice());
-        jpaEntity.setDurationDays(domainEntity.getDurationDays());
+        jpaEntity.setDurationMonths(domainEntity.getDurationMonths());
         jpaEntity.setGymId(domainEntity.getGymId());
         jpaEntity.setActive(domainEntity.isActive());
 
