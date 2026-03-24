@@ -33,8 +33,6 @@ public class GetAllMembershipPlansByGymIdUseCase {
 
         List<MembershipPlan> plans = planRepository.findByGymId(gymId);
 
-        return  plans.stream()
-                .map(membershipPlanDTOMapper::toResponse)
-                .toList();
+        return plans.stream().map(membershipPlanDTOMapper::toResponse).toList();
     }
 }
