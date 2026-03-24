@@ -1,5 +1,6 @@
 package com.trainingapp.trainingapp.web.dto.subscription;
 
+import com.trainingapp.trainingapp.domain.enums.transaction.PaymentMethod;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
@@ -12,6 +13,9 @@ public record CreateSubscriptionRequest(
         Long planId,
 
         @NotNull(message = "La fecha de inicio es obligatoria")
-        LocalDate startDate
+        LocalDate startDate,
+
+        @NotNull(message = "El método de pago es obligatorio")
+        PaymentMethod paymentMethod
 ) {
 }
