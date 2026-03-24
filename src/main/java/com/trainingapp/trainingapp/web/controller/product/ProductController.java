@@ -40,19 +40,19 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(getProductByIdUseCase.execute(id));
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @GetMapping("/gym/{gymId}")
     public ResponseEntity<List<ProductResponse>> getAllProductsByGymId(@PathVariable Long gymId) {
         return ResponseEntity.ok(getAllProductsByGymIdUseCase.execute(gymId));
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @GetMapping("/gym/{gymId}/search")
     public ResponseEntity<List<ProductResponse>> searchProductsByName(
             @PathVariable Long gymId,
