@@ -2,6 +2,7 @@ package com.trainingapp.trainingapp.infrastructure.repository.jpa.repository.use
 
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.user.MemberJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 import java.util.Optional;
 

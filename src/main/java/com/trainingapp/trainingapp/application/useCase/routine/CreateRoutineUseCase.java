@@ -44,6 +44,7 @@ public class CreateRoutineUseCase {
         Long creatorGymId = securityUtils.getCurrentUserGymId();
 
         gymValidator.validateExists(creatorGymId);
+        validateSelfCreationIfMember(currentUser, request.memberId());
         accessValidator.validateTargetMemberAccess(request.memberId());
         validateExercises(request, creatorGymId, currentUser);
 
@@ -51,6 +52,12 @@ public class CreateRoutineUseCase {
 
         Routine savedRoutine = routineRepository.save(routine);
         return routineDTOMapper.toResponse(savedRoutine, "Routine created successfully");
+    }
+
+    private void validateSelfCreationIfMember(User currentUser, Long targetMemberId) {
+        if (currentUser.getRole() == Role.MEMBER && !currentUser.getId().equals(targetMemberId)) {
+            throw new AccessDeniedException("Acceso denegado: Los socios solo pueden crear rutinas para sí mismos.");
+        }
     }
 
     private void validateExercises(CreateRoutineRequest request, Long gymId, User currentUser) {

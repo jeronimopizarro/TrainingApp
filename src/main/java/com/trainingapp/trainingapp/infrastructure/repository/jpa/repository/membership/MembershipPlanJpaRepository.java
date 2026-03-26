@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface MembershipPlanJpaRepository extends JpaRepository<MembershipPlanJpaEntity, Long> {
+
     List<MembershipPlanJpaEntity> findByGymIdAndActiveTrue(Long gymId);
 
     Optional<MembershipPlanJpaEntity> findByIdAndActiveTrue(Long id);

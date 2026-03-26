@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface AccessLogRepository {
     AccessLog save(AccessLog accessLog);
+
     List<AccessLog> findByGymId(Long gymId);
+
     List<AccessLog> findByMemberId(Long memberId);
 }

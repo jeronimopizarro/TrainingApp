@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface TransactionJpaRepository extends JpaRepository<TransactionJpaEntity, Long> {
+
     List<TransactionJpaEntity> findAllByGymIdOrderByTransactionDateDesc(Long gymId);
 }

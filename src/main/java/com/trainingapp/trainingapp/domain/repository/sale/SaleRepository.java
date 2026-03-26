@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface SaleRepository {
     Sale save(Sale sale);
+
     Optional<Sale> findById(Long id);
+
     List<Sale> findAllByGymId(Long gymId);
 }

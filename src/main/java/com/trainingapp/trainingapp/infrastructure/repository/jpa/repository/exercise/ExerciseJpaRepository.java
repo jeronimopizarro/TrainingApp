@@ -11,7 +11,8 @@ public interface ExerciseJpaRepository extends JpaRepository<ExerciseJpaEntity, 
 
     @Query("SELECT e FROM ExerciseJpaEntity e JOIN e.muscleGroups emg " +
             "WHERE emg.muscleGroup.id = :muscleGroupId AND e.active = true")
-    List<ExerciseJpaEntity> findByMuscleGroupIdAndActiveTrue(@Param("muscleGroupId") Long muscleGroupId);
+    List<ExerciseJpaEntity> findByMuscleGroupIdAndActiveTrue(
+            @Param("muscleGroupId") Long muscleGroupId);
 
     @Query("SELECT DISTINCT e FROM ExerciseJpaEntity e " +
             "LEFT JOIN e.muscleGroups emg " +

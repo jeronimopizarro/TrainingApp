@@ -6,6 +6,7 @@ import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine.
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,8 @@ public interface RoutineJpaRepository extends JpaRepository<RoutineJpaEntity, Lo
 
     boolean existsByMemberIdAndStatusAndActiveTrue(Long memberId, RoutineStatus status);
 
-    Optional<RoutineJpaEntity> findByMemberIdAndStatusAndActiveTrue(Long memberId, RoutineStatus status);
+    Optional<RoutineJpaEntity> findByMemberIdAndStatusAndActiveTrue(Long memberId,
+                                                                    RoutineStatus status);
 
     @Query("SELECT new com.trainingapp.trainingapp.domain.entity.routine.RoutineSummary(r.id, r.name, r.status, r.memberId) " +
             "FROM RoutineJpaEntity r WHERE r.memberId = :memberId AND r.active = true")

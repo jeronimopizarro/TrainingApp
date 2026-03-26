@@ -9,9 +9,14 @@ import java.util.Optional;
 
 public interface SubscriptionRepository {
     Subscription save(Subscription subscription);
+
     Optional<Subscription> findById(Long id);
+
     Optional<Subscription> findActiveByMemberId(Long memberId);
+
     List<Subscription> findAllByMemberIdOrderByStartDateDesc(Long memberId);
+
     List<Subscription> findByStatusAndEndDateBefore(SubscriptionStatus status, LocalDate date);
+
     List<Subscription> saveAll(List<Subscription> subscriptions);
 }
