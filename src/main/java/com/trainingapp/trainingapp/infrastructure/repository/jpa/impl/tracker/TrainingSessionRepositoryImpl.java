@@ -8,6 +8,9 @@ import com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.tracker.
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.repository.tracker.TrainingSessionJpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -37,5 +40,15 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository 
     public Optional<TrainingSession> findActiveSessionByMemberId(Long memberId) {
         return jpaRepository.findByMemberIdAndStatus(memberId, SessionStatus.IN_PROGRESS)
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public List<LocalDate> findTrainingDatesByMemberIdAndMonth(Long memberId, LocalDateTime startOfMonth, LocalDateTime endOfMonth) {
+        // Usamos la query JPA que armaste en el paso anterior
+        return jpaRepository.findSessionsByMemberIdAndMonth(memberId, startOfMonth, endOfMonth)
+                .stream()
+                .map(session -> session.getStartTime().toLocalDate()) // Extraemos la fecha
+                .distinct() // Filtramos repetidos
+                .toList();
     }
 }

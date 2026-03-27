@@ -2,6 +2,9 @@ package com.trainingapp.trainingapp.domain.repository.tracker;
 
 import com.trainingapp.trainingapp.domain.entity.tracker.TrainingSession;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface TrainingSessionRepository {
@@ -10,4 +13,7 @@ public interface TrainingSessionRepository {
     Optional<TrainingSession> findById(Long id);
 
     Optional<TrainingSession> findActiveSessionByMemberId(Long memberId);
+
+    List<LocalDate> findTrainingDatesByMemberIdAndMonth(Long memberId, LocalDateTime startOfMonth,
+                                                        LocalDateTime endOfMonth);
 }
