@@ -47,6 +47,6 @@ public class UpdateMemberUseCase {
     private Member findMemberOrThrow(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(
-                        () -> new MemberNotFoundException("Member with id " + id + " not found."));
+                        () -> new MemberNotFoundException(id));
     }
 }

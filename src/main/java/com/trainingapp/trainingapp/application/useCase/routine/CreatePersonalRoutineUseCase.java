@@ -1,0 +1,82 @@
+package com.trainingapp.trainingapp.application.useCase.routine;
+
+import com.trainingapp.trainingapp.application.mapper.routine.RoutineDTOMapper;
+import com.trainingapp.trainingapp.application.validator.GymValidator;
+import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
+import com.trainingapp.trainingapp.domain.entity.routine.Routine;
+import com.trainingapp.trainingapp.domain.enums.routine.RoutineRequestStatus;
+import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
+import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
+import com.trainingapp.trainingapp.domain.repository.routine.RoutineRequestRepository;
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
+import com.trainingapp.trainingapp.web.dto.routine.CreatePersonalRoutineRequest;
+import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class CreatePersonalRoutineUseCase {
+
+    private final SecurityUtils securityUtils;
+    private final RoutineRepository routineRepository;
+    private final ExerciseRepository exerciseRepository;
+    private final RoutineRequestRepository routineRequestRepository;
+    private final RoutineDTOMapper routineDTOMapper;
+    private final GymValidator gymValidator;
+
+    public CreatePersonalRoutineUseCase(SecurityUtils securityUtils,
+                                        RoutineRepository routineRepository,
+                                        ExerciseRepository exerciseRepository,
+                                        RoutineRequestRepository routineRequestRepository,
+                                        RoutineDTOMapper routineDTOMapper,
+                                        GymValidator gymValidator) {
+        this.securityUtils = securityUtils;
+        this.routineRepository = routineRepository;
+        this.exerciseRepository = exerciseRepository;
+        this.routineRequestRepository = routineRequestRepository;
+        this.routineDTOMapper = routineDTOMapper;
+        this.gymValidator = gymValidator;
+    }
+
+    @Transactional
+    public CreateRoutineResponse execute(CreatePersonalRoutineRequest request) {
+        Long memberId = securityUtils.getCurrentUser().getId();
+        Long gymId = securityUtils.getCurrentUserGymId();
+
+        gymValidator.validateExists(gymId);
+        validateExercises(request, gymId);
+
+        Routine routine = routineDTOMapper.toDomain(request, memberId, gymId);
+        Routine savedRoutine = routineRepository.save(routine);
+
+        cancelPendingRoutineRequest(memberId);
+
+        return routineDTOMapper.toResponse(savedRoutine, "Rutina personal creada con éxito.");
+    }
+
+    private void validateExercises(CreatePersonalRoutineRequest request, Long gymId) {
+        request.days().forEach(day -> {
+            day.exercises().forEach(exReq -> {
+                Exercise exercise = exerciseRepository.findById(exReq.exerciseId())
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "Cannot create routine: Exercise with ID " + exReq.exerciseId() + " does not exist."
+                        ));
+
+                if (!exercise.getIsBase() && !exercise.getGymId().equals(gymId)) {
+                    throw new AccessDeniedException(
+                            "El ejercicio '" + exercise.getName() + "' no pertenece a tu gimnasio."
+                    );
+                }
+            });
+        });
+    }
+
+    private void cancelPendingRoutineRequest(Long memberId) {
+        routineRequestRepository.findFirstByMemberIdAndStatus(memberId, RoutineRequestStatus.PENDING)
+                .ifPresent(pendingRequest -> {
+                    pendingRequest.cancel();
+                    routineRequestRepository.save(pendingRequest);
+                });
+    }
+}

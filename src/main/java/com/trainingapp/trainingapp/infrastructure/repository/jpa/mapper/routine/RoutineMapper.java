@@ -6,12 +6,8 @@ import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine.RoutineDetailJpaEntity;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine.RoutineJpaEntity;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine.TrainingDayJpaEntity;
-import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineRequest;
-import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
-import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component

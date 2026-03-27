@@ -17,7 +17,7 @@ public interface TrainingSessionJpaRepository
         extends JpaRepository<TrainingSessionJpaEntity, Long> {
     // Evitamos que un alumno inicie dos entrenamientos al mismo tiempo
     Optional<TrainingSessionJpaEntity> findByMemberIdAndStatus(Long memberId, SessionStatus status);
-    
+
     @Query("SELECT ts FROM TrainingSessionJpaEntity ts " +
             "WHERE ts.memberId = :memberId " +
             "AND ts.startTime >= :startOfMonth " +

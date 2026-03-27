@@ -16,25 +16,40 @@ import java.util.List;
 @Component
 public class RoutineDTOMapper {
 
-    public Routine toDomain(CreateRoutineRequest request, Long creatorId, Long gymId) {
+    public Routine toDomain(CreatePersonalRoutineRequest request, Long memberId, Long gymId) {
         if (request == null) return null;
 
-        Routine routine = new Routine(request.name(), request.memberId(), request.trainerId(), creatorId, gymId);
+        Routine routine = new Routine(request.name(), memberId, null, memberId, gymId);
 
         if (request.days() != null) {
             request.days().forEach(dayRequest -> {
                 TrainingDay createdDay = routine.addDay(dayRequest.dayName());
-
                 if (dayRequest.exercises() != null) {
                     dayRequest.exercises().forEach(exerciseReq -> {
                         createdDay.addDetails(
-                                exerciseReq.exerciseId(),
-                                exerciseReq.sets(),
-                                exerciseReq.repsMin(),
-                                exerciseReq.repsMax(),
-                                exerciseReq.targetRIR(),
-                                exerciseReq.suggestedWeight(),
-                                exerciseReq.notes()
+                                exerciseReq.exerciseId(), exerciseReq.sets(), exerciseReq.repsMin(),
+                                exerciseReq.repsMax(), exerciseReq.targetRIR(), exerciseReq.suggestedWeight(), exerciseReq.notes()
+                        );
+                    });
+                }
+            });
+        }
+        return routine;
+    }
+
+    public Routine toDomain(AssignRoutineRequest request, Long creatorId, Long gymId) {
+        if (request == null) return null;
+
+        Routine routine = new Routine(request.name(), request.memberId(), creatorId, creatorId, gymId);
+
+        if (request.days() != null) {
+            request.days().forEach(dayRequest -> {
+                TrainingDay createdDay = routine.addDay(dayRequest.dayName());
+                if (dayRequest.exercises() != null) {
+                    dayRequest.exercises().forEach(exerciseReq -> {
+                        createdDay.addDetails(
+                                exerciseReq.exerciseId(), exerciseReq.sets(), exerciseReq.repsMin(),
+                                exerciseReq.repsMax(), exerciseReq.targetRIR(), exerciseReq.suggestedWeight(), exerciseReq.notes()
                         );
                     });
                 }

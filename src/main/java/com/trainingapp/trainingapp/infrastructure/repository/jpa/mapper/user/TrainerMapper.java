@@ -21,6 +21,7 @@ public class TrainerMapper {
         entity.setLastName(domain.getLastName());
         entity.setEmail(domain.getEmail());
         entity.setPassword(domain.getPassword());
+        entity.setDni(domain.getDni());
         entity.setRole(domain.getRole());
         entity.setActive(domain.isActive());
         entity.setGymId(domain.getGymId());

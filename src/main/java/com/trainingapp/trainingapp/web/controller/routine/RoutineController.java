@@ -14,7 +14,8 @@ import java.util.List;
 @RequestMapping("/routines")
 public class RoutineController {
 
-    private final CreateRoutineUseCase createRoutineUseCase;
+    private final CreatePersonalRoutineUseCase createPersonalRoutineUseCase;
+    private final AssignRoutineUseCase assignRoutineUseCase;
     private final GetRoutineByIdUseCase getRoutineByIdUseCase;
     private final GetAllRoutinesByMemberIdUseCase getAllRoutinesByMemberIdUseCase;
     private final ActivateRoutineUseCase activateRoutineUseCase;
@@ -25,19 +26,23 @@ public class RoutineController {
     private final DeleteRoutineUseCase deleteRoutineUseCase;
     private final CompleteRoutineUseCase completeRoutineUseCase;
     private final GetAllRoutinesByTrainerIdUseCase getAllRoutinesByTrainerIdUseCase;
+    private final RequestRoutineUseCase requestRoutineUseCase;
 
-    public RoutineController(CreateRoutineUseCase createRoutineUseCase,
-                             GetRoutineByIdUseCase getRoutineByIdUseCase,
-                             GetAllRoutinesByMemberIdUseCase getAllRoutinesByMemberIdUseCase,
-                             ActivateRoutineUseCase activateRoutineUseCase,
-                             GetActiveRoutineUseCase getActiveRoutineUseCase,
-                             InactiveRoutineUseCase inactiveRoutineUseCase,
-                             DuplicateRoutineUseCase duplicateRoutineUseCase,
-                             UpdateRoutineUseCase updateRoutineUseCase,
-                             DeleteRoutineUseCase deleteRoutineUseCase,
-                             CompleteRoutineUseCase completeRoutineUseCase,
-                             GetAllRoutinesByTrainerIdUseCase getAllRoutinesByTrainerIdUseCase) {
-        this.createRoutineUseCase = createRoutineUseCase;
+    public RoutineController(
+            CreatePersonalRoutineUseCase createPersonalRoutineUseCase,
+            AssignRoutineUseCase assignRoutineUseCase, GetRoutineByIdUseCase getRoutineByIdUseCase,
+            GetAllRoutinesByMemberIdUseCase getAllRoutinesByMemberIdUseCase,
+            ActivateRoutineUseCase activateRoutineUseCase,
+            GetActiveRoutineUseCase getActiveRoutineUseCase,
+            InactiveRoutineUseCase inactiveRoutineUseCase,
+            DuplicateRoutineUseCase duplicateRoutineUseCase,
+            UpdateRoutineUseCase updateRoutineUseCase,
+            DeleteRoutineUseCase deleteRoutineUseCase,
+            CompleteRoutineUseCase completeRoutineUseCase,
+            GetAllRoutinesByTrainerIdUseCase getAllRoutinesByTrainerIdUseCase,
+            RequestRoutineUseCase requestRoutineUseCase) {
+        this.createPersonalRoutineUseCase = createPersonalRoutineUseCase;
+        this.assignRoutineUseCase = assignRoutineUseCase;
         this.getRoutineByIdUseCase = getRoutineByIdUseCase;
         this.getAllRoutinesByMemberIdUseCase = getAllRoutinesByMemberIdUseCase;
         this.activateRoutineUseCase = activateRoutineUseCase;
@@ -48,13 +53,20 @@ public class RoutineController {
         this.deleteRoutineUseCase = deleteRoutineUseCase;
         this.completeRoutineUseCase = completeRoutineUseCase;
         this.getAllRoutinesByTrainerIdUseCase = getAllRoutinesByTrainerIdUseCase;
+        this.requestRoutineUseCase = requestRoutineUseCase;
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
-    @PostMapping
-    public ResponseEntity<CreateRoutineResponse> createRoutine(
-            @Valid @RequestBody CreateRoutineRequest routineRequest) {
-        CreateRoutineResponse response = createRoutineUseCase.execute(routineRequest);
+    @PostMapping("/personal")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<CreateRoutineResponse> createPersonalRoutine(@Valid @RequestBody CreatePersonalRoutineRequest request) {
+        CreateRoutineResponse response = createPersonalRoutineUseCase.execute(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/assign")
+    @PreAuthorize("hasAnyRole('TRAINER', 'ADMIN')")
+    public ResponseEntity<CreateRoutineResponse> assignRoutine(@Valid @RequestBody AssignRoutineRequest request) {
+        CreateRoutineResponse response = assignRoutineUseCase.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -136,5 +148,13 @@ public class RoutineController {
     public ResponseEntity<Void> deleteRoutine(@PathVariable Long id) {
         deleteRoutineUseCase.execute(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/request")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<Void> requestRoutine(@RequestBody(required = false) RequestRoutineMessage request) {
+        String note = (request != null) ? request.note() : null;
+        requestRoutineUseCase.execute(note);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

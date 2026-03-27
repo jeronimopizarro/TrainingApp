@@ -20,7 +20,7 @@ public class MemberAccessValidator {
 
     public Member findMemberAndValidateAccess(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException("El socio consultado no existe."));
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         // Esto es seguro: Si es SUPER_ADMIN lo deja pasar. Si es GYM_ADMIN comprueba el ID.
         securityUtils.validateSameGym(member.getGymId());
