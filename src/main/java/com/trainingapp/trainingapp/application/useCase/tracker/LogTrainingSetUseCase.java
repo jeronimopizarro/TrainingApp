@@ -56,6 +56,7 @@ public class LogTrainingSetUseCase {
                 request.setNumber(),
                 request.repsPerformed(),
                 request.weightLifted(),
+                request.rir(),
                 request.notes()
         );
     }

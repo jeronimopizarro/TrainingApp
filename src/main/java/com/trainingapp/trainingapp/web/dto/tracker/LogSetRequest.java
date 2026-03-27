@@ -21,6 +21,9 @@ public record LogSetRequest(
         @Min(value = 0, message = "El peso no puede ser negativo")
         BigDecimal weightLifted,
 
+        @Min(value = 0, message = "El RIR no puede ser negativo")
+        Integer rir,
+
         String notes
 ) {
 }

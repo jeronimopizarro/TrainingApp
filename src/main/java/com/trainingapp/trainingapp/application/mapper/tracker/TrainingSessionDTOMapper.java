@@ -27,6 +27,7 @@ public class TrainingSessionDTOMapper {
                 setLog.getSetNumber(),
                 setLog.getRepsPerformed(),
                 setLog.getWeightLifted(),
+                setLog.getRir(),
                 setLog.getNotes()
         );
     }

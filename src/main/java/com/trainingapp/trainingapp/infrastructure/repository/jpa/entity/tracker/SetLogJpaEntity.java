@@ -33,6 +33,9 @@ public class SetLogJpaEntity {
     @Column(name = "weight_lifted", nullable = false, precision = 6, scale = 2)
     private BigDecimal weightLifted;
 
+    @Column(name = "rir")
+    private Integer rir;
+
     @Column(length = 500)
     private String notes;
 

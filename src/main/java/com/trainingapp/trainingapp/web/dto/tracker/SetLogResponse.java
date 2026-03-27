@@ -8,6 +8,7 @@ public record SetLogResponse(
         Integer setNumber,
         Integer repsPerformed,
         BigDecimal weightLifted,
+        Integer rir,
         String notes
 ) {
 }

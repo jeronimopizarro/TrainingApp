@@ -42,6 +42,7 @@ public class TrainingSessionMapper {
                 setEntity.getSetNumber(),
                 setEntity.getRepsPerformed(),
                 setEntity.getWeightLifted(),
+                setEntity.getRir(),
                 setEntity.getNotes()
         );
     }
@@ -68,6 +69,7 @@ public class TrainingSessionMapper {
         entity.setSetNumber(setLog.getSetNumber());
         entity.setRepsPerformed(setLog.getRepsPerformed());
         entity.setWeightLifted(setLog.getWeightLifted());
+        entity.setRir(setLog.getRir());
         entity.setNotes(setLog.getNotes());
         return entity;
     }
