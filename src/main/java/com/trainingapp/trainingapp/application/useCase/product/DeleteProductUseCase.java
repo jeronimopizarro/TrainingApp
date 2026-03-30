@@ -28,7 +28,6 @@ public class DeleteProductUseCase {
 
     private Product findProductOrThrow(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(
-                        "El producto con ID " + id + " no existe."));
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 }

@@ -35,7 +35,6 @@ public class DeleteAdminUseCase {
 
     private Admin findAdminOrThrow(Long id) {
         return adminRepository.findById(id)
-                .orElseThrow(() -> new AdminNotFoundException(
-                        "Admin with id " + id + " was not found."));
+                .orElseThrow(() -> new AdminNotFoundException(id));
     }
 }

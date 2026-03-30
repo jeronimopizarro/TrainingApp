@@ -15,7 +15,7 @@ public class GymValidator {
 
     public void validateExists(Long gymId) {
         if (!gymRepository.existsById(gymId)) {
-            throw new GymNotFoundException("El gimnasio con ID " + gymId + " no existe.");
+            throw new GymNotFoundException(gymId);
         }
     }
 }

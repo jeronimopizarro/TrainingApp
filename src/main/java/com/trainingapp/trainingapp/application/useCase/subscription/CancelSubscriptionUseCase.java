@@ -3,6 +3,8 @@ package com.trainingapp.trainingapp.application.useCase.subscription;
 import com.trainingapp.trainingapp.application.mapper.subscription.SubscriptionDTOMapper;
 import com.trainingapp.trainingapp.application.validator.MemberAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.subscription.Subscription;
+import com.trainingapp.trainingapp.domain.exception.subscription.SubscriptionAlreadyCancelledException;
+import com.trainingapp.trainingapp.domain.exception.subscription.SubscriptionAlreadyExpiredException;
 import com.trainingapp.trainingapp.domain.exception.subscription.SubscriptionNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.subscription.SubscriptionRepository;
 import com.trainingapp.trainingapp.web.dto.subscription.SubscriptionResponse;
@@ -39,15 +41,15 @@ public class CancelSubscriptionUseCase {
 
     private Subscription findSubscriptionOrThrow(Long subscriptionId) {
         return subscriptionRepository.findById(subscriptionId)
-                .orElseThrow(() -> new SubscriptionNotFoundException("La suscripción no existe."));
+                .orElseThrow(() -> new SubscriptionNotFoundException(subscriptionId));
     }
 
     private void validateCanBeCancelled(Subscription subscription) {
         if (subscription.isCancelled()) {
-            throw new IllegalStateException("La suscripción ya está cancelada.");
+            throw new SubscriptionAlreadyCancelledException();
         }
         if (subscription.isExpired()) {
-            throw new IllegalStateException("No se puede cancelar una suscripción que ya ha vencido.");
+            throw new SubscriptionAlreadyExpiredException();
         }
     }
 }

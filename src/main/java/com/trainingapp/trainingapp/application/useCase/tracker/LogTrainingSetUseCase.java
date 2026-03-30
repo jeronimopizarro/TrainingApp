@@ -3,6 +3,8 @@ package com.trainingapp.trainingapp.application.useCase.tracker;
 import com.trainingapp.trainingapp.application.mapper.tracker.TrainingSessionDTOMapper;
 import com.trainingapp.trainingapp.domain.entity.tracker.SetLog;
 import com.trainingapp.trainingapp.domain.entity.tracker.TrainingSession;
+import com.trainingapp.trainingapp.domain.exception.tracker.TrainingSessionNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.tracker.UnauthorizedSessionAccessException;
 import com.trainingapp.trainingapp.domain.repository.tracker.TrainingSessionRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.tracker.LogSetRequest;
@@ -41,10 +43,10 @@ public class LogTrainingSetUseCase {
 
     private TrainingSession getSessionAndValidateOwnership(Long sessionId, Long memberId) {
         TrainingSession session = trainingSessionRepository.findById(sessionId)
-                .orElseThrow(() -> new IllegalArgumentException("La sesión de entrenamiento no existe."));
+                .orElseThrow(() -> new TrainingSessionNotFoundException(sessionId));
 
         if (!session.getMemberId().equals(memberId)) {
-            throw new IllegalStateException("Acceso denegado: No puedes registrar series en una sesión que no te pertenece.");
+            throw new UnauthorizedSessionAccessException();
         }
 
         return session;

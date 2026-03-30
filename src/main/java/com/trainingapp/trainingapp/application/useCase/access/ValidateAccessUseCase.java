@@ -3,6 +3,7 @@ package com.trainingapp.trainingapp.application.useCase.access;
 import com.trainingapp.trainingapp.domain.entity.Access.AccessLog;
 import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.domain.enums.access.AccessMethod;
+import com.trainingapp.trainingapp.domain.exception.user.MemberNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.Access.AccessLogRepository;
 import com.trainingapp.trainingapp.domain.repository.subscription.SubscriptionRepository;
 import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
@@ -45,15 +46,18 @@ public class ValidateAccessUseCase {
             if (request.method() == AccessMethod.QR) {
                 Long memberId = jwtService.extractMemberIdFromQr(request.identifier());
                 member = memberRepository.findById(memberId)
-                        .orElseThrow(() -> new IllegalArgumentException("Socio no encontrado."));
+                        .orElseThrow(() -> new MemberNotFoundException(memberId));
             } else { //DNI
                 member = memberRepository.findByDni(request.identifier().trim())
-                        .orElseThrow(() -> new IllegalArgumentException("No existe ningún socio registrado con ese DNI."));
+                        .orElseThrow(() -> new  MemberNotFoundException(Long.parseLong(
+                                request.identifier().trim())));
             }
 
             return validateBusinessRules(member, securityUtils.getCurrentUserGymId());
 
-        } catch (IllegalArgumentException e) {
+        } catch (NumberFormatException e) {
+            return logAndReturn(null, currentGymId, false, "Desconocido", "El identificador proporcionado no es válido.");
+        } catch (MemberNotFoundException | IllegalArgumentException e) {
             return logAndReturn(null, currentGymId, false, "Desconocido", e.getMessage());
         } catch (ExpiredJwtException e) {
             return logAndReturn(null, currentGymId, false, "Desconocido", "El código QR expiró. Por favor, genere uno nuevo.");

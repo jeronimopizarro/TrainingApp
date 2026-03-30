@@ -54,7 +54,7 @@ public class DeleteGymUseCase {
 
     private Gym findGymOrThrow(Long id) {
         return gymRepository.findById(id).orElseThrow(
-                () -> new GymNotFoundException("The gym with id " + id + " was not found."));
+                () -> new GymNotFoundException(id));
     }
 
     private void deactivateAndSaveGym(Gym gym) {

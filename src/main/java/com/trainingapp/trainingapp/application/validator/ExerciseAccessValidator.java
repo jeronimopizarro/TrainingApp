@@ -2,9 +2,9 @@ package com.trainingapp.trainingapp.application.validator;
 
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
+import com.trainingapp.trainingapp.domain.exception.exercise.UnauthorizedBaseExerciseModificationException;
+import com.trainingapp.trainingapp.domain.exception.exercise.UnauthorizedExerciseModificationException;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,7 +23,7 @@ public class ExerciseAccessValidator {
 
         // Ejercicios Base: Solo SuperAdmin puede tocarlos
         if (exercise.getIsBase()) {
-            throw new AccessDeniedException("No tienes permisos para modificar o eliminar ejercicios base del sistema.");
+            throw new UnauthorizedBaseExerciseModificationException();
         }
 
         securityUtils.validateSameGym(exercise.getGymId());
@@ -33,7 +33,7 @@ public class ExerciseAccessValidator {
                     && exercise.getCreatedByUserId().equals(currentUser.getId());
 
             if (!isCreator) {
-                throw new AccessDeniedException("Solo puedes modificar o eliminar los ejercicios creados por ti.");
+                throw new UnauthorizedExerciseModificationException();
             }
         }
     }

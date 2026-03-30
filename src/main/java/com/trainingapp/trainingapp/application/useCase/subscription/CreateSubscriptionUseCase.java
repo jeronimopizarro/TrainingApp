@@ -8,11 +8,12 @@ import com.trainingapp.trainingapp.application.validator.MemberAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
 import com.trainingapp.trainingapp.domain.entity.subscription.Subscription;
 import com.trainingapp.trainingapp.domain.enums.transaction.TransactionCategory;
+import com.trainingapp.trainingapp.domain.exception.membership.InactiveMembershipPlanException;
 import com.trainingapp.trainingapp.domain.exception.membership.MembershipNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.subscription.ActiveSubscriptionAlreadyExistsException;
+import com.trainingapp.trainingapp.domain.exception.subscription.InvalidSubscriptionStartDateException;
 import com.trainingapp.trainingapp.domain.repository.membership.MembershipPlanRepository;
 import com.trainingapp.trainingapp.domain.repository.subscription.SubscriptionRepository;
-import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.subscription.CreateSubscriptionRequest;
 import com.trainingapp.trainingapp.web.dto.subscription.SubscriptionResponse;
@@ -76,28 +77,25 @@ public class CreateSubscriptionUseCase {
     private MembershipPlan findPlanAndValidateAccess(Long planId) {
         MembershipPlan plan = planRepository.findById(planId)
                 .orElseThrow(
-                        () -> new MembershipNotFoundException("El plan seleccionado no existe."));
+                        () -> new MembershipNotFoundException(planId));
 
         securityUtils.validateSameGym(plan.getGymId());
 
         if (!plan.isActive()) {
-            throw new IllegalArgumentException("El plan seleccionado está inactivo.");
+            throw new InactiveMembershipPlanException();
         }
         return plan;
     }
 
     private void validateSubscriptionRules(CreateSubscriptionRequest request) {
         if (request.startDate().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("La fecha de inicio no puede ser anterior a hoy.");
+            throw new InvalidSubscriptionStartDateException();
         }
 
         Optional<Subscription> active =
                 subscriptionRepository.findActiveByMemberId(request.memberId());
         if (active.isPresent()) {
-            throw new ActiveSubscriptionAlreadyExistsException(
-                    "El socio ya posee una suscripción activa que vence el: " + active.get()
-                            .getEndDate()
-            );
+            throw new ActiveSubscriptionAlreadyExistsException(active.get().getEndDate());
         }
     }
 

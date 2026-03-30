@@ -39,12 +39,12 @@ public class UpdateGymUseCase {
 
     private Gym findGymOrThrow(Long id) {
         return gymRepository.findById(id).orElseThrow(
-                () -> new GymNotFoundException("The gym with id " + id + " was not found."));
+                () -> new GymNotFoundException(id));
     }
 
     private void validateGymNameIsUniqueForUpdate(String name, Long currentId) {
         if (gymRepository.existsByNameAndIdNot(name, currentId)){
-            throw new DuplicateGymNameException("The gym with name " + name + " already exists.");
+            throw new DuplicateGymNameException(name);
         }
     }
 }

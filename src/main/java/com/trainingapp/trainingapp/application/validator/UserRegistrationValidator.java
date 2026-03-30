@@ -1,5 +1,6 @@
 package com.trainingapp.trainingapp.application.validator;
 
+import com.trainingapp.trainingapp.domain.exception.user.EmailAlreadyExistsException;
 import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ public class UserRegistrationValidator {
 
     public void validateEmailIsUnique(String email) {
         if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("El email " + email + " ya está registrado en el sistema.");
+            throw new EmailAlreadyExistsException(email);
         }
     }
 }

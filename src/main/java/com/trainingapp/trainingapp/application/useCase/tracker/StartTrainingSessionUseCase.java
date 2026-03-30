@@ -4,6 +4,8 @@ import com.trainingapp.trainingapp.application.mapper.tracker.TrainingSessionDTO
 import com.trainingapp.trainingapp.application.useCase.subscription.GetActiveSubscriptionByMemberUseCase;
 import com.trainingapp.trainingapp.domain.entity.tracker.TrainingSession;
 import com.trainingapp.trainingapp.domain.exception.subscription.ActiveSubscriptionNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.tracker.ActiveSessionAlreadyExistsException;
+import com.trainingapp.trainingapp.domain.exception.tracker.TrainingRequiresActiveSubscriptionException;
 import com.trainingapp.trainingapp.domain.repository.tracker.TrainingSessionRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.tracker.SessionResponse;
@@ -46,16 +48,14 @@ public class StartTrainingSessionUseCase {
         try {
             getActiveSubscriptionUseCase.execute(memberId);
         } catch (ActiveSubscriptionNotFoundException ex) {
-            throw new IllegalStateException(
-                    "Acceso denegado: No puedes iniciar un entrenamiento sin una membresía activa.");
+            throw new TrainingRequiresActiveSubscriptionException();
         }
     }
 
     private void ensureNoActiveSessionExists(Long memberId) {
         trainingSessionRepository.findActiveSessionByMemberId(memberId)
                 .ifPresent(session -> {
-                    throw new IllegalStateException(
-                            "Ya tienes un entrenamiento en progreso (ID: " + session.getId() + "). Finalízalo antes de iniciar uno nuevo.");
+                    throw new ActiveSessionAlreadyExistsException(session.getId());
                 });
     }
 

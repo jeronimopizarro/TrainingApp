@@ -6,6 +6,9 @@ import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.user.Role;
+import com.trainingapp.trainingapp.domain.exception.routine.UnauthorizedRoutineAccessException;
+import com.trainingapp.trainingapp.domain.exception.routine.UnauthorizedRoutineModificationException;
+import com.trainingapp.trainingapp.domain.exception.user.TrainerNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import org.springframework.security.access.AccessDeniedException;
@@ -30,14 +33,14 @@ public class RoutineAccessValidator {
 
         if (currentUser.isMember()) {
             if (!routine.getMemberId().equals(currentUser.getId())) {
-                throw new AccessDeniedException("Solo puedes modificar tus propias rutinas.");
+                throw new UnauthorizedRoutineModificationException();
             }
         } else if (currentUser.isTrainer()) {
             boolean isCreator = routine.getCreatedByUserId().equals(currentUser.getId());
             boolean isAssigned = routine.getTrainerId() != null && routine.getTrainerId().equals(currentUser.getId());
 
             if (!isCreator && !isAssigned) {
-                throw new AccessDeniedException("Solo puedes modificar rutinas que creaste o te fueron asignadas.");
+                throw new UnauthorizedRoutineModificationException();
             }
         }
     }
@@ -50,7 +53,7 @@ public class RoutineAccessValidator {
 
         if (currentUser.isMember()) {
             if (!routine.getMemberId().equals(currentUser.getId())) {
-                throw new AccessDeniedException("Solo puedes ver tus propias rutinas.");
+                throw new UnauthorizedRoutineAccessException();
             }
         }
     }
@@ -61,13 +64,13 @@ public class RoutineAccessValidator {
 
         if (currentUser.isMember()) {
             if (!currentUser.getId().equals(targetMemberId)) {
-                throw new AccessDeniedException("No puedes consultar rutinas de otro socio.");
+                throw new UnauthorizedRoutineAccessException();
             }
             return;
         }
 
         User targetUser = userRepository.findById(targetMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("El socio consultado no existe."));
+                .orElseThrow(() -> new TrainerNotFoundException(targetMemberId));
         securityUtils.validateSameGym(extractTargetGymId(targetUser));
     }
 
@@ -77,13 +80,13 @@ public class RoutineAccessValidator {
 
         if (currentUser.isTrainer()) {
             if (!currentUser.getId().equals(targetTrainerId)) {
-                throw new AccessDeniedException("No puedes auditar rutinas de otro entrenador.");
+                throw new UnauthorizedRoutineAccessException();
             }
             return;
         }
 
         User targetUser = userRepository.findById(targetTrainerId)
-                .orElseThrow(() -> new IllegalArgumentException("El entrenador consultado no existe."));
+                .orElseThrow(() -> new TrainerNotFoundException(targetTrainerId));
         securityUtils.validateSameGym(extractTargetGymId(targetUser));
     }
 

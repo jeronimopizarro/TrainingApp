@@ -40,12 +40,12 @@ public class UpdateMembershipPlanUseCase {
 
     private MembershipPlan findMembershipPlanOrThrow(Long id) {
         return planRepository.findById(id)
-                .orElseThrow(() -> new MembershipNotFoundException("Plan no encontrado"));
+                .orElseThrow(() -> new MembershipNotFoundException(id));
     }
 
     private void validatePlanNameIsUniqueForUpdate(String name, Long gymId, Long currentId) {
         if (planRepository.existsByNameAndGymIdAndIdNot(name, gymId, currentId)) {
-            throw new DuplicateMembershipPlanNameException("Ya existe otro plan activo con el nombre '" + name + "' en tu gimnasio.");
+            throw new DuplicateMembershipPlanNameException(name);
         }
     }
 }

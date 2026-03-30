@@ -3,7 +3,6 @@ package com.trainingapp.trainingapp.application.useCase.exercise;
 import com.trainingapp.trainingapp.application.mapper.exercise.ExerciseDTOMapper;
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
@@ -35,8 +34,7 @@ public class GetExerciseByIdUseCase {
     }
 
     private Exercise findExerciseOrThrow(Long id) {
-        return exerciseRepository.findById(id).orElseThrow(() -> new ExerciseNotFoundException(
-                "The exercise with id " + id + " was not found."));
+        return exerciseRepository.findById(id).orElseThrow(() -> new ExerciseNotFoundException(id));
     }
 
     private void validateReadPermission(User user, Exercise exercise) {

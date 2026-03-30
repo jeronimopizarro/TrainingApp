@@ -5,13 +5,14 @@ import com.trainingapp.trainingapp.application.validator.GymValidator;
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
 import com.trainingapp.trainingapp.domain.enums.routine.RoutineRequestStatus;
+import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.exercise.UnauthorizedExerciseAccessException;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRequestRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.routine.CreatePersonalRoutineRequest;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,21 +60,18 @@ public class CreatePersonalRoutineUseCase {
         request.days().forEach(day -> {
             day.exercises().forEach(exReq -> {
                 Exercise exercise = exerciseRepository.findById(exReq.exerciseId())
-                        .orElseThrow(() -> new IllegalArgumentException(
-                                "Cannot create routine: Exercise with ID " + exReq.exerciseId() + " does not exist."
-                        ));
+                        .orElseThrow(() -> new ExerciseNotFoundException(exReq.exerciseId()));
 
                 if (!exercise.getIsBase() && !exercise.getGymId().equals(gymId)) {
-                    throw new AccessDeniedException(
-                            "El ejercicio '" + exercise.getName() + "' no pertenece a tu gimnasio."
-                    );
+                    throw new UnauthorizedExerciseAccessException();
                 }
             });
         });
     }
 
     private void cancelPendingRoutineRequest(Long memberId) {
-        routineRequestRepository.findFirstByMemberIdAndStatus(memberId, RoutineRequestStatus.PENDING)
+        routineRequestRepository.findFirstByMemberIdAndStatus(memberId,
+                        RoutineRequestStatus.PENDING)
                 .ifPresent(pendingRequest -> {
                     pendingRequest.cancel();
                     routineRequestRepository.save(pendingRequest);

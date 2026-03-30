@@ -7,8 +7,9 @@ import com.trainingapp.trainingapp.domain.entity.routine.Routine;
 import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.exercise.UnauthorizedExerciseAccessException;
+import com.trainingapp.trainingapp.domain.exception.routine.InvalidRoutineStateException;
 import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
@@ -16,7 +17,6 @@ import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
 import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest;
 import jakarta.transaction.Transactional;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,15 +60,14 @@ public class UpdateRoutineUseCase {
         return routineDTOMapper.toResponse(updatedRoutine, "Routine updated successfully");
     }
 
-    private Routine validateRoutine(Long routineId) {
-        return routineRepository.findById(routineId).orElseThrow(
-                () -> new RoutineNotFoundException(
-                        "The routine with id " + routineId + " was not found"));
+    private Routine validateRoutine(Long id) {
+        return routineRepository.findById(id).orElseThrow(
+                () -> new RoutineNotFoundException(id));
     }
 
     private void validateRoutineIsDraft(Routine routine) {
         if (routine.getStatus() != RoutineStatus.DRAFT) {
-            throw new IllegalStateException("Solo se pueden modificar rutinas en estado DRAFT.");
+            throw new InvalidRoutineStateException();
         }
     }
 
@@ -76,16 +75,12 @@ public class UpdateRoutineUseCase {
         request.days().forEach(day -> {
             day.exercises().forEach(exReq -> {
                 Exercise exercise = exerciseRepository.findById(exReq.exerciseId())
-                        .orElseThrow(() -> new ExerciseNotFoundException(
-                                "Cannot update routine: Exercise with ID " + exReq.exerciseId() + " does not exist."
-                        ));
+                        .orElseThrow(() -> new ExerciseNotFoundException(exReq.exerciseId()));
 
                 // Solo se permiten ejercicios de nuestro GYM.
                 if (!currentUser.isSuperAdmin()) {
                     if (!exercise.getIsBase() && !gymId.equals(exercise.getGymId())) {
-                        throw new AccessDeniedException(
-                                "El ejercicio '" + exercise.getName() + "' no pertenece a tu gimnasio."
-                        );
+                        throw new UnauthorizedExerciseAccessException();
                     }
                 }
             });

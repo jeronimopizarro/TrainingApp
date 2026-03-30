@@ -31,7 +31,6 @@ public class CompleteRoutineUseCase {
 
     private Routine findRoutineOrThrow(Long id) {
         return routineRepository.findById(id)
-                .orElseThrow(() -> new RoutineNotFoundException(
-                        "The routine with id " + id + " was not found"));
+                .orElseThrow(() -> new RoutineNotFoundException(id));
     }
 }

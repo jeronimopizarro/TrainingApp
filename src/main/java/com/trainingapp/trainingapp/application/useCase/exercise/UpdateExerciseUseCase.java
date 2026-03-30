@@ -4,15 +4,15 @@ import com.trainingapp.trainingapp.application.mapper.exercise.ExerciseDTOMapper
 import com.trainingapp.trainingapp.application.validator.ExerciseAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
+import com.trainingapp.trainingapp.domain.exception.exercise.BaseExerciseAlreadyExistsException;
 import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.exercise.GymExerciseAlreadyExistsException;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.exercise.MuscleGroupRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.exercise.ExerciseResponse;
 import com.trainingapp.trainingapp.web.dto.exercise.UpdateExerciseRequest;
 import jakarta.transaction.Transactional;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -52,18 +52,17 @@ public class UpdateExerciseUseCase {
 
     private Exercise findExerciseOrThrow(Long id) {
         return exerciseRepository.findById(id)
-                .orElseThrow(() -> new ExerciseNotFoundException(
-                        "The exercise with id " + id + " was not found."));
+                .orElseThrow(() -> new ExerciseNotFoundException(id));
     }
 
     private void validateExerciseNameIsUniqueForUpdate(String name, boolean isBase, Long gymId, Long currentId) {
         if (isBase) {
             if (exerciseRepository.existsBaseExerciseByNameAndIdNot(name, currentId)) {
-                throw new IllegalArgumentException("Ya existe otro ejercicio base con el nombre: " + name);
+                throw new BaseExerciseAlreadyExistsException(name);
             }
         } else {
             if (exerciseRepository.existsByNameAndGymIdAndIdNot(name, gymId, currentId)) {
-                throw new IllegalArgumentException("Ya existe otro ejercicio con ese nombre en tu gimnasio.");
+                throw new GymExerciseAlreadyExistsException(name);
             }
         }
     }

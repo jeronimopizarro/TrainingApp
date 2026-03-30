@@ -4,10 +4,10 @@ import com.trainingapp.trainingapp.application.mapper.routine.RoutineDTOMapper;
 import com.trainingapp.trainingapp.application.validator.RoutineAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
 import com.trainingapp.trainingapp.domain.exception.routine.ActiveRoutineAlreadyExistsException;
+import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.web.dto.routine.ActivateRoutineRequest;
 import com.trainingapp.trainingapp.web.dto.routine.RoutineResponse;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -41,13 +41,12 @@ public class ActivateRoutineUseCase {
 
     private Routine findRoutineOrThrow(Long id) {
         return routineRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Routine with id " + id + " not found."));
+                () -> new RoutineNotFoundException(id));
     }
 
     private void validateNoOtherActiveRoutine(Long memberId) {
         if (routineRepository.existsActiveByMemberId(memberId)) {
-            throw new ActiveRoutineAlreadyExistsException(
-                    "El socio ya tiene una rutina activa. Debe marcarla como completada o inactiva antes de iniciar una nueva.");
+            throw new ActiveRoutineAlreadyExistsException();
         }
     }
 }

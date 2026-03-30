@@ -7,13 +7,14 @@ import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.routine.RoutineRequestStatus;
+import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.exercise.UnauthorizedExerciseAccessException;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRequestRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.routine.AssignRoutineRequest;
 import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,21 +66,19 @@ public class AssignRoutineUseCase {
         request.days().forEach(day -> {
             day.exercises().forEach(exReq -> {
                 Exercise exercise = exerciseRepository.findById(exReq.exerciseId())
-                        .orElseThrow(() -> new IllegalArgumentException(
-                                "Cannot create routine: Exercise with ID " + exReq.exerciseId() + " does not exist."
-                        ));
+                        .orElseThrow(() -> new ExerciseNotFoundException(exReq.exerciseId()));
 
-                if (!currentUser.isSuperAdmin() && !exercise.getIsBase() && !exercise.getGymId().equals(gymId)) {
-                    throw new AccessDeniedException(
-                            "El ejercicio '" + exercise.getName() + "' no pertenece a tu gimnasio."
-                    );
+                if (!currentUser.isSuperAdmin() && !exercise.getIsBase() && !exercise.getGymId()
+                        .equals(gymId)) {
+                    throw new UnauthorizedExerciseAccessException();
                 }
             });
         });
     }
 
     private void completePendingRoutineRequest(Long memberId) {
-        routineRequestRepository.findFirstByMemberIdAndStatus(memberId, RoutineRequestStatus.PENDING)
+        routineRequestRepository.findFirstByMemberIdAndStatus(memberId,
+                        RoutineRequestStatus.PENDING)
                 .ifPresent(pendingRequest -> {
                     pendingRequest.complete();
                     routineRequestRepository.save(pendingRequest);

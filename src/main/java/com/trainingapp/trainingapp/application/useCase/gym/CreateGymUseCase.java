@@ -2,6 +2,7 @@ package com.trainingapp.trainingapp.application.useCase.gym;
 
 import com.trainingapp.trainingapp.application.mapper.gym.GymDTOMapper;
 import com.trainingapp.trainingapp.domain.entity.gym.Gym;
+import com.trainingapp.trainingapp.domain.exception.gym.GymAlreadyExistsException;
 import com.trainingapp.trainingapp.domain.repository.gym.GymRepository;
 import com.trainingapp.trainingapp.web.dto.gym.CreateGymRequest;
 import com.trainingapp.trainingapp.web.dto.gym.GymResponse;
@@ -32,8 +33,7 @@ public class CreateGymUseCase {
 
     private void validateGymNameIsUnique(String name) {
         if (gymRepository.existsByName(name)) {
-            throw new IllegalArgumentException(
-                    "Ya existe un gimnasio activo con el nombre: " + name);
+            throw new GymAlreadyExistsException(name);
         }
     }
 }

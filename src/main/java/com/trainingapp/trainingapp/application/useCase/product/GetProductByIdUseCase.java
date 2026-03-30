@@ -33,6 +33,6 @@ public class GetProductByIdUseCase {
 
     private Product findProductOrThrow(Long id) {
         return productRepository.findById(id).orElseThrow(
-                () -> new ProductNotFoundException("El producto con el ID: " + id + " no existe."));
+                () -> new ProductNotFoundException(id));
     }
 }

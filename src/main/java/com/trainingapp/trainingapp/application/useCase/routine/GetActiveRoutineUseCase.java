@@ -35,7 +35,6 @@ public class GetActiveRoutineUseCase {
 
     private Routine findActiveRoutineOrThrow(Long memberId) {
         return routineRepository.findByMemberIdAndStatus(memberId,
-                RoutineStatus.ACTIVE).orElseThrow(() -> new RoutineNotFoundException(
-                "No active routine found for member with ID: " + memberId));
+                RoutineStatus.ACTIVE).orElseThrow(() -> new RoutineNotFoundException(memberId));
     }
 }

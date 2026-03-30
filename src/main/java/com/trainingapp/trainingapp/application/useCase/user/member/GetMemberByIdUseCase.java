@@ -3,12 +3,11 @@ package com.trainingapp.trainingapp.application.useCase.user.member;
 import com.trainingapp.trainingapp.application.mapper.member.MemberDTOMapper;
 import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.user.MemberNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.user.UnauthorizedProfileAccessException;
 import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.user.member.MemberResponse;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -48,7 +47,7 @@ public class GetMemberByIdUseCase {
         boolean isSelfMember = currentUser.isMember() && currentUser.getId().equals(targetMember.getId());
 
         if (!isSuperAdmin && !isAdmin && !isTrainer && !isSelfMember) {
-            throw new AccessDeniedException("No tienes permisos para ver el perfil de este socio.");
+            throw new UnauthorizedProfileAccessException();
         }
     }
 }

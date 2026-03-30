@@ -39,7 +39,7 @@ public class SaleDTOMapper {
 
     private SaleDetailResponse toDetailResponse(SaleDetail detail) {
         Product product = productRepository.findById(detail.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado en el catálogo."));
+                .orElseThrow(() -> new ProductNotFoundException(detail.getProductId()));
 
         return new SaleDetailResponse(
                 detail.getId(),

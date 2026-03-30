@@ -1,7 +1,7 @@
 package com.trainingapp.trainingapp.domain.exception.product;
 
 public class ProductNotFoundException extends RuntimeException {
-    public ProductNotFoundException(String message) {
-        super(message);
+    public ProductNotFoundException(Long id) {
+        super("El producto con ID " + id + " no existe.");
     }
 }

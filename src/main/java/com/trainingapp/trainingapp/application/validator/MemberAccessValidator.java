@@ -1,7 +1,6 @@
 package com.trainingapp.trainingapp.application.validator;
 
 import com.trainingapp.trainingapp.domain.entity.user.Member;
-import com.trainingapp.trainingapp.domain.exception.user.MemberAccessDeniedException;
 import com.trainingapp.trainingapp.domain.exception.user.MemberNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;

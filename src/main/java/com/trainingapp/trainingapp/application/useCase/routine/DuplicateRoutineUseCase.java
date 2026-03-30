@@ -48,8 +48,7 @@ public class DuplicateRoutineUseCase {
 
     private Routine findRoutineOrThrow(Long sourceRoutineId) {
         return routineRepository.findById(sourceRoutineId).orElseThrow(
-                () -> new RoutineNotFoundException(
-                        "The routine with id " + sourceRoutineId + " was not found"));
+                () -> new RoutineNotFoundException(sourceRoutineId));
     }
 
     private static Long resolveTargetTrainer(DuplicateRoutineRequest request, Routine sourceRoutine) {

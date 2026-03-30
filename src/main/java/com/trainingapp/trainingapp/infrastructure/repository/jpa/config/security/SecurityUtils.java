@@ -4,9 +4,9 @@ import com.trainingapp.trainingapp.domain.entity.user.Admin;
 import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
+import com.trainingapp.trainingapp.domain.exception.auth.UnauthenticatedUserException;
+import com.trainingapp.trainingapp.domain.exception.gym.UnauthorizedGymAccessException;
 import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class SecurityUtils {
     public User getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new AccessDeniedException("Usuario no encontrado o no autenticado."));
+                .orElseThrow(UnauthenticatedUserException::new);
     }
 
     // ¿El usuario actual pertenece a este gimnasio?
@@ -32,8 +32,7 @@ public class SecurityUtils {
 
         Long currentUserGymId = getCurrentUserGymId();
         if (!targetGymId.equals(currentUserGymId)) {
-            throw new org.springframework.security.access.AccessDeniedException(
-                    "Acceso denegado: El recurso pertenece a otro gimnasio.");
+            throw new UnauthorizedGymAccessException();
         }
     }
 

@@ -78,7 +78,7 @@ public class ProcessSaleUseCase {
 
     private Product getAndValidateProduct(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("El producto con ID " + productId + " no existe."));
+                .orElseThrow(() -> new ProductNotFoundException(productId));
         securityUtils.validateSameGym(product.getGymId());
 
         return product;

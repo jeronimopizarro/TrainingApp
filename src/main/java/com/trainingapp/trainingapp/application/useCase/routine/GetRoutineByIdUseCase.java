@@ -42,8 +42,7 @@ public class GetRoutineByIdUseCase {
 
     private Routine findRoutineOrThrow(Long id) {
         return routineRepository.findById(id)
-                .orElseThrow(() -> new RoutineNotFoundException(
-                        "The routine with id " + id + " was not found"));
+                .orElseThrow(() -> new RoutineNotFoundException(id));
     }
 
     private List<Exercise> fetchExerciseCatalog(Routine routine) {

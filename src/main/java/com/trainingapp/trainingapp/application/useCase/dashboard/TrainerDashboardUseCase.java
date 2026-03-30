@@ -47,7 +47,7 @@ public class TrainerDashboardUseCase {
 
     private Trainer getTrainerById(Long trainerId) {
         return trainerRepository.findById(trainerId)
-                .orElseThrow(() -> new TrainerNotFoundException("No se encontró el entrenador con ID: " + trainerId));
+                .orElseThrow(() -> new TrainerNotFoundException(trainerId));
     }
 
     private List<RoutineRequest> getPendingRequestsForGym(Long gymId) {

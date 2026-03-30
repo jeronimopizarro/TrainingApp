@@ -30,6 +30,6 @@ public class DeleteMembershipPlanUseCase {
 
     private MembershipPlan findMemberShipOrThrow(Long id) {
         return planRepository.findById(id)
-                .orElseThrow(() -> new MembershipNotFoundException("Plan no encontrado"));
+                .orElseThrow(() -> new MembershipNotFoundException(id));
     }
 }

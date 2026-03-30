@@ -4,7 +4,9 @@ import com.trainingapp.trainingapp.application.mapper.exercise.ExerciseDTOMapper
 import com.trainingapp.trainingapp.application.validator.GymValidator;
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
 import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
+import com.trainingapp.trainingapp.domain.exception.exercise.BaseExerciseAlreadyExistsException;
+import com.trainingapp.trainingapp.domain.exception.exercise.GymExerciseAlreadyExistsException;
+import com.trainingapp.trainingapp.domain.exception.exercise.MuscleGroupNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.exercise.MuscleGroupRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
@@ -24,7 +26,8 @@ public class CreateExerciseUseCase {
 
     public CreateExerciseUseCase(ExerciseRepository exerciseRepository,
                                  MuscleGroupRepository muscleGroupRepository,
-                                 SecurityUtils securityUtils, GymValidator gymValidator, ExerciseDTOMapper exerciseDTOMapper) {
+                                 SecurityUtils securityUtils, GymValidator gymValidator,
+                                 ExerciseDTOMapper exerciseDTOMapper) {
         this.exerciseRepository = exerciseRepository;
         this.muscleGroupRepository = muscleGroupRepository;
         this.securityUtils = securityUtils;
@@ -54,8 +57,7 @@ public class CreateExerciseUseCase {
     private void validateMuscleGroupExist(CreateExerciseRequest request) {
         request.muscleGroups().forEach(mgRequest -> {
             muscleGroupRepository.findById(mgRequest.muscleGroupId())
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "Muscle group with ID " + mgRequest.muscleGroupId() + " does not exist."));
+                    .orElseThrow(() -> new MuscleGroupNotFoundException(mgRequest.muscleGroupId()));
         });
     }
 
@@ -66,13 +68,11 @@ public class CreateExerciseUseCase {
     private void validateExerciseNameIsUnique(String name, boolean isBase, Long gymId) {
         if (isBase) {
             if (exerciseRepository.existsBaseExerciseByName(name)) {
-                throw new IllegalArgumentException(
-                        "Ya existe un ejercicio base con el nombre: " + name);
+                throw new BaseExerciseAlreadyExistsException(name);
             }
         } else {
             if (exerciseRepository.existsByNameAndGymId(name, gymId)) {
-                throw new IllegalArgumentException(
-                        "Ya existe un ejercicio con ese nombre en tu gimnasio.");
+                throw new GymExerciseAlreadyExistsException(name);
             }
         }
     }

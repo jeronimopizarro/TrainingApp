@@ -35,7 +35,6 @@ public class DeleteTrainerUseCase {
 
     private Trainer findTrainerOrThrow(Long id) {
         return trainerRepository.findById(id)
-                .orElseThrow(() -> new TrainerNotFoundException(
-                        "Trainer with id " + id + " not found."));
+                .orElseThrow(() -> new TrainerNotFoundException(id));
     }
 }
