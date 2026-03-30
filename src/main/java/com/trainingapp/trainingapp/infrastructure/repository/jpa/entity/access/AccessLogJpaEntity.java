@@ -1,5 +1,6 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.access;
 
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.BaseJpaEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccessLogJpaEntity {
+public class AccessLogJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

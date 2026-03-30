@@ -1,18 +1,17 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine;
 
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.BaseJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "routine_detail")
 @Getter
 @Setter
 @NoArgsConstructor
-public class RoutineDetailJpaEntity {
+public class RoutineDetailJpaEntity extends BaseJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "routine_detail_id")
@@ -43,8 +42,4 @@ public class RoutineDetailJpaEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "training_day_id", nullable = false)
     private TrainingDayJpaEntity trainingDay;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 }

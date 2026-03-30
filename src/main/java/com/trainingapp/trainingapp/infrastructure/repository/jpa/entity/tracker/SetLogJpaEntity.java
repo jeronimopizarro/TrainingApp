@@ -1,5 +1,6 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.tracker;
 
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.BaseJpaEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SetLogJpaEntity {
+public class SetLogJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,9 +1,11 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.exercise;
 
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.BaseJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MuscleGroupJpaEntity {
+public class MuscleGroupJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

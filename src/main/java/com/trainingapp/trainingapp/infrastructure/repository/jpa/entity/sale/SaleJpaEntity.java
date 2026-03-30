@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.sale;
 
 import com.trainingapp.trainingapp.domain.enums.transaction.PaymentMethod;
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.BaseJpaEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaleJpaEntity {
+public class SaleJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

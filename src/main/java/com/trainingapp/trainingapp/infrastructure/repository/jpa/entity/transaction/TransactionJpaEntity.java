@@ -2,6 +2,7 @@ package com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.transac
 
 import com.trainingapp.trainingapp.domain.enums.transaction.PaymentMethod;
 import com.trainingapp.trainingapp.domain.enums.transaction.TransactionCategory;
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.BaseJpaEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionJpaEntity {
+public class TransactionJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,12 +54,9 @@ public class TransactionJpaEntity {
     @Column(name = "sale_id")
     private Long saleId;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        super.onCreate();
         if (this.transactionDate == null) {
             this.transactionDate = LocalDateTime.now();
         }

@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine;
 
 import com.trainingapp.trainingapp.domain.enums.routine.RoutineRequestStatus;
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.BaseJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RoutineRequestJpaEntity {
+public class RoutineRequestJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

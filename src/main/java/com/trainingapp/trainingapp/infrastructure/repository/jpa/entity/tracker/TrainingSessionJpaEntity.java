@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.tracker;
 
 import com.trainingapp.trainingapp.domain.enums.tracker.SessionStatus;
+import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.BaseJpaEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TrainingSessionJpaEntity {
+public class TrainingSessionJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
