@@ -8,6 +8,7 @@ import com.trainingapp.trainingapp.domain.exception.user.member.MemberNotFoundEx
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRequestRepository;
 import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
+import com.trainingapp.trainingapp.web.dto.routine.RequestRoutineMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +28,13 @@ public class RequestRoutineUseCase {
     }
 
     @Transactional
-    public void execute(String note) {
+    public void execute(RequestRoutineMessage request) {
         Long memberId = securityUtils.getCurrentUser().getId();
 
         validateNoPendingRequestExists(memberId);
         Member member = findMemberById(memberId);
 
-        RoutineRequest newRequest = createRoutineRequest(note, member);
+        RoutineRequest newRequest = createRoutineRequest(request, member);
         routineRequestRepository.save(newRequest);
     }
 
@@ -48,11 +49,15 @@ public class RequestRoutineUseCase {
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
     }
 
-    private RoutineRequest createRoutineRequest(String note, Member member) {
+    private RoutineRequest createRoutineRequest(RequestRoutineMessage request, Member member) {
         return RoutineRequest.createNew(
                 member.getId(),
                 member.getGymId(),
-                note
+                request.targetTrainerId(),
+                request.availableDays(),
+                request.experienceLevel(),
+                request.injuries(),
+                request.primaryGoal()
         );
     }
 }

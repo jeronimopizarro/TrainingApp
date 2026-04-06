@@ -1,6 +1,8 @@
 package com.trainingapp.trainingapp.web.dto.dashboard;
 
-import java.time.LocalDate;
+import com.trainingapp.trainingapp.domain.enums.routine.ExperienceLevel;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record TrainerDashboardResponse(
@@ -10,7 +12,11 @@ public record TrainerDashboardResponse(
             Long requestId,
             Long memberId,
             String memberFullName,
-            String note,
-            LocalDate requestDate
+            LocalDateTime requestDate,
+            Long targetTrainerId,
+            Integer availableDays,
+            ExperienceLevel experienceLevel,
+            String injuries,
+            String primaryGoal
     ) {}
 }

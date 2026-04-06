@@ -70,8 +70,12 @@ public class TrainerDashboardUseCase {
                 request.getId(),
                 request.getMemberId(),
                 memberFullName,
-                request.getNote(),
-                request.getRequestDate()
+                request.getRequestDate(),
+                request.getTargetTrainerId(),
+                request.getAvailableDays(),
+                request.getExperienceLevel(),
+                request.getInjuries(),
+                request.getPrimaryGoal()
         );
     }
 }

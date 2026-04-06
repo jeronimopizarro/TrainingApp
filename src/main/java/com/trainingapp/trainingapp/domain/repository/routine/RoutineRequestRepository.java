@@ -17,5 +17,10 @@ public interface RoutineRequestRepository {
     // Dashboard del Entrenador (Traer todas las solicitudes PENDIENTES de su gimnasio)
     List<RoutineRequest> findByGymIdAndStatus(Long gymId, RoutineRequestStatus status);
 
-    Optional<RoutineRequest> findFirstByMemberIdAndStatus(Long memberId, RoutineRequestStatus status);
+    Optional<RoutineRequest> findFirstByMemberIdAndStatus(Long memberId,
+                                                          RoutineRequestStatus status);
+
+    Optional<RoutineRequest> findFirstByMemberIdAndStatusAndAssignedTrainerId(Long memberId,
+                                                                              RoutineRequestStatus status,
+                                                                              Long assignedTrainerId);
 }

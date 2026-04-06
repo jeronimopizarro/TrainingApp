@@ -15,5 +15,9 @@ public interface RoutineRequestJpaRepository extends JpaRepository<RoutineReques
 
     List<RoutineRequestJpaEntity> findByGymIdAndStatus(Long gymId, RoutineRequestStatus status);
 
-    Optional<RoutineRequestJpaEntity> findFirstByMemberIdAndStatus(Long memberId, RoutineRequestStatus status);
+    Optional<RoutineRequestJpaEntity> findFirstByMemberIdAndStatus(Long memberId,
+                                                                   RoutineRequestStatus status);
+
+    Optional<RoutineRequestJpaEntity> findFirstByMemberIdAndStatusAndAssignedTrainerId(
+            Long memberId, RoutineRequestStatus status, Long assignedTrainerId);
 }

@@ -152,9 +152,8 @@ public class RoutineController {
 
     @PostMapping("/request")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<Void> requestRoutine(@RequestBody(required = false) RequestRoutineMessage request) {
-        String note = (request != null) ? request.note() : null;
-        requestRoutineUseCase.execute(note);
+    public ResponseEntity<Void> requestRoutine(@Valid @RequestBody RequestRoutineMessage request) {
+        requestRoutineUseCase.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

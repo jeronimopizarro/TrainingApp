@@ -57,7 +57,7 @@ public class AssignRoutineUseCase {
         Routine routine = routineDTOMapper.toDomain(request, trainerId, creatorGymId);
         Routine savedRoutine = routineRepository.save(routine);
 
-        completePendingRoutineRequest(request.memberId());
+        completeRoutineRequest(request.memberId(), savedRoutine.getId(), trainerId);
 
         return routineDTOMapper.toResponse(savedRoutine, "Rutina asignada con éxito.");
     }
@@ -76,12 +76,15 @@ public class AssignRoutineUseCase {
         });
     }
 
-    private void completePendingRoutineRequest(Long memberId) {
-        routineRequestRepository.findFirstByMemberIdAndStatus(memberId,
-                        RoutineRequestStatus.PENDING)
-                .ifPresent(pendingRequest -> {
-                    pendingRequest.complete();
-                    routineRequestRepository.save(pendingRequest);
+    private void completeRoutineRequest(Long memberId, Long routineId, Long trainerId) {
+        // Buscamos la solicitud que este profesor específico puso EN PROGRESO para este alumno
+        routineRequestRepository.findFirstByMemberIdAndStatusAndAssignedTrainerId(
+                        memberId,
+                        RoutineRequestStatus.IN_PROGRESS,
+                        trainerId)
+                .ifPresent(inProgressRequest -> {
+                    inProgressRequest.completeRequest(routineId); // Enlazamos el ID
+                    routineRequestRepository.save(inProgressRequest);
                 });
     }
 }
