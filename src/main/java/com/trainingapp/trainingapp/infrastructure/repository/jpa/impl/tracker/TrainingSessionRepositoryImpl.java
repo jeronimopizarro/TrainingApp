@@ -59,4 +59,10 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository 
                 .map(mapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public Optional<TrainingSession> findLastSessionByMemberIdAndRoutineId(Long memberId, Long routineId) {
+        return jpaRepository.findFirstByMemberIdAndRoutineIdOrderByStartTimeDesc(memberId, routineId)
+                .map(mapper::toDomain);
+    }
 }

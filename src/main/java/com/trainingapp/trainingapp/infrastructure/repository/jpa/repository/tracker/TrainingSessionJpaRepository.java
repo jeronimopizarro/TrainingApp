@@ -21,6 +21,9 @@ public interface TrainingSessionJpaRepository
     List<TrainingSessionJpaEntity> findByStatusAndStartTimeBefore(SessionStatus status,
                                                                   LocalDateTime thresholdTime);
 
+    Optional<TrainingSessionJpaEntity> findFirstByMemberIdAndRoutineIdOrderByStartTimeDesc(
+            Long memberId, Long routineId);
+
     @Query("SELECT ts FROM TrainingSessionJpaEntity ts " +
             "WHERE ts.memberId = :memberId " +
             "AND ts.startTime >= :startOfMonth " +

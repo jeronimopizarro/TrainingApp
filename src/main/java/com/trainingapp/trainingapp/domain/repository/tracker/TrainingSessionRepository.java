@@ -18,4 +18,6 @@ public interface TrainingSessionRepository {
                                                         LocalDateTime endOfMonth);
 
     List<TrainingSession> findZombieSessions(LocalDateTime threshold);
+
+    Optional<TrainingSession> findLastSessionByMemberIdAndRoutineId(Long memberId, Long routineId);
 }

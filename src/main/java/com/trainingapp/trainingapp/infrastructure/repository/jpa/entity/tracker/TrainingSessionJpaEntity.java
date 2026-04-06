@@ -31,6 +31,9 @@ public class TrainingSessionJpaEntity extends BaseJpaEntity {
     @Column(name = "routine_id")
     private Long routineId; // Nullable para entrenamientos libres
 
+    @Column(name = "training_day_id")
+    private Long trainingDayId;
+
     @Column(name = "gym_id", nullable = false)
     private Long gymId;
 

@@ -14,7 +14,11 @@ public class TrainingSessionDTOMapper {
         if (request == null) return null;
 
         // routineId puede venir null desde el request si es entrenamiento libre
-        return TrainingSession.startNew(memberId, request.routineId(), gymId);
+        return TrainingSession.startNew(
+                memberId,
+                request.routineId(),
+                request.trainingDayId(),
+                gymId);
     }
 
     public SessionResponse toResponse(TrainingSession session) {

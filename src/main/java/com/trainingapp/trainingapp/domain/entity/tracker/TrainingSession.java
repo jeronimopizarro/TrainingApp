@@ -16,18 +16,20 @@ public class TrainingSession {
     private Long id;
     private Long memberId;
     private Long routineId; // Opcional: Puede estar haciendo un entrenamiento libre
+    private Long trainingDayId;
     private Long gymId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private SessionStatus status;
     private List<SetLog> sets;
 
-    public TrainingSession(Long id, Long memberId, Long routineId, Long gymId,
+    public TrainingSession(Long id, Long memberId, Long routineId, Long trainingDayId, Long gymId,
                            LocalDateTime startTime,
                            LocalDateTime endTime, SessionStatus status, List<SetLog> sets) {
         this.id = id;
         this.memberId = memberId;
         this.routineId = routineId;
+        this.trainingDayId = trainingDayId;
         this.gymId = gymId;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -44,15 +46,15 @@ public class TrainingSession {
             throw new InvalidSessionStateException("La sesión debe tener una fecha de inicio.");
     }
 
-    public static TrainingSession startNew(Long memberId, Long routineId, Long gymId) {
-        return new TrainingSession(null, memberId, routineId, gymId, LocalDateTime.now(),
+    public static TrainingSession startNew(Long memberId, Long routineId, Long trainingDayId, Long gymId) {
+        return new TrainingSession(null, memberId, routineId, trainingDayId, gymId, LocalDateTime.now(),
                 null, SessionStatus.IN_PROGRESS, new ArrayList<>());
     }
 
-    public static TrainingSession restore(Long id, Long memberId, Long routineId, Long gymId,
+    public static TrainingSession restore(Long id, Long memberId, Long routineId, Long trainingDayId, Long gymId,
                                           LocalDateTime startTime, LocalDateTime endTime,
                                           SessionStatus status, List<SetLog> sets) {
-        return new TrainingSession(id, memberId, routineId, gymId, startTime, endTime, status,
+        return new TrainingSession(id, memberId, routineId, trainingDayId, gymId, startTime, endTime, status,
                 sets);
     }
 

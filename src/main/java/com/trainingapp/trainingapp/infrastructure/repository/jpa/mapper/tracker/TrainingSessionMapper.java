@@ -36,6 +36,7 @@ public class TrainingSessionMapper {
                 entity.getId(),
                 entity.getMemberId(),
                 entity.getRoutineId(), // Puede ser null si es entrenamiento libre
+                entity.getTrainingDayId(),
                 entity.getGymId(),
                 entity.getStartTime(),
                 entity.getEndTime(),
@@ -49,6 +50,7 @@ public class TrainingSessionMapper {
         entity.setId(domain.getId());
         entity.setMemberId(domain.getMemberId());
         entity.setRoutineId(domain.getRoutineId());
+        entity.setTrainingDayId(domain.getTrainingDayId());
         entity.setGymId(domain.getGymId());
         entity.setStartTime(domain.getStartTime());
         entity.setEndTime(domain.getEndTime());

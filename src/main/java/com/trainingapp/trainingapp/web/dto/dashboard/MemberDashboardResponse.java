@@ -11,6 +11,12 @@ public record MemberDashboardResponse(
     public record ActiveRoutineDTO(
             Long routineId,
             String name,
-            LocalDate endDate
+            LocalDate endDate,
+            SuggestedDayDTO suggestedDay
+    ) {}
+
+    public record SuggestedDayDTO(
+            Long dayId,
+            String name
     ) {}
 }

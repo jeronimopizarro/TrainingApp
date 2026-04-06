@@ -1,16 +1,17 @@
 package com.trainingapp.trainingapp.application.useCase.dashboard;
 
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
+import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
 import com.trainingapp.trainingapp.domain.entity.subscription.Subscription;
+import com.trainingapp.trainingapp.domain.entity.tracker.TrainingSession;
 import com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.domain.repository.subscription.SubscriptionRepository;
 import com.trainingapp.trainingapp.domain.repository.tracker.TrainingSessionRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
-import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine.RoutineJpaEntity;
-import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.tracker.TrainingSessionJpaEntity;
 import com.trainingapp.trainingapp.web.dto.dashboard.MemberDashboardResponse;
 import com.trainingapp.trainingapp.web.dto.dashboard.MemberDashboardResponse.ActiveRoutineDTO;
+import com.trainingapp.trainingapp.web.dto.dashboard.MemberDashboardResponse.SuggestedDayDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,14 +65,34 @@ public class MemberDashboardUseCase {
     }
 
     private ActiveRoutineDTO getActiveRoutine(Long memberId) {
-        Optional<Routine> routine =
+        Optional<Routine> routineOpt =
                 routineRepository.findByMemberIdAndStatus(memberId, RoutineStatus.ACTIVE);
 
-        return routine.map(r -> new ActiveRoutineDTO(
-                r.getId(),
-                r.getName(),
-                r.getEndDate()
-        )).orElse(null); // Si no tiene rutina, devolvemos null
+        if (routineOpt.isEmpty()) return null;
+
+        Routine routine = routineOpt.get();
+        // LLAMAMOS AL NUEVO ALGORITMO
+        MemberDashboardResponse.SuggestedDayDTO
+                suggestedDay = calculateNextTrainingDay(memberId, routine);
+
+        return new ActiveRoutineDTO(
+                routine.getId(),
+                routine.getName(),
+                routine.getEndDate(),
+                suggestedDay
+        );
+    }
+
+    private SuggestedDayDTO calculateNextTrainingDay(Long memberId, Routine routine) {
+        // 1. Obtenemos el ID del último día que entrenó (o null si nunca entrenó)
+        Long lastCompletedDayId = trainingSessionRepository
+                .findLastSessionByMemberIdAndRoutineId(memberId, routine.getId())
+                .map(TrainingSession::getTrainingDayId)
+                .orElse(null);
+
+        TrainingDay nextDay = routine.getNextTrainingDay(lastCompletedDayId);
+
+        return nextDay != null ? new SuggestedDayDTO(nextDay.getId(), nextDay.getName()) : null;
     }
 
     private List<LocalDate> getTrainingDaysThisMonth(Long memberId, LocalDate today) {

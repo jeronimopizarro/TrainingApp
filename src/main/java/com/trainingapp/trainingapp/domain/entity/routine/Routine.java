@@ -118,6 +118,31 @@ public class Routine {
         }
     }
 
+    /**
+     * Calcula el siguiente día de entrenamiento basado en el último día completado.
+     * Si no hay historial o el día no se encuentra, retorna el Día 1.
+     */
+    public TrainingDay getNextTrainingDay(Long lastCompletedDayId) {
+        if (this.days == null || this.days.isEmpty()) {
+            return null;
+        }
+
+        if (lastCompletedDayId == null) {
+            return this.days.get(0); // Escenario 1: Nunca entrenó
+        }
+
+        // Buscamos el índice del último día
+        int lastIndex = java.util.stream.IntStream.range(0, this.days.size())
+                .filter(i -> this.days.get(i).getId().equals(lastCompletedDayId))
+                .findFirst()
+                .orElse(-1); // Si por algún motivo no lo encuentra, da -1
+
+        // Escenario 2 y 3: Cálculo cíclico seguro. (Si era -1, nextIndex será 0)
+        int nextIndex = (lastIndex + 1) % this.days.size();
+
+        return this.days.get(nextIndex);
+    }
+
     public void deactivate() {
         if (!this.active) throw new InvalidRoutineStateException();
         this.active = false;
