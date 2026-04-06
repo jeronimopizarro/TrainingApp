@@ -19,7 +19,7 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 
     // Buscamos usuarios activos, que fueron creados hace más del tiempo límite,
     // y que NO tienen ningún registro de acceso posterior a esa fecha.
-    @Query("SELECT u FROM UserJpaEntity u WHERE u.isActive = true " +
+    @Query("SELECT u FROM UserJpaEntity u WHERE u.active = true " +
             "AND u.createdAt < :threshold " +
             "AND NOT EXISTS (SELECT a FROM AccessLogJpaEntity a WHERE a.memberId = u.id AND a.timestamp >= :threshold)")
     List<UserJpaEntity> findInactiveUsersByAccessLog(@Param("threshold") LocalDateTime threshold);

@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.application.useCase.user.trainer;
 
 import com.trainingapp.trainingapp.application.mapper.trainer.TrainerDTOMapper;
+import com.trainingapp.trainingapp.application.validator.UserAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.exception.user.TrainerNotFoundException;
@@ -16,20 +17,22 @@ public class GetTrainerByIdUseCase {
     private final TrainerRepository trainerRepository;
     private final SecurityUtils securityUtils;
     private final TrainerDTOMapper trainerDTOMapper;
+    private final UserAccessValidator userAccessValidator;
 
     public GetTrainerByIdUseCase(TrainerRepository trainerRepository, SecurityUtils securityUtils,
-                                 TrainerDTOMapper trainerDTOMapper) {
+                                 TrainerDTOMapper trainerDTOMapper,
+                                 UserAccessValidator userAccessValidator) {
         this.trainerRepository = trainerRepository;
         this.securityUtils = securityUtils;
         this.trainerDTOMapper = trainerDTOMapper;
+        this.userAccessValidator = userAccessValidator;
     }
 
     public TrainerResponse execute(Long id) {
         Trainer trainer = findTrainerOrThrow(id);
-        User currentUser = securityUtils.getCurrentUser();
 
         securityUtils.validateSameGym(trainer.getGymId());
-        validateReadPermission(currentUser, trainer);
+        userAccessValidator.validateReadPermission(trainer);
 
         return trainerDTOMapper.toResponse(trainer);
     }
@@ -37,17 +40,5 @@ public class GetTrainerByIdUseCase {
     private Trainer findTrainerOrThrow(Long id) {
         return trainerRepository.findById(id)
                 .orElseThrow(() -> new TrainerNotFoundException(id));
-    }
-
-    private void validateReadPermission(User currentUser, Trainer targetTrainer) {
-        boolean isSuperAdmin = currentUser.isSuperAdmin();
-        boolean isAdmin = currentUser.isGymAdmin();
-        boolean isSelfTrainer = currentUser.isTrainer() && currentUser.getId()
-                .equals(targetTrainer.getId());
-        boolean isMemberOfGym = currentUser.isMember();
-
-        if (!isSuperAdmin && !isAdmin && !isSelfTrainer && !isMemberOfGym) {
-            throw new UnauthorizedProfileAccessException();
-        }
     }
 }

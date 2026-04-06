@@ -46,13 +46,13 @@ public class ProductController {
         return ResponseEntity.ok(getProductByIdUseCase.execute(id));
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
     @GetMapping("/gym/{gymId}")
     public ResponseEntity<List<ProductResponse>> getAllProductsByGymId(@PathVariable Long gymId) {
         return ResponseEntity.ok(getAllProductsByGymIdUseCase.execute(gymId));
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
     @GetMapping("/gym/{gymId}/search")
     public ResponseEntity<List<ProductResponse>> searchProductsByName(
             @PathVariable Long gymId,

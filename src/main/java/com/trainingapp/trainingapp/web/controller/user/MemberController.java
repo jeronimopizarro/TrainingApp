@@ -34,7 +34,7 @@ public class MemberController {
         this.deleteMemberUseCase = deleteMemberUseCase;
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
     @PostMapping
     public ResponseEntity<MemberResponse> register(@Valid @RequestBody RegisterMemberRequest request) {
         MemberResponse response = registerMemberUseCase.execute(request);
@@ -47,7 +47,7 @@ public class MemberController {
         return ResponseEntity.ok(getMemberByIdUseCase.execute(id));
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'RECEPTIONIST')")
     @GetMapping
     public ResponseEntity<List<MemberResponse>> getAllByGymId(@RequestParam Long gymId) {
         return ResponseEntity.ok(getAllMembersByGymIdUseCase.execute(gymId));

@@ -4,11 +4,13 @@ import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class ArchiveInactiveUsersUseCase {
     private static final Logger logger = LoggerFactory.getLogger(ArchiveInactiveUsersUseCase.class);
     private final UserRepository userRepository;

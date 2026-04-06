@@ -30,7 +30,7 @@ public class AccessController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
     @PostMapping("/validate")
     public ResponseEntity<ValidateAccessResponse> validateAccess(@Valid @RequestBody ValidateAccessRequest request) {
         ValidateAccessResponse response = validateAccessUseCase.execute(request);

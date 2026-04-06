@@ -29,7 +29,7 @@ public class DashboardController {
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasAnyRole('GYM_ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('GYM_ADMIN')")
     public ResponseEntity<AdminDashboardResponse> getAdminDashboard() {
         AdminDashboardResponse response = adminDashboardUseCase.execute();
         return ResponseEntity.ok(response);

@@ -33,7 +33,7 @@ public class SubscriptionController {
         this.cancelSubscriptionUseCase = cancelSubscriptionUseCase;
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
     @PostMapping
     public ResponseEntity<SubscriptionResponse> createSubscription(
             @Valid @RequestBody CreateSubscriptionRequest request) {
@@ -57,7 +57,7 @@ public class SubscriptionController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<SubscriptionResponse> cancelSubscription(
             @PathVariable Long id) {
