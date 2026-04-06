@@ -18,6 +18,9 @@ public interface TrainingSessionJpaRepository
     // Evitamos que un alumno inicie dos entrenamientos al mismo tiempo
     Optional<TrainingSessionJpaEntity> findByMemberIdAndStatus(Long memberId, SessionStatus status);
 
+    List<TrainingSessionJpaEntity> findByStatusAndStartTimeBefore(SessionStatus status,
+                                                                  LocalDateTime thresholdTime);
+
     @Query("SELECT ts FROM TrainingSessionJpaEntity ts " +
             "WHERE ts.memberId = :memberId " +
             "AND ts.startTime >= :startOfMonth " +

@@ -16,4 +16,6 @@ public interface TrainingSessionRepository {
 
     List<LocalDate> findTrainingDatesByMemberIdAndMonth(Long memberId, LocalDateTime startOfMonth,
                                                         LocalDateTime endOfMonth);
+
+    List<TrainingSession> findZombieSessions(LocalDateTime threshold);
 }

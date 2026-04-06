@@ -51,4 +51,12 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository 
                 .distinct() // Filtramos repetidos
                 .toList();
     }
+
+    @Override
+    public List<TrainingSession> findZombieSessions(LocalDateTime threshold) {
+        return jpaRepository.findByStatusAndStartTimeBefore(SessionStatus.IN_PROGRESS, threshold)
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
 }

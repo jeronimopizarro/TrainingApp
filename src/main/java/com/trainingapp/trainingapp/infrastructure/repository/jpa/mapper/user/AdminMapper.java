@@ -2,8 +2,6 @@ package com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.user;
 
 import com.trainingapp.trainingapp.domain.entity.user.Admin;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.user.AdminJpaEntity;
-import com.trainingapp.trainingapp.web.dto.user.admin.AdminResponse;
-import com.trainingapp.trainingapp.web.dto.user.admin.RegisterAdminRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -11,7 +9,7 @@ import java.time.LocalDateTime;
 @Component
 public class AdminMapper {
 
-    public AdminJpaEntity toJpaEntity(Admin domain) {
+    public AdminJpaEntity toEntity(Admin domain) {
         if (domain == null) return null;
 
         AdminJpaEntity entity = new AdminJpaEntity();

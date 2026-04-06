@@ -1,5 +1,8 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.user;
 
+import com.trainingapp.trainingapp.domain.entity.user.Admin;
+import com.trainingapp.trainingapp.domain.entity.user.Member;
+import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.user.AdminJpaEntity;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.user.MemberJpaEntity;
@@ -34,5 +37,20 @@ public class UserMapper {
         }
 
         throw new IllegalArgumentException("Unknown user type.");
+    }
+
+    public UserJpaEntity toEntity(User user) {
+        if (user == null) return null;
+
+        // Gracias al polimorfismo, detectamos qué tipo de usuario es en realidad
+        if (user instanceof Member member) {
+            return memberMapper.toEntity(member);
+        } else if (user instanceof Trainer trainer) {
+            return trainerMapper.toEntity(trainer);
+        } else if (user instanceof Admin admin) {
+            return adminMapper.toEntity(admin);
+        }
+
+        throw new IllegalArgumentException("Unknown user domain type.");
     }
 }

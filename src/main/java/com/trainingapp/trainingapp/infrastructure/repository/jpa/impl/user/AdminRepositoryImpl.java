@@ -24,7 +24,7 @@ public class AdminRepositoryImpl implements AdminRepository {
 
     @Override
     public Admin save(Admin admin) {
-        AdminJpaEntity entity = mapper.toJpaEntity(admin);
+        AdminJpaEntity entity = mapper.toEntity(admin);
         AdminJpaEntity savedEntity = jpaRepository.save(entity);
         return mapper.toDomain(savedEntity);
     }
