@@ -23,7 +23,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Member save(Member member){
-        MemberJpaEntity entity = mapper.toJpaEntity(member);
+        MemberJpaEntity entity = mapper.toEntity(member);
         MemberJpaEntity savedEntity = jpaRepository.save(entity);
         return mapper.toDomain(savedEntity);
     }

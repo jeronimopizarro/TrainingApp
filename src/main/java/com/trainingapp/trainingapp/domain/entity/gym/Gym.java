@@ -1,60 +1,65 @@
 package com.trainingapp.trainingapp.domain.entity.gym;
 
-import lombok.AllArgsConstructor;
+import com.trainingapp.trainingapp.domain.exception.gym.GymAddressRequiredException;
+import com.trainingapp.trainingapp.domain.exception.gym.GymAlreadyActiveException;
+import com.trainingapp.trainingapp.domain.exception.gym.GymAlreadyInactiveException;
+import com.trainingapp.trainingapp.domain.exception.gym.GymNameRequiredException;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class Gym {
 
-    private Long  id;
+    private final Long id;
     private String name;
     private String address;
-    private String phone;
+    private String phoneNumber;
     private boolean active;
 
-    public Gym(String name, String address, String phone) {
-        validateName(name);
+    private Gym(Long id, String name, String address, String phoneNumber, boolean active) {
+        this.id = id;
         this.name = name;
         this.address = address;
-        this.phone = phone;
-        this.active = true;
+        this.phoneNumber = phoneNumber;
+        this.active = active;
+        validate();
     }
 
-    private void validateName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Gym name cannot be null or empty.");
+    private void validate() {
+        if (this.name == null || this.name.trim().isEmpty()) {
+            throw new GymNameRequiredException();
+        }
+        if (this.address == null || this.address.trim().isEmpty()) {
+            throw new GymAddressRequiredException();
         }
     }
 
-    public void updateDetails(String newName, String newAddress, String newPhone) {
-        if (newName != null) {
-            validateName(newName);
-            this.name = newName;
-        }
-        if (newAddress != null) {
-            this.address = newAddress;
-        }
-        if (newPhone != null) {
-            this.phone = newPhone;
-        }
+    public static Gym createNew(String name, String address, String phoneNumber) {
+        return new Gym(null, name, address, phoneNumber, true);
+    }
+
+    public static Gym restore(Long id, String name, String address, String phoneNumber,
+                              boolean active) {
+        return new Gym(id, name, address, phoneNumber, active);
+    }
+
+    public void updateDetails(String newName, String newAddress, String phoneNumber) {
+        this.name = newName;
+        this.address = newAddress;
+        this.phoneNumber = phoneNumber;
+        validate();
     }
 
     public void deactivate() {
         if (!this.active) {
-            throw new IllegalStateException("El gimnasio ya se encuentra inactivo.");
+            throw new GymAlreadyInactiveException();
         }
         this.active = false;
     }
 
     public void activate() {
         if (this.active) {
-            throw new IllegalStateException("El gimnasio ya se encuentra activo.");
+            throw new GymAlreadyActiveException();
         }
         this.active = true;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }

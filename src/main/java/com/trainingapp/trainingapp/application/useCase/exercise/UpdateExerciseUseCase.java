@@ -7,6 +7,7 @@ import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.exception.exercise.BaseExerciseAlreadyExistsException;
 import com.trainingapp.trainingapp.domain.exception.exercise.ExerciseNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.exercise.GymExerciseAlreadyExistsException;
+import com.trainingapp.trainingapp.domain.exception.exercise.MuscleGroupNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.exercise.ExerciseRepository;
 import com.trainingapp.trainingapp.domain.repository.exercise.MuscleGroupRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
@@ -70,8 +71,7 @@ public class UpdateExerciseUseCase {
     private void validateMuscleGroupsExist(UpdateExerciseRequest request) {
         request.muscleGroups().forEach(mgRequest -> {
             muscleGroupRepository.findById(mgRequest.muscleGroupId())
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "Muscle group with ID " + mgRequest.muscleGroupId() + " does not exist."));
+                    .orElseThrow(() -> new MuscleGroupNotFoundException(mgRequest.muscleGroupId()));
         });
     }
 
@@ -84,7 +84,7 @@ public class UpdateExerciseUseCase {
         );
 
         if (request.isBase() != null && currentUser.isSuperAdmin()) {
-            exercise.setIsBase(request.isBase());
+            exercise.updateBaseStatus(request.isBase());
         }
 
         exercise.clearMuscleGroups();

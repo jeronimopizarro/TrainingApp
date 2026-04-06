@@ -8,9 +8,12 @@ import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
 import com.trainingapp.trainingapp.web.dto.routine.RoutineDetailResponse;
 import com.trainingapp.trainingapp.web.dto.routine.RoutineDetailResponse.DayDetailResponse;
 import com.trainingapp.trainingapp.web.dto.routine.RoutineDetailResponse.ExerciseItemResponse;
+import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest.UpdateTrainingDayRequest;
+import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest.UpdateRoutineDetailRequest;
 import com.trainingapp.trainingapp.web.dto.routine.*;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -19,7 +22,7 @@ public class RoutineDTOMapper {
     public Routine toDomain(CreatePersonalRoutineRequest request, Long memberId, Long gymId) {
         if (request == null) return null;
 
-        Routine routine = new Routine(request.name(), memberId, null, memberId, gymId);
+        Routine routine = Routine.createNew(request.name(), memberId, null, memberId, gymId);
 
         if (request.days() != null) {
             request.days().forEach(dayRequest -> {
@@ -37,10 +40,10 @@ public class RoutineDTOMapper {
         return routine;
     }
 
-    public Routine toDomain(AssignRoutineRequest request, Long creatorId, Long gymId) {
+    public Routine toDomain(AssignRoutineRequest request, Long trainerId, Long gymId) {
         if (request == null) return null;
 
-        Routine routine = new Routine(request.name(), request.memberId(), creatorId, creatorId, gymId);
+        Routine routine = Routine.createNew(request.name(), request.memberId(), trainerId, trainerId, gymId);
 
         if (request.days() != null) {
             request.days().forEach(dayRequest -> {
@@ -58,30 +61,34 @@ public class RoutineDTOMapper {
         return routine;
     }
 
-    public List<TrainingDay> toDomainDays(
-            List<UpdateRoutineRequest.UpdateTrainingDayRequest> dayRequests) {
-        if (dayRequests == null) return new java.util.ArrayList<>();
+    public List<TrainingDay> toDomainDays(List<UpdateTrainingDayRequest> dayRequests) {
+        if (dayRequests == null) return new ArrayList<>(); // <-- Más limpio
 
-        List<TrainingDay> domainDays = new java.util.ArrayList<>();
+        List<TrainingDay> domainDays = new ArrayList<>(); // <-- Más limpio
         int dayOrder = 1;
 
-        for (UpdateRoutineRequest.UpdateTrainingDayRequest dayReq : dayRequests) {
-            TrainingDay day = new TrainingDay(dayReq.dayName(), dayOrder++);
-            day.setId(dayReq.id());
+        for (UpdateTrainingDayRequest dayReq : dayRequests) {
+            List<RoutineDetail> domainDetails = new ArrayList<>(); // <-- Más limpio
 
             if (dayReq.exercises() != null) {
-                for (UpdateRoutineRequest.UpdateRoutineDetailRequest exReq : dayReq.exercises()) {
-                    RoutineDetail detail = new RoutineDetail(
+                int detailOrder = 1;
+                for (UpdateRoutineDetailRequest exReq : dayReq.exercises()) {
+                    domainDetails.add(RoutineDetail.restore(
+                            exReq.id(),
                             exReq.exerciseId(),
-                            0, // El orden se recalcula adentro de Routine
+                            detailOrder++,
                             exReq.sets(), exReq.repsMin(), exReq.repsMax(),
                             exReq.targetRIR(), exReq.suggestedWeight(), exReq.notes()
-                    );
-                    detail.setId(exReq.id());
-                    day.getDetails().add(detail);
+                    ));
                 }
             }
-            domainDays.add(day);
+
+            domainDays.add(TrainingDay.restore(
+                    dayReq.id(),
+                    dayReq.dayName(),
+                    dayOrder++,
+                    domainDetails
+            ));
         }
         return domainDays;
     }

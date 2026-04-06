@@ -1,12 +1,13 @@
 package com.trainingapp.trainingapp.domain.entity.user;
 
 import com.trainingapp.trainingapp.domain.enums.user.Role;
+import com.trainingapp.trainingapp.domain.exception.user.*;
 import lombok.Getter;
 
 @Getter
 public abstract class User {
 
-    private Long id;
+    private final Long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -16,59 +17,51 @@ public abstract class User {
     private boolean active;
 
 
-    protected User(String firstName, String lastName, String email, String password, String dni,Role role) {
-        validateBasicData(firstName, lastName, email, password, dni);
-
+    protected User(Long id, String firstName, String lastName, String email, String password, String dni, Role role, boolean active) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.dni = dni;
         this.role = role;
-        this.active = true;
+        this.active = active;
+        validateBaseUser();
     }
 
-    private void validateBasicData(String firstName, String lastName, String email,
-                                   String password, String dni) {
-        if (firstName == null || firstName.isBlank())
-            throw new IllegalArgumentException("First name cannot be empty.");
-        if (lastName == null || lastName.isBlank())
-            throw new IllegalArgumentException("Last name cannot be empty.");
-        if (email == null || !email.contains("@"))
-            throw new IllegalArgumentException("Invalid email format.");
-        if (password == null || password.length() < 6)
-            throw new IllegalArgumentException("Password must be at least 6 characters.");
-        if (dni == null || dni.isBlank())
-            throw new IllegalArgumentException("DNI cannot be empty.");
+    private void validateBaseUser() {
+        if (this.email == null || this.email.trim().isEmpty() || !this.email.contains("@")) {
+            throw new InvalidEmailException();
+        }
+        if (this.firstName == null || this.firstName.trim().isEmpty()) {
+            throw new UserFirstNameRequiredException();
+        }
+        if (this.lastName == null || this.lastName.trim().isEmpty()) {
+            throw new UserLastNameRequiredException();
+        }
+        if (this.password == null || this.password.trim().isEmpty()) {
+            throw new UserPasswordRequiredException();
+        }
+        if (this.dni == null || this.dni.trim().isEmpty()) {
+            throw new UserDniRequiredException();
+        }
     }
 
-    protected void updateBasicProfile(String firstName, String lastName) {
-        if (firstName != null) {
-            if (firstName.isBlank()) throw new IllegalArgumentException("First name cannot be empty.");
-            this.firstName = firstName;
-        }
-        if (lastName != null) {
-            if (lastName.isBlank()) throw new IllegalArgumentException("Last name cannot be empty.");
-            this.lastName = lastName;
-        }
+    public void updateBaseDetails(String firstName, String lastName, String dni) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dni = dni;
+        validateBaseUser();
     }
 
     public void deactivate() {
+        if (!this.active) throw new UserAlreadyInactiveException();
         this.active = false;
-        //Evitamos errores con el UNIQUE de la BDD.
-        this.email = this.email + "_deleted_" + System.currentTimeMillis();
     }
 
     public void activate() {
+        if (this.active) throw new UserAlreadyActiveException();
         this.active = true;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public boolean isSuperAdmin() {

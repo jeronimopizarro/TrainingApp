@@ -4,39 +4,36 @@ import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.membership.MembershipPlanJpaEntity;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 
 @Component
 public class MembershipPlanMapper {
 
-    public MembershipPlan toDomain(MembershipPlanJpaEntity jpaEntity) {
-        if (jpaEntity == null) return null;
+    public MembershipPlan toDomain(MembershipPlanJpaEntity entity) {
+        if (entity == null) return null;
 
-        return new MembershipPlan(
-                jpaEntity.getId(),
-                jpaEntity.getName(),
-                jpaEntity.getDescription(),
-                jpaEntity.getPrice(),
-                jpaEntity.getDurationMonths(),
-                jpaEntity.getGymId(),
-                jpaEntity.isActive()
+        return MembershipPlan.restore(
+                entity.getId(),
+                entity.getName(),
+                entity.getDescription(),
+                entity.getPrice(),
+                entity.getDurationMonths(),
+                entity.getGymId(),
+                entity.isActive()
         );
     }
 
     public MembershipPlanJpaEntity toEntity(MembershipPlan domainEntity) {
         if (domainEntity == null) return null;
 
-        MembershipPlanJpaEntity jpaEntity = new MembershipPlanJpaEntity();
-        jpaEntity.setId(domainEntity.getId());
-        jpaEntity.setName(domainEntity.getName());
-        jpaEntity.setDescription(domainEntity.getDescription());
-        jpaEntity.setPrice(domainEntity.getPrice());
-        jpaEntity.setDurationMonths(domainEntity.getDurationMonths());
-        jpaEntity.setGymId(domainEntity.getGymId());
-        jpaEntity.setActive(domainEntity.isActive());
+        MembershipPlanJpaEntity entity = new MembershipPlanJpaEntity();
+        entity.setId(domainEntity.getId());
+        entity.setName(domainEntity.getName());
+        entity.setDescription(domainEntity.getDescription());
+        entity.setPrice(domainEntity.getPrice());
+        entity.setDurationMonths(domainEntity.getDurationMonths());
+        entity.setGymId(domainEntity.getGymId());
+        entity.setActive(domainEntity.isActive());
 
-        if (!domainEntity.isActive()) jpaEntity.setDeletedAt(LocalDateTime.now());
-
-        return jpaEntity;
+        return entity;
     }
 }

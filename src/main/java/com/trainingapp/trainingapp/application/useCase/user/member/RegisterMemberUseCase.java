@@ -3,6 +3,7 @@ package com.trainingapp.trainingapp.application.useCase.user.member;
 import com.trainingapp.trainingapp.application.mapper.member.MemberDTOMapper;
 import com.trainingapp.trainingapp.application.validator.UserRegistrationValidator;
 import com.trainingapp.trainingapp.domain.entity.user.Member;
+import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
 import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;

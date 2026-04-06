@@ -44,7 +44,7 @@ public class RegisterAdminUseCase {
         registrationValidator.validateEmailIsUnique(request.email());
 
         String encodedPassword = passwordEncoder.encode(request.password());
-        Admin admin = adminDTOMapper.toDomain(request, encodedPassword);
+        Admin admin = adminDTOMapper.toDomain(request, request.role(), encodedPassword);
 
         Admin savedAdmin = adminRepository.save(admin);
 

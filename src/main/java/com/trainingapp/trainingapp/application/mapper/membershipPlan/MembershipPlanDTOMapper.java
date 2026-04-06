@@ -11,7 +11,7 @@ public class MembershipPlanDTOMapper {
     public MembershipPlan toDomain(CreateMembershipPlanRequest request) {
         if (request == null) return null;
 
-        return new MembershipPlan(
+        return MembershipPlan.createNew(
                 request.name(),
                 request.description(),
                 request.price(),

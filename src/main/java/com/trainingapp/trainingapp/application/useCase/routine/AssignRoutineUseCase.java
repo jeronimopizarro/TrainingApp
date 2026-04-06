@@ -47,14 +47,14 @@ public class AssignRoutineUseCase {
     @Transactional
     public CreateRoutineResponse execute(AssignRoutineRequest request) {
         User currentUser = securityUtils.getCurrentUser();
-        Long creatorId = currentUser.getId();
+        Long trainerId = currentUser.getId();
         Long creatorGymId = securityUtils.getCurrentUserGymId();
 
         gymValidator.validateExists(creatorGymId);
         accessValidator.findMemberAndValidateAccess(request.memberId());
         validateExercises(request, creatorGymId, currentUser);
 
-        Routine routine = routineDTOMapper.toDomain(request, creatorId, creatorGymId);
+        Routine routine = routineDTOMapper.toDomain(request, trainerId, creatorGymId);
         Routine savedRoutine = routineRepository.save(routine);
 
         completePendingRoutineRequest(request.memberId());

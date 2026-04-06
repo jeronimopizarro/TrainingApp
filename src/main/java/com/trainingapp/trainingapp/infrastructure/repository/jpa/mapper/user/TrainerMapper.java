@@ -11,11 +11,27 @@ import java.time.LocalDateTime;
 @Component
 public class TrainerMapper {
 
-    public TrainerJpaEntity toJpaEntity(Trainer domain) {
+    public Trainer toDomain(TrainerJpaEntity entity) {
+        if (entity == null) return null;
+
+        return Trainer.restore(
+                entity.getId(),
+                entity.getFirstName(),
+                entity.getLastName(),
+                entity.getEmail(),
+                entity.getPassword(),
+                entity.getDni(),
+                entity.getRole(),
+                entity.isActive(),
+                entity.getGymId(),
+                entity.getSpecialization()
+        );
+    }
+
+    public TrainerJpaEntity toEntity(Trainer domain) {
         if (domain == null) return null;
 
         TrainerJpaEntity entity = new TrainerJpaEntity();
-
         entity.setId(domain.getId());
         entity.setFirstName(domain.getFirstName());
         entity.setLastName(domain.getLastName());
@@ -27,27 +43,6 @@ public class TrainerMapper {
         entity.setGymId(domain.getGymId());
         entity.setSpecialization(domain.getSpecialization());
 
-        if (!domain.isActive()) entity.setDeletedAt(LocalDateTime.now());
-
         return entity;
-    }
-
-    public Trainer toDomain(TrainerJpaEntity entity) {
-        if (entity == null) return null;
-
-        Trainer trainer = new Trainer(
-                entity.getFirstName(),
-                entity.getLastName(),
-                entity.getEmail(),
-                entity.getPassword(),
-                entity.getDni(),
-                entity.getGymId(),
-                entity.getSpecialization()
-        );
-
-        trainer.setId(entity.getId());
-        trainer.setActive(entity.isActive());
-
-        return trainer;
     }
 }

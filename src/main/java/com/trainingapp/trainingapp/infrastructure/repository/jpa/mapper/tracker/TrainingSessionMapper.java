@@ -14,36 +14,33 @@ import java.util.stream.Collectors;
 public class TrainingSessionMapper {
 
     public TrainingSession toDomain(TrainingSessionJpaEntity entity) {
-        List<SetLog> sets = mapSetsToDomain(entity.getSets());
+        if (entity == null) return null;
 
-        return new TrainingSession(
+        // 1. Reconstruimos el historial de series de abajo hacia arriba
+        List<SetLog> domainLogs = new ArrayList<>();
+        if (entity.getSets() != null) {
+            domainLogs = entity.getSets().stream()
+                    .map(logEntity -> SetLog.restore(
+                            logEntity.getId(),
+                            logEntity.getExerciseId(),
+                            logEntity.getSetNumber(),
+                            logEntity.getRepsPerformed(),
+                            logEntity.getWeightLifted(),
+                            logEntity.getRir(),
+                            logEntity.getNotes()
+                    )).toList();
+        }
+
+        // 2. Reconstruimos la sesión completa con los datos restaurados
+        return TrainingSession.restore(
                 entity.getId(),
                 entity.getMemberId(),
-                entity.getRoutineId(),
+                entity.getRoutineId(), // Puede ser null si es entrenamiento libre
                 entity.getGymId(),
                 entity.getStartTime(),
                 entity.getEndTime(),
                 entity.getStatus(),
-                sets
-        );
-    }
-
-    private List<SetLog> mapSetsToDomain(List<SetLogJpaEntity> setEntities) {
-        if (setEntities == null) return new ArrayList<>();
-        return setEntities.stream()
-                .map(this::toSetDomain)
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    private SetLog toSetDomain(SetLogJpaEntity setEntity) {
-        return new SetLog(
-                setEntity.getId(),
-                setEntity.getExerciseId(),
-                setEntity.getSetNumber(),
-                setEntity.getRepsPerformed(),
-                setEntity.getWeightLifted(),
-                setEntity.getRir(),
-                setEntity.getNotes()
+                domainLogs
         );
     }
 

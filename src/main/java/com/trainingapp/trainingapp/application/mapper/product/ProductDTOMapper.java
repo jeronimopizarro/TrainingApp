@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 public class ProductDTOMapper {
 
     public Product toDomain(CreateProductRequest request) {
+        if (request == null) return null;
+
         return Product.createNew(
                 request.name(),
                 request.description(),
@@ -20,6 +22,8 @@ public class ProductDTOMapper {
     }
 
     public ProductResponse toResponse(Product product) {
+        if (product == null) return null;
+
         return new ProductResponse(
                 product.getId(),
                 product.getName(),

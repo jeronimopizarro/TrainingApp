@@ -29,9 +29,7 @@ public class CancelSubscriptionUseCase {
     @Transactional
     public SubscriptionResponse execute(Long subscriptionId) {
         Subscription subscription = findSubscriptionOrThrow(subscriptionId);
-
         memberAccessValidator.findMemberAndValidateAccess(subscription.getMemberId());
-        validateCanBeCancelled(subscription);
 
         subscription.cancel();
 
@@ -42,14 +40,5 @@ public class CancelSubscriptionUseCase {
     private Subscription findSubscriptionOrThrow(Long subscriptionId) {
         return subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new SubscriptionNotFoundException(subscriptionId));
-    }
-
-    private void validateCanBeCancelled(Subscription subscription) {
-        if (subscription.isCancelled()) {
-            throw new SubscriptionAlreadyCancelledException();
-        }
-        if (subscription.isExpired()) {
-            throw new SubscriptionAlreadyExpiredException();
-        }
     }
 }

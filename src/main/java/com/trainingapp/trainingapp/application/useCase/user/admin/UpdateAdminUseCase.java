@@ -3,15 +3,12 @@ package com.trainingapp.trainingapp.application.useCase.user.admin;
 import com.trainingapp.trainingapp.application.mapper.admin.AdminDTOMapper;
 import com.trainingapp.trainingapp.application.validator.UserAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.user.Admin;
-import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.user.AdminNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.user.AdminRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.user.admin.AdminResponse;
 import com.trainingapp.trainingapp.web.dto.user.admin.UpdateAdminRequest;
 import jakarta.transaction.Transactional;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,7 +35,7 @@ public class UpdateAdminUseCase {
         securityUtils.validateSameGym(admin.getGymId());
         userAccessValidator.validateWritePermission(admin.getId());
 
-        admin.updateProfile(request.firstName(), request.lastName());
+        admin.updateBaseDetails(request.firstName(), request.lastName(), request.dni());
         Admin updatedAdmin = adminRepository.save(admin);
 
         return adminDTOMapper.toResponse(updatedAdmin);

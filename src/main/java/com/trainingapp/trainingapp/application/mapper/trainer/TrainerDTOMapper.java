@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.application.mapper.trainer;
 
 import com.trainingapp.trainingapp.domain.entity.user.Trainer;
+import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.web.dto.user.trainer.RegisterTrainerRequest;
 import com.trainingapp.trainingapp.web.dto.user.trainer.TrainerResponse;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ public class TrainerDTOMapper {
 
     public Trainer toDomain(RegisterTrainerRequest request, String encodedPassword) {
         if (request == null) return null;
-        return new Trainer(
+        return  Trainer.createNew(
                 request.firstName(),
                 request.lastName(),
                 request.email(),

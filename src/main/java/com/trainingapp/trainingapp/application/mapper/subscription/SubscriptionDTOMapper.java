@@ -8,13 +8,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class SubscriptionDTOMapper {
 
-    public Subscription toDomain(CreateSubscriptionRequest request, String planName, Integer planDurationDays) {
-        return new Subscription(
+    public Subscription toDomain(CreateSubscriptionRequest request, String planName, Integer planDurationMonths) {
+        if (request == null) return null;
+
+        return Subscription.createNew(
                 request.memberId(),
                 request.planId(),
                 planName,
                 request.startDate(),
-                planDurationDays
+                planDurationMonths
         );
     }
 

@@ -3,7 +3,7 @@ package com.trainingapp.trainingapp.application.useCase.access;
 import com.trainingapp.trainingapp.domain.entity.Access.AccessLog;
 import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.domain.enums.access.AccessMethod;
-import com.trainingapp.trainingapp.domain.exception.user.MemberNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.user.member.MemberNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.Access.AccessLogRepository;
 import com.trainingapp.trainingapp.domain.repository.subscription.SubscriptionRepository;
 import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
@@ -87,7 +87,7 @@ public class ValidateAccessUseCase {
     }
 
     private ValidateAccessResponse logAndReturn(Long memberId, Long gymId, boolean accessGranted, String memberName, String message) {
-        AccessLog log = new AccessLog(memberId, gymId, LocalDateTime.now(), accessGranted, message);
+        AccessLog log = AccessLog.createNew(memberId, gymId, accessGranted, message);
 
         accessLogRepository.save(log);
 

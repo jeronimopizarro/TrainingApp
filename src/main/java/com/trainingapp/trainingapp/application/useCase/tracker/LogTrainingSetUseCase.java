@@ -32,9 +32,14 @@ public class LogTrainingSetUseCase {
         Long currentMemberId = securityUtils.getCurrentUser().getId();
 
         TrainingSession session = getSessionAndValidateOwnership(sessionId, currentMemberId);
-        SetLog newSet = createSetLogFromRequest(request);
+        session.recordSet(
+                request.exerciseId(),
+                request.repsPerformed(),
+                request.weightLifted(),
+                request.rir(), request.notes()
+        );
 
-        TrainingSession savedSession = persistSetLog(session, newSet);
+        TrainingSession savedSession = trainingSessionRepository.save(session);
         SetLog savedSet = savedSession.getSets().get(savedSession.getSets().size() - 1);
 
         return trainingSessionDTOMapper.toSetLogResponse(savedSet);
@@ -50,21 +55,5 @@ public class LogTrainingSetUseCase {
         }
 
         return session;
-    }
-
-    private SetLog createSetLogFromRequest(LogSetRequest request) {
-        return SetLog.recordNew(
-                request.exerciseId(),
-                request.setNumber(),
-                request.repsPerformed(),
-                request.weightLifted(),
-                request.rir(),
-                request.notes()
-        );
-    }
-
-    private TrainingSession persistSetLog(TrainingSession session, SetLog newSet) {
-        session.addSet(newSet);
-        return trainingSessionRepository.save(session);
     }
 }

@@ -1,13 +1,12 @@
 package com.trainingapp.trainingapp.domain.entity.routine;
 
+import com.trainingapp.trainingapp.domain.exception.routine.InvalidRoutineMetricsException;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class RoutineDetail {
 
-    private Long id;
+    private final Long id;
     private int orderNumber;
     private int sets;
     private int repsMin;
@@ -15,17 +14,11 @@ public class RoutineDetail {
     private Double suggestedWeight;
     private int targetRIR;
     private String notes;
-
     private Long exerciseId;
 
-    public RoutineDetail(Long exerciseId,
-                         int orderNumber,
-                         int sets,
-                         int repsMin,
-                         int repsMax,
-                         int targetRIR,
-                         Double suggestedWeight,
-                         String notes) {
+    private RoutineDetail(Long id, Long exerciseId, int orderNumber, int sets, int repsMin,
+                          int repsMax, int targetRIR, Double suggestedWeight, String notes) {
+        this.id = id;
         this.exerciseId = exerciseId;
         this.orderNumber = orderNumber;
         this.sets = sets;
@@ -34,26 +27,43 @@ public class RoutineDetail {
         this.targetRIR = targetRIR;
         this.suggestedWeight = suggestedWeight;
         this.notes = notes;
+        validate();
     }
 
-    public void update(Long exerciseId,
-                       int sets,
-                       int repsMin,
-                       int repsMax,
-                       int targetRIR,
-                       Double suggestedWeight,
-                       String notes) {
-        if (exerciseId == null || exerciseId <= 0)
-            throw new IllegalArgumentException("Exercise Id cannot be null.");
-        if (sets < 1) throw new IllegalArgumentException("Sets cannot be less than 1.");
-        if (repsMin < 1) throw new IllegalArgumentException("Reps min cannot be less than 1.");
-        if (repsMax < 1) throw new IllegalArgumentException("Reps max cannot be less than 1.");
-        if (repsMax < repsMin)
-            throw new IllegalArgumentException("Reps max cannot be less than repsMin.");
-        if (targetRIR < 0) throw new IllegalArgumentException("Target rir cannot be less than 0.");
-        if (suggestedWeight < 0)
-            throw new IllegalArgumentException("Suggest weight cannot be less than 0.");
+    private void validate() {
+        if (this.exerciseId == null || this.exerciseId <= 0)
+            throw new InvalidRoutineMetricsException("El ID del ejercicio es inválido.");
+        if (this.sets < 1)
+            throw new InvalidRoutineMetricsException("Las series deben ser al menos 1.");
+        if (this.repsMin < 1) throw new InvalidRoutineMetricsException(
+                "Las repeticiones mínimas deben ser al menos 1.");
+        if (this.repsMax < 1) throw new InvalidRoutineMetricsException(
+                "Las repeticiones máximas deben ser al menos 1.");
+        if (this.repsMax < this.repsMin) throw new InvalidRoutineMetricsException(
+                "El máximo de repeticiones no puede ser menor al mínimo.");
+        if (this.targetRIR < 0)
+            throw new InvalidRoutineMetricsException("El RIR no puede ser negativo.");
+        if (this.suggestedWeight < 0)
+            throw new InvalidRoutineMetricsException("El peso sugerido no puede ser negativo.");
+    }
 
+    public static RoutineDetail createNew(Long exerciseId, int orderNumber, int sets, int repsMin,
+                                          int repsMax, int targetRIR, Double suggestedWeight,
+                                          String notes) {
+        return new RoutineDetail(null, exerciseId, orderNumber, sets, repsMin, repsMax, targetRIR,
+                suggestedWeight, notes);
+    }
+
+    public static RoutineDetail restore(Long id, Long exerciseId, int orderNumber, int sets,
+                                        int repsMin,
+                                        int repsMax, int targetRIR, Double suggestedWeight,
+                                        String notes) {
+        return new RoutineDetail(id, exerciseId, orderNumber, sets, repsMin, repsMax, targetRIR,
+                suggestedWeight, notes);
+    }
+
+    public void update(Long exerciseId, int sets, int repsMin, int repsMax, int targetRIR,
+                       Double suggestedWeight, String notes) {
         this.exerciseId = exerciseId;
         this.sets = sets;
         this.repsMin = repsMin;
@@ -61,5 +71,6 @@ public class RoutineDetail {
         this.targetRIR = targetRIR;
         this.suggestedWeight = suggestedWeight;
         this.notes = notes;
+        validate();
     }
 }

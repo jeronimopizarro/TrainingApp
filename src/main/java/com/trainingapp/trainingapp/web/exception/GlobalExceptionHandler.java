@@ -14,11 +14,10 @@ import com.trainingapp.trainingapp.domain.exception.membership.MembershipPlanAcc
 import com.trainingapp.trainingapp.domain.exception.product.ProductNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.routine.*;
 import com.trainingapp.trainingapp.domain.exception.subscription.*;
-import com.trainingapp.trainingapp.domain.exception.tracker.ActiveSessionAlreadyExistsException;
-import com.trainingapp.trainingapp.domain.exception.tracker.TrainingRequiresActiveSubscriptionException;
-import com.trainingapp.trainingapp.domain.exception.tracker.TrainingSessionNotFoundException;
-import com.trainingapp.trainingapp.domain.exception.tracker.UnauthorizedSessionAccessException;
+import com.trainingapp.trainingapp.domain.exception.tracker.*;
 import com.trainingapp.trainingapp.domain.exception.user.*;
+import com.trainingapp.trainingapp.domain.exception.user.member.MemberAccessDeniedException;
+import com.trainingapp.trainingapp.domain.exception.user.member.MemberNotFoundException;
 import com.trainingapp.trainingapp.web.dto.routine.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,7 +99,13 @@ public class GlobalExceptionHandler {
             GymAlreadyExistsException.class,
             GymExerciseAlreadyExistsException.class,
             BaseExerciseAlreadyExistsException.class,
-            DuplicateMembershipPlanNameException.class
+            DuplicateMembershipPlanNameException.class,
+            ExerciseAlreadyActiveException.class,
+            ExerciseAlreadyInactiveException.class,
+            InvalidRoutineRequestStateException.class,
+            InvalidSessionStateException.class,
+            UserAlreadyActiveException.class,
+            UserAlreadyInactiveException.class
     })
     public ResponseEntity<ApiErrorResponse> handleConflictExceptions(RuntimeException ex) {
         return buildResponse(HttpStatus.CONFLICT, "Conflict - Business Rule Violation", ex);

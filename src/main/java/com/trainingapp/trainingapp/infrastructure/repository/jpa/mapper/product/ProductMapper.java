@@ -4,26 +4,29 @@ import com.trainingapp.trainingapp.domain.entity.product.Product;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.product.ProductJpaEntity;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
 public class ProductMapper {
 
     public Product toDomain(ProductJpaEntity entity) {
-        return new Product(
+        if (entity == null) return null;
+
+        return Product.restore(
                 entity.getId(),
                 entity.getName(),
                 entity.getDescription(),
                 entity.getPrice(),
                 entity.getStock(),
                 entity.getImageUrl(),
-                entity.isActive(),
-                entity.getGymId()
+                entity.getGymId(),
+                entity.isActive()
         );
     }
 
     public ProductJpaEntity toEntity(Product domain) {
+        if (domain == null) return null;
+
         ProductJpaEntity entity = new ProductJpaEntity();
+
         entity.setId(domain.getId());
         entity.setName(domain.getName());
         entity.setDescription(domain.getDescription());
@@ -32,12 +35,6 @@ public class ProductMapper {
         entity.setImageUrl(domain.getImageUrl());
         entity.setActive(domain.isActive());
         entity.setGymId(domain.getGymId());
-
-        if (!domain.isActive() && entity.getDeletedAt() == null) {
-            entity.setDeletedAt(LocalDateTime.now());
-        } else if (domain.isActive()) {
-            entity.setDeletedAt(null);
-        }
 
         return entity;
     }

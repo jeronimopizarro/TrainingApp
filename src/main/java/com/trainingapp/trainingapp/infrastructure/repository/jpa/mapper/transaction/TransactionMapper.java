@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 public class TransactionMapper {
 
     public Transaction toDomain(TransactionJpaEntity entity) {
-        return new Transaction(
+        if (entity == null) return null;
+
+        return Transaction.restore(
                 entity.getId(),
                 entity.getAmount(),
                 entity.getTransactionDate(),
@@ -23,6 +25,8 @@ public class TransactionMapper {
     }
 
     public TransactionJpaEntity toEntity(Transaction domain) {
+        if (domain == null) return null;
+
         TransactionJpaEntity entity = new TransactionJpaEntity();
         entity.setId(domain.getId());
         entity.setAmount(domain.getAmount());

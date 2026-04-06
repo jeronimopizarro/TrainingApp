@@ -8,6 +8,8 @@ import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine.
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.routine.TrainingDayJpaEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -78,56 +80,53 @@ public class RoutineMapper {
     public Routine toDomain(RoutineJpaEntity entity) {
         if (entity == null) return null;
 
-        Routine domain = new Routine(entity.getName(), entity.getMemberId(), entity.getTrainerId(),
-                entity.getCreatedByUserId(), entity.getGymId());
-
-        domain.setId(entity.getId());
-        domain.setStartDate(entity.getStartDate());
-        domain.setEndDate(entity.getEndDate());
-        domain.setStatus(entity.getStatus());
-        domain.setCreatedByUserId(entity.getCreatedByUserId());
+        // Reconstruimos los Días y sus Detalles
+        List<TrainingDay> domainDays = new ArrayList<>();
 
         if (entity.getDays() != null) {
-            domain.setDays(
-                    entity.getDays().stream()
-                            .map(this::mapDayToDomain)
-                            .collect(Collectors.toList())
-            );
+            for (TrainingDayJpaEntity dayEntity : entity.getDays()) {
+
+                // Reconstruimos los Detalles de este Día
+                List<RoutineDetail> domainDetails = new ArrayList<>();
+                if (dayEntity.getDetails() != null) {
+                    for (RoutineDetailJpaEntity detailEntity : dayEntity.getDetails()) {
+                        domainDetails.add(RoutineDetail.restore(
+                                detailEntity.getId(),
+                                detailEntity.getExerciseId(),
+                                detailEntity.getOrderNumber(),
+                                detailEntity.getSets(),
+                                detailEntity.getRepsMin(),
+                                detailEntity.getRepsMax(),
+                                detailEntity.getTargetRIR(),
+                                detailEntity.getSuggestedWeight(),
+                                detailEntity.getNotes()
+                        ));
+                    }
+                }
+
+                // Reconstruimos el Día pasándole sus detalles
+                domainDays.add(TrainingDay.restore(
+                        dayEntity.getId(),
+                        dayEntity.getName(),
+                        dayEntity.getOrderNumber(),
+                        domainDetails
+                ));
+            }
         }
 
-        return domain;
-    }
-
-    private TrainingDay mapDayToDomain(TrainingDayJpaEntity dayEntity) {
-        TrainingDay dayDomain = new TrainingDay(dayEntity.getName(), dayEntity.getOrderNumber());
-        dayDomain.setId(dayEntity.getId());
-        dayDomain.setOrderNumber(dayEntity.getOrderNumber());
-
-        if (dayEntity.getDetails() != null) {
-            dayDomain.setDetails(
-                    dayEntity.getDetails().stream()
-                            .map(this::mapDetailToDomain)
-                            .collect(Collectors.toList())
-            );
-        }
-        return dayDomain;
-    }
-
-    private RoutineDetail mapDetailToDomain(RoutineDetailJpaEntity detailEntity) {
-
-        RoutineDetail detailDomain = new RoutineDetail(
-                detailEntity.getExerciseId(),
-                detailEntity.getOrderNumber(),
-                detailEntity.getSets(),
-                detailEntity.getRepsMin(),
-                detailEntity.getRepsMax(),
-                detailEntity.getTargetRIR(),
-                detailEntity.getSuggestedWeight(),
-                detailEntity.getNotes()
+        // Reconstruimos la Rutina Raíz pasándole los días ya armados
+        return Routine.restore(
+                entity.getId(),
+                entity.getName(),
+                entity.getStartDate(),
+                entity.getEndDate(),
+                entity.getMemberId(),
+                entity.getTrainerId(),
+                entity.getCreatedByUserId(),
+                entity.getGymId(),
+                entity.getStatus(),
+                entity.isActive(),
+                domainDays
         );
-
-        detailDomain.setId(detailEntity.getId());
-
-        return detailDomain;
     }
 }

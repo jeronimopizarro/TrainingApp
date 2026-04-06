@@ -40,7 +40,7 @@ public class StartTrainingSessionUseCase {
         ensureNoActiveSessionExists(currentMemberId);
 
         TrainingSession newSession =
-                createAndPersistSession(currentMemberId, request.routineId(), currentGymId);
+                createAndPersistSession(request, currentMemberId, currentGymId);
         return trainingSessionDTOMapper.toResponse(newSession);
     }
 
@@ -59,8 +59,10 @@ public class StartTrainingSessionUseCase {
                 });
     }
 
-    private TrainingSession createAndPersistSession(Long memberId, Long routineId, Long gymId) {
-        TrainingSession session = TrainingSession.startNew(memberId, routineId, gymId);
+    private TrainingSession createAndPersistSession(StartSessionRequest request, Long memberId,
+                                                    Long gymId) {
+        TrainingSession session =
+                trainingSessionDTOMapper.toDomainStartSession(request, memberId, gymId);
         return trainingSessionRepository.save(session);
     }
 }

@@ -5,13 +5,11 @@ import com.trainingapp.trainingapp.domain.entity.user.Admin;
 import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.domain.entity.user.Trainer;
 import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.routine.UnauthorizedRoutineAccessException;
 import com.trainingapp.trainingapp.domain.exception.routine.UnauthorizedRoutineModificationException;
 import com.trainingapp.trainingapp.domain.exception.user.TrainerNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
 @Component

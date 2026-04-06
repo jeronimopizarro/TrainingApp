@@ -47,7 +47,7 @@ public class FinishTrainingSessionUseCase {
     }
 
     private void finishAndPersistSession(TrainingSession session) {
-        session.finishSession();
+        session.finish();
         trainingSessionRepository.save(session);
     }
 }

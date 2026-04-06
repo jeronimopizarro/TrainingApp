@@ -34,19 +34,16 @@ public class AdminMapper {
     public Admin toDomain(AdminJpaEntity entity) {
         if (entity == null) return null;
 
-        Admin admin = new Admin(
+        return Admin.restore(
+                entity.getId(),
                 entity.getFirstName(),
                 entity.getLastName(),
                 entity.getEmail(),
                 entity.getPassword(),
                 entity.getDni(),
                 entity.getRole(),
+                entity.isActive(),
                 entity.getGymId()
         );
-
-        admin.setId(entity.getId());
-        admin.setActive(entity.isActive());
-
-        return admin;
     }
 }

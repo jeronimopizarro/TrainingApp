@@ -11,11 +11,10 @@ import java.time.LocalDateTime;
 @Component
 public class MemberMapper {
 
-    public MemberJpaEntity toJpaEntity(Member domain) {
+    public MemberJpaEntity toEntity(Member domain) {
         if (domain == null) return null;
 
         MemberJpaEntity entity = new MemberJpaEntity();
-
         entity.setId(domain.getId());
         entity.setFirstName(domain.getFirstName());
         entity.setLastName(domain.getLastName());
@@ -28,29 +27,24 @@ public class MemberMapper {
         entity.setBirthDate(domain.getBirthDate());
         entity.setPrimaryGoal(domain.getPrimaryGoal());
 
-        if (!domain.isActive()) {
-            entity.setDeletedAt(LocalDateTime.now());
-        }
-
         return entity;
     }
 
     public Member toDomain(MemberJpaEntity entity) {
         if (entity == null) return null;
 
-        Member member = new Member(
+        return Member.restore(
+                entity.getId(),
                 entity.getFirstName(),
                 entity.getLastName(),
                 entity.getEmail(),
                 entity.getPassword(),
                 entity.getDni(),
+                entity.getRole(),
+                entity.isActive(),
                 entity.getGymId(),
                 entity.getBirthDate(),
                 entity.getPrimaryGoal()
         );
-        member.setId(entity.getId());
-        member.setActive(entity.isActive());
-
-        return member;
     }
 }

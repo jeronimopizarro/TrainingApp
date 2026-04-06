@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.application.mapper.member;
 
 import com.trainingapp.trainingapp.domain.entity.user.Member;
+import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.web.dto.user.member.MemberResponse;
 import com.trainingapp.trainingapp.web.dto.user.member.RegisterMemberRequest;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,8 @@ public class MemberDTOMapper {
 
     public Member toDomain(RegisterMemberRequest request, String encodedPassword) {
         if (request == null) return null;
-        return new Member(
+
+        return Member.createNew(
                 request.firstName(),
                 request.lastName(),
                 request.email(),
@@ -24,14 +26,17 @@ public class MemberDTOMapper {
 
     public MemberResponse toResponse(Member member) {
         if (member == null) return null;
+
         return new MemberResponse(
                 member.getId(),
                 member.getFirstName(),
                 member.getLastName(),
                 member.getEmail(),
                 member.getDni(),
+                member.isActive(),
                 member.getGymId(),
-                member.isActive()
+                member.getBirthDate(),
+                member.getPrimaryGoal()
         );
     }
 }

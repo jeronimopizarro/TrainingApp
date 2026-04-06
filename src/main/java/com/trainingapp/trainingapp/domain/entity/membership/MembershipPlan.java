@@ -1,63 +1,71 @@
 package com.trainingapp.trainingapp.domain.entity.membership;
 
-import lombok.AllArgsConstructor;
+import com.trainingapp.trainingapp.domain.exception.membership.*;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 
 @Getter
-@AllArgsConstructor
 public class MembershipPlan {
 
-    private Long id;
+    private final Long id;
     private String name;
     private String description;
     private BigDecimal price;
     private Integer durationMonths;
-    private Long gymId;
+    private final Long gymId;
     private boolean active;
 
-    public MembershipPlan(String name, String description, BigDecimal price, Integer durationMonths, Long gymId) {
-        validateFields(name, price, durationMonths);
-        if (gymId == null) {
-            throw new IllegalArgumentException("El plan debe pertenecer a un gimnasio (gymId no puede ser null).");
-        }
-
+    private MembershipPlan(Long id, String name, String description, BigDecimal price, Integer durationMonths, Long gymId, boolean active) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.durationMonths = durationMonths;
         this.gymId = gymId;
-        this.active = true;
+        this.active = active;
+        validate();
     }
 
-    private void validateFields(String name, BigDecimal price, Integer durationMonths) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("El nombre del plan es obligatorio.");
+    private void validate() {
+        if (this.name == null || this.name.trim().isEmpty()) {
+            throw new MembershipPlanNameRequiredException();
         }
-        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("El precio no puede ser negativo.");
+        if (this.price == null || this.price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new NegativeMembershipPriceException();
         }
-        if (durationMonths == null || durationMonths <= 0) {
-            throw new IllegalArgumentException("La duración del plan debe ser mayor a 0 días.");
+        if (this.durationMonths == null || this.durationMonths < 1) {
+            throw new InvalidMembershipDurationException();
         }
     }
 
-    public void update(String newName, String newDescription, BigDecimal newPrice, Integer newDurationMonths) {
-        validateFields(newName, newPrice, newDurationMonths);
+    public static MembershipPlan createNew(String name, String description, BigDecimal price, Integer durationMonths, Long gymId) {
+        return new MembershipPlan(null, name, description, price, durationMonths, gymId, true);
+    }
 
-        this.name = newName;
-        this.description = newDescription;
-        this.price = newPrice;
-        this.durationMonths = newDurationMonths;
+    public static MembershipPlan restore(Long id, String name, String description, BigDecimal price, Integer durationMonths, Long gymId, boolean active) {
+        return new MembershipPlan(id, name, description, price, durationMonths, gymId, active);
+    }
+
+    public void updateDetails(String name, String description, BigDecimal price, Integer durationMonths) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.durationMonths = durationMonths;
+        validate();
     }
 
     public void deactivate() {
         if (!this.active) {
-            throw new IllegalStateException("El plan ya se encuentra desactivado.");
+            throw new MembershipAlreadyInactiveException();
         }
         this.active = false;
     }
 
-    public void setId(Long id) { this.id = id; }
+    public void activate() {
+        if (this.active) {
+            throw new MembershipAlreadyActiveException();
+        }
+        this.active = true;
+    }
 }

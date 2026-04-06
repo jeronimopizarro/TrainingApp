@@ -23,7 +23,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
 
     @Override
     public Trainer save(Trainer trainer) {
-        TrainerJpaEntity entity = mapper.toJpaEntity(trainer);
+        TrainerJpaEntity entity = mapper.toEntity(trainer);
         TrainerJpaEntity savedEntity = jpaRepository.save(entity);
         return mapper.toDomain(savedEntity);
     }

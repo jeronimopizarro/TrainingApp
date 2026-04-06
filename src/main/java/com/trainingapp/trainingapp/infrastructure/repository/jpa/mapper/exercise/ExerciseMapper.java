@@ -1,10 +1,14 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.exercise;
 
 import com.trainingapp.trainingapp.domain.entity.exercise.Exercise;
+import com.trainingapp.trainingapp.domain.entity.exercise.ExerciseMuscleGroup;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.exercise.ExerciseJpaEntity;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.exercise.ExerciseMuscleGroupJpaEntity;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.exercise.MuscleGroupJpaEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class ExerciseMapper {
@@ -12,19 +16,29 @@ public class ExerciseMapper {
     public Exercise toDomain(ExerciseJpaEntity entity) {
         if (entity == null) return null;
 
-        Exercise domain = new Exercise(entity.getName(), entity.getDescription(),
-                entity.getImageUrl(), entity.getVideoUrl(), entity.getIsBase(),
-                entity.getCreatedByUserId(), entity.getGymId());
-
-        domain.setId(entity.getId());
-        domain.setActive(entity.isActive());
+        List<ExerciseMuscleGroup> domainMuscleGroups = new ArrayList<>();
 
         if (entity.getMuscleGroups() != null) {
-            entity.getMuscleGroups().forEach(
-                    mgEntity -> domain.addMuscleGroup(mgEntity.getMuscleGroup().getId(),
-                            mgEntity.isPrimary()));
+            domainMuscleGroups = entity.getMuscleGroups().stream()
+                    .map(mgEntity -> ExerciseMuscleGroup.create(
+                            mgEntity.getMuscleGroup().getId(),
+                            mgEntity.isPrimary()
+                    ))
+                    .toList();
         }
-        return domain;
+
+        return Exercise.restore(
+                entity.getId(),
+                entity.getName(),
+                entity.getDescription(),
+                entity.getImageUrl(),
+                entity.getVideoUrl(),
+                entity.getIsBase(),
+                entity.getCreatedByUserId(),
+                entity.getGymId(),
+                entity.isActive(),
+                domainMuscleGroups
+        );
     }
 
     public ExerciseJpaEntity toEntity(Exercise domain) {

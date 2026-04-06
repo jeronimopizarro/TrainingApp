@@ -2,34 +2,33 @@ package com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.gym;
 
 import com.trainingapp.trainingapp.domain.entity.gym.Gym;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.gym.GymJpaEntity;
-import com.trainingapp.trainingapp.web.dto.gym.CreateGymRequest;
-import com.trainingapp.trainingapp.web.dto.gym.GymResponse;
 import org.springframework.stereotype.Component;
-import java.time.LocalDateTime;
+
 
 @Component
 public class GymMapper {
 
-    public Gym toDomain(GymJpaEntity jpaEntity) {
-        if (jpaEntity == null) return null;
+    public Gym toDomain(GymJpaEntity entity) {
+        if (entity == null) return null;
 
-        return new Gym(jpaEntity.getId(), jpaEntity.getName(), jpaEntity.getAddress(),
-                jpaEntity.getPhone(),  jpaEntity.isActive());
+        return Gym.restore(
+                entity.getId(),
+                entity.getName(),
+                entity.getAddress(),
+                entity.getPhoneNumber(),
+                entity.isActive());
     }
 
     public GymJpaEntity toJpaEntity(Gym gym) {
         if (gym == null) return null;
-        GymJpaEntity jpaEntity = new GymJpaEntity();
-        jpaEntity.setId(gym.getId());
-        jpaEntity.setName(gym.getName());
-        jpaEntity.setAddress(gym.getAddress());
-        jpaEntity.setPhone(gym.getPhone());
 
-        if (!gym.isActive()) {
-            jpaEntity.setDeletedAt(LocalDateTime.now());
-        }else{
-            jpaEntity.setDeletedAt(null);
-        }
-        return jpaEntity;
+        GymJpaEntity entity = new GymJpaEntity();
+        entity.setId(gym.getId());
+        entity.setName(gym.getName());
+        entity.setAddress(gym.getAddress());
+        entity.setPhoneNumber(gym.getPhoneNumber());
+        entity.setActive(gym.isActive());
+
+        return entity;
     }
 }

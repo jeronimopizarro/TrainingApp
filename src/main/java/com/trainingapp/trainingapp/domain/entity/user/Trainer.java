@@ -6,27 +6,35 @@ import lombok.Getter;
 @Getter
 public class Trainer extends User {
 
-    private Long gymId;
+    private final Long gymId;
     private String specialization;
 
-    public Trainer(String firstName, String lastName, String email, String password, String dni,
-                   Long gymId, String specialization) {
-        super(firstName, lastName, email, password, dni, Role.TRAINER);
-
-        if (gymId == null || gymId <= 0) {
-            throw new IllegalArgumentException("A trainer must be associated with a valid Gym.");
-        }
+    private Trainer(Long id, String firstName, String lastName, String email, String password,
+                    String dni, Role role, boolean active,
+                    Long gymId, String specialization) {
+        super(id, firstName, lastName, email, password, dni, role, active);
 
         this.gymId = gymId;
         this.specialization = specialization;
     }
 
-    public void updateProfile(String firstName, String lastName, String specialization) {
-        super.updateBasicProfile(firstName, lastName);
-        if (specialization != null) {
-            if (specialization.isBlank())
-                throw new IllegalArgumentException("Specialization cannot be empty.");
-            this.specialization = specialization;
-        }
+    public static Trainer createNew(String firstName, String lastName, String email,
+                                    String password, String dni,
+                                    Long gymId, String specialization) {
+        return new Trainer(null, firstName, lastName, email, password, dni, Role.TRAINER, true, gymId,
+                specialization);
+    }
+
+    public static Trainer restore(Long id, String firstName, String lastName, String email,
+                                  String password, String dni, Role role, boolean active,
+                                  Long gymId, String specialization) {
+        return new Trainer(id, firstName, lastName, email, password, dni, role, active, gymId,
+                specialization);
+    }
+
+    public void updateTrainerDetails(String firstName, String lastName, String dni,
+                                     String specialization) {
+        super.updateBaseDetails(firstName, lastName, dni);
+        this.specialization = specialization;
     }
 }

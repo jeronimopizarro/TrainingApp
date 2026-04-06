@@ -3,15 +3,12 @@ package com.trainingapp.trainingapp.application.useCase.user.trainer;
 import com.trainingapp.trainingapp.application.mapper.trainer.TrainerDTOMapper;
 import com.trainingapp.trainingapp.application.validator.UserAccessValidator;
 import com.trainingapp.trainingapp.domain.entity.user.Trainer;
-import com.trainingapp.trainingapp.domain.entity.user.User;
-import com.trainingapp.trainingapp.domain.enums.user.Role;
 import com.trainingapp.trainingapp.domain.exception.user.TrainerNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.user.TrainerRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.user.trainer.TrainerResponse;
 import com.trainingapp.trainingapp.web.dto.user.trainer.UpdateTrainerRequest;
 import jakarta.transaction.Transactional;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,7 +35,7 @@ public class UpdateTrainerUseCase {
         securityUtils.validateSameGym(trainer.getGymId());
         userAccessValidator.validateWritePermission(trainer.getId());
 
-        trainer.updateProfile(request.firstName(), request.lastName(), request.specialization());
+        trainer.updateTrainerDetails(request.firstName(), request.lastName(), request.dni(), request.specialization());
         Trainer updatedTrainer = trainerRepository.save(trainer);
 
         return trainerDTOMapper.toResponse(updatedTrainer);

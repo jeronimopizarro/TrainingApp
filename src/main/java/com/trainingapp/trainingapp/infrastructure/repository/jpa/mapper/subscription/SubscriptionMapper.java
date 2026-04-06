@@ -25,15 +25,14 @@ public class SubscriptionMapper {
     public Subscription toDomain(SubscriptionJpaEntity entity) {
         if (entity == null) return null;
 
-        Subscription domain = new Subscription();
-        domain.setId(entity.getId());
-        domain.setPlanName(entity.getPlanName());
-        domain.setStartDate(entity.getStartDate());
-        domain.setEndDate(entity.getEndDate());
-        domain.setStatus(entity.getStatus());
-        domain.setMemberId(entity.getMemberId());
-        domain.setPlanId(entity.getPlanId());
-
-        return domain;
+        return Subscription.restore(
+                entity.getId(),
+                entity.getMemberId(),
+                entity.getPlanId(),
+                entity.getPlanName(),
+                entity.getStartDate(),
+                entity.getEndDate(),
+                entity.getStatus()
+        );
     }
 }

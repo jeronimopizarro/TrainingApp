@@ -8,10 +8,9 @@ import org.springframework.stereotype.Component;
 public class AccessLogMapper {
 
     public AccessLog toDomain(AccessLogJpaEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        return new AccessLog(
+        if (entity == null) return null;
+
+        return AccessLog.restore(
                 entity.getId(),
                 entity.getMemberId(),
                 entity.getGymId(),

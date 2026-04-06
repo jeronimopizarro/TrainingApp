@@ -37,8 +37,6 @@ public class MemberController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @PostMapping
     public ResponseEntity<MemberResponse> register(@Valid @RequestBody RegisterMemberRequest request) {
-        System.out.println("JSON mapeado por Spring: " + request);
-
         MemberResponse response = registerMemberUseCase.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

@@ -1,4 +1,4 @@
-package com.trainingapp.trainingapp.domain.exception.user;
+package com.trainingapp.trainingapp.domain.exception.user.member;
 
 public class MemberNotFoundException extends RuntimeException {
     public MemberNotFoundException(Long memberId) {

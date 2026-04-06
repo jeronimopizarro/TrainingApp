@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExerciseDTOMapper {
 
-    public Exercise toDomain(CreateExerciseRequest request, boolean isBase, Long gymId, Long userId) {
+    public Exercise toDomain(CreateExerciseRequest request, boolean isBaseSafe, Long gymId, Long userId) {
         if (request == null) return null;
 
-        Exercise exercise = new Exercise(
+        Exercise exercise = Exercise.createNew(
                 request.name(),
                 request.description(),
                 request.imageUrl(),
                 request.videoUrl(),
-                isBase,
+                isBaseSafe,
                 userId,
                 gymId
         );

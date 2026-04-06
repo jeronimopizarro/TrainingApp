@@ -10,16 +10,21 @@ public class GymDTOMapper {
 
     public Gym toDomain(CreateGymRequest request) {
         if (request == null) return null;
-        return new Gym(request.name(), request.address(), request.phone());
+
+        return Gym.createNew(
+                request.name(),
+                request.address(),
+                request.phoneNumber());
     }
 
     public GymResponse toResponse(Gym gym) {
         if (gym == null) return null;
+
         return new GymResponse(
                 gym.getId(),
                 gym.getName(),
                 gym.getAddress(),
-                gym.getPhone(),
+                gym.getPhoneNumber(),
                 gym.isActive()
         );
     }

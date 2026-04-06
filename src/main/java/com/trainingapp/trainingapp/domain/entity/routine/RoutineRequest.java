@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.domain.entity.routine;
 
 import com.trainingapp.trainingapp.domain.enums.routine.RoutineRequestStatus;
+import com.trainingapp.trainingapp.domain.exception.routine.InvalidRoutineRequestStateException;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -51,14 +52,14 @@ public class RoutineRequest {
 
     public void complete() {
         if (this.status == RoutineRequestStatus.COMPLETED) {
-            throw new IllegalStateException("This routine request is already completed.");
+            throw new InvalidRoutineRequestStateException("La solicitud de rutina ya fue completada.");
         }
         this.status = RoutineRequestStatus.COMPLETED;
     }
 
     public void cancel() {
         if (this.status != RoutineRequestStatus.PENDING) {
-            throw new IllegalStateException("Solo se pueden cancelar solicitudes pendientes.");
+            throw new InvalidRoutineRequestStateException("Solo se pueden cancelar solicitudes pendientes.");
         }
         this.status = RoutineRequestStatus.CANCELLED;
     }

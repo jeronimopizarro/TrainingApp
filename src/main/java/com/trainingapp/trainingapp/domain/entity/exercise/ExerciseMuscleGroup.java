@@ -6,18 +6,19 @@ import lombok.Setter;
 @Getter
 public class ExerciseMuscleGroup {
 
-    private Long muscleGroupId;
+    private final Long muscleGroupId;
     private boolean isPrimary;
 
-    public ExerciseMuscleGroup(Long muscleGroupId, boolean isPrimary) {
-        if (muscleGroupId == null || muscleGroupId <= 0) {
-            throw new IllegalArgumentException("Muscle group id mus be valid.");
-        }
+    private ExerciseMuscleGroup(Long muscleGroupId, boolean isPrimary) {
         this.muscleGroupId = muscleGroupId;
         this.isPrimary = isPrimary;
     }
 
-    public void setPrimary(boolean primary) {
-        this.isPrimary = primary;
+    public static ExerciseMuscleGroup create(Long muscleGroupId, boolean isPrimary) {
+        return new ExerciseMuscleGroup(muscleGroupId, isPrimary);
+    }
+
+    public void makeSecondary() {
+        this.isPrimary = false;
     }
 }

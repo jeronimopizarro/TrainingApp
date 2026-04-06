@@ -6,12 +6,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MuscleGroupMapper {
-    public MuscleGroup toDomain(MuscleGroupJpaEntity entity){
-        if(entity == null) return null;
 
-        MuscleGroup domain = new MuscleGroup(entity.getName(), entity.getDescription());
-        domain.setId(entity.getId());
+    public MuscleGroup toDomain(MuscleGroupJpaEntity entity) {
+        if (entity == null) return null;
 
-        return domain;
+        return MuscleGroup.restore(
+                entity.getId(),
+                entity.getName(),
+                entity.getDescription());
     }
 }

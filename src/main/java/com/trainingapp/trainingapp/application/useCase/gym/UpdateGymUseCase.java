@@ -31,7 +31,7 @@ public class UpdateGymUseCase {
         securityUtils.validateSameGym(gym.getId());
         validateGymNameIsUniqueForUpdate(request.name(), id);
 
-        gym.updateDetails(request.name(), request.address(), request.phone());
+        gym.updateDetails(request.name(), request.address(), request.phoneNumber());
 
         Gym updatedGym = gymRepository.save(gym);
         return gymDTOMapper.toResponse(updatedGym);

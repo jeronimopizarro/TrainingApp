@@ -4,7 +4,7 @@ import com.trainingapp.trainingapp.domain.entity.routine.RoutineRequest;
 import com.trainingapp.trainingapp.domain.entity.user.Member;
 import com.trainingapp.trainingapp.domain.enums.routine.RoutineRequestStatus;
 import com.trainingapp.trainingapp.domain.exception.routine.ActiveRoutineRequestAlreadyExistsException;
-import com.trainingapp.trainingapp.domain.exception.user.MemberNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.user.member.MemberNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRequestRepository;
 import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;

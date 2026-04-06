@@ -44,7 +44,7 @@ public class SubscriptionController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping("/active")
     public ResponseEntity<SubscriptionResponse> getActiveSubscriptionByMember(
-            @PathVariable Long memberId) {
+            @RequestParam Long memberId) {
         SubscriptionResponse response = getActiveSubscriptionByMemberUseCase.execute(memberId);
         return ResponseEntity.ok(response);
     }
@@ -52,7 +52,7 @@ public class SubscriptionController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
     @GetMapping()
     public ResponseEntity<List<SubscriptionResponse>> getAllSubscriptionsByMember(
-            @PathVariable Long memberId) {
+            @RequestParam Long memberId) {
         List<SubscriptionResponse> response = getAllSubscriptionsByMemberUseCase.execute(memberId);
         return ResponseEntity.ok(response);
     }
@@ -60,8 +60,8 @@ public class SubscriptionController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<SubscriptionResponse> cancelSubscription(
-            @PathVariable Long subscriptionId) {
-        SubscriptionResponse response = cancelSubscriptionUseCase.execute(subscriptionId);
+            @PathVariable Long id) {
+        SubscriptionResponse response = cancelSubscriptionUseCase.execute(id);
         return ResponseEntity.ok(response);
     }
 }

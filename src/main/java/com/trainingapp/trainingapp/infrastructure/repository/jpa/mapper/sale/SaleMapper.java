@@ -12,9 +12,11 @@ import java.util.List;
 public class SaleMapper {
 
     public Sale toDomain(SaleJpaEntity entity) {
-        List<SaleDetail> details = mapDetailsToDomain(entity.getDetails());
+        if (entity == null) return null;
 
-        return new Sale(
+        List<SaleDetail> domainDetails = mapDetailsToDomain(entity.getDetails());
+
+        return Sale.restore(
                 entity.getId(),
                 entity.getSaleDate(),
                 entity.getTotalAmount(),
@@ -22,18 +24,20 @@ public class SaleMapper {
                 entity.getGymId(),
                 entity.getRegisteredByAdminId(),
                 entity.getMemberId(),
-                details
+                domainDetails
         );
     }
 
     private List<SaleDetail> mapDetailsToDomain(List<SaleDetailJpaEntity> detailEntities) {
+        if (detailEntities == null) return new java.util.ArrayList<>();
+
         return detailEntities.stream()
                 .map(this::toDetailDomain)
                 .toList();
     }
 
     private SaleDetail toDetailDomain(SaleDetailJpaEntity detailEntity) {
-        return new SaleDetail(
+        return SaleDetail.restore(
                 detailEntity.getId(),
                 detailEntity.getProductId(),
                 detailEntity.getQuantity(),

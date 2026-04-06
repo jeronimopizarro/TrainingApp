@@ -25,7 +25,7 @@ public class GymJpaEntity extends BaseJpaEntity {
     private String address;
 
     @Column(length = 20)
-    private String phone;
+    private String phoneNumber;
 
     @Column(name = "active", nullable = false)
     private boolean active = true;
