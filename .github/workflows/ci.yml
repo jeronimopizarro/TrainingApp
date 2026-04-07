@@ -1,19 +1,17 @@
 name: CI Pipeline - Spring Boot Tests
 
-# 1. ¿CUÁNDO se despierta el robot? (Los Triggers)
 on:
   push:
     branches: [ "master", "develop" ] # Se ejecuta cada vez que subís código a main o develop
   pull_request:
     branches: [ "master" ] # Se ejecuta cuando intentás hacer un Pull Request
 
-# 2. ¿QUÉ va a hacer el robot? (Los Jobs)
 jobs:
   testeo-y-verificacion:
     # Levanta una máquina virtual en la nube con la última versión de Ubuntu (Linux)
     runs-on: ubuntu-latest
 
-    # 3. EL PASO A PASO de la receta (Steps)
+    # PASO A PASO
     steps:
 
       # Paso A: Descargar tu repositorio de GitHub a esta máquina virtual
@@ -32,6 +30,6 @@ jobs:
       - name: 3️⃣ Dar permisos de ejecución al Maven Wrapper
         run: chmod +x mvnw
 
-      # Paso D: El momento de la verdad
+      # Paso D: Ejecutar
       - name: 4️⃣ Ejecutar Tests Unitarios
         run: ./mvnw test
