@@ -3,9 +3,9 @@ name: CI Pipeline - Spring Boot Tests
 # 1. ¿CUÁNDO se despierta el robot? (Los Triggers)
 on:
   push:
-    branches: [ "main", "develop" ] # Se ejecuta cada vez que subís código a main o develop
+    branches: [ "master", "develop" ] # Se ejecuta cada vez que subís código a main o develop
   pull_request:
-    branches: [ "main" ] # Se ejecuta cuando intentás hacer un Pull Request
+    branches: [ "master" ] # Se ejecuta cuando intentás hacer un Pull Request
 
 # 2. ¿QUÉ va a hacer el robot? (Los Jobs)
 jobs:
