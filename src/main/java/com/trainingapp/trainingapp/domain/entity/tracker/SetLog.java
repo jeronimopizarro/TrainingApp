@@ -45,4 +45,35 @@ public class SetLog {
                                  BigDecimal weightLifted, Integer rir, String notes) {
         return new SetLog(id, exerciseId, setNumber, repsPerformed, weightLifted, rir, notes);
     }
+
+    /**
+     * Calcula el 1RM Estimado (e1RM) usando la fórmula de Epley.
+     * Toma en cuenta las repeticiones en reserva (RIR) para reflejar el esfuerzo real.
+     * Fórmula: Peso * (1 + (Reps + RIR) / 30)
+     */
+    public java.math.BigDecimal calculateEstimated1RM() {
+        if (this.weightLifted == null || this.weightLifted.compareTo(java.math.BigDecimal.ZERO) <= 0) {
+            return java.math.BigDecimal.ZERO; // No hay peso registrado (ej. flexiones de brazos sin lastre)
+        }
+
+        if (this.repsPerformed == null || this.repsPerformed == 0) {
+            return java.math.BigDecimal.ZERO;
+        }
+
+        // Sumamos las repeticiones hechas + las que dejó en el tanque (RIR)
+        int totalEffortReps = this.repsPerformed + (this.rir != null ? this.rir : 0);
+
+        // Si hizo 1 sola repetición al máximo esfuerzo (RIR 0), su e1RM es exactamente el peso levantado.
+        if (totalEffortReps == 1) {
+            return this.weightLifted;
+        }
+
+        // Fórmula de Epley adaptada
+        double multiplier = 1.0 + (totalEffortReps / 30.0);
+        double e1rmDouble = this.weightLifted.doubleValue() * multiplier;
+
+        // Redondeamos a 1 decimal
+        return java.math.BigDecimal.valueOf(e1rmDouble)
+                .setScale(1, java.math.RoundingMode.HALF_UP);
+    }
 }

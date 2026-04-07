@@ -20,4 +20,9 @@ public interface TrainingSessionRepository {
     List<TrainingSession> findZombieSessions(LocalDateTime threshold);
 
     Optional<TrainingSession> findLastSessionByMemberIdAndRoutineId(Long memberId, Long routineId);
+
+    // Analítica Deportiva
+    List<Long> findPerformedExerciseIdsByMemberId(Long memberId);
+
+    List<TrainingSession> findSessionsByMemberAndExercise(Long memberId, Long exerciseId, LocalDateTime since);
 }

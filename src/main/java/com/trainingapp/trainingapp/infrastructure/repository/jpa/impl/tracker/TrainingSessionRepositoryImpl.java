@@ -65,4 +65,16 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository 
         return jpaRepository.findFirstByMemberIdAndRoutineIdOrderByStartTimeDesc(memberId, routineId)
                 .map(mapper::toDomain);
     }
+
+    @Override
+    public List<Long> findPerformedExerciseIdsByMemberId(Long memberId) {
+        return jpaRepository.findDistinctExerciseIdsByMemberId(memberId);
+    }
+
+    @Override
+    public List<TrainingSession> findSessionsByMemberAndExercise(Long memberId, Long exerciseId, java.time.LocalDateTime since) {
+        return jpaRepository.findSessionsByMemberAndExercise(memberId, exerciseId, since).stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
 }

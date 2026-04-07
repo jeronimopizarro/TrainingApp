@@ -32,4 +32,28 @@ public interface TrainingSessionJpaRepository
     List<TrainingSessionJpaEntity> findSessionsByMemberIdAndMonth(@Param("memberId") Long memberId,
                                                                   @Param("startOfMonth") LocalDateTime startOfMonth,
                                                                   @Param("endOfMonth") LocalDateTime endOfMonth);
+
+    /**
+     * NIVEL 1: PANTALLA DE PROGRESO (RESUMEN)
+     * Busca los IDs únicos de todos los ejercicios que el alumno realizó alguna vez.
+     */
+    @Query("SELECT DISTINCT s.exerciseId FROM TrainingSessionJpaEntity ts JOIN ts.sets s " +
+            "WHERE ts.memberId = :memberId AND ts.status = 'COMPLETED'")
+    List<Long> findDistinctExerciseIdsByMemberId(@Param("memberId") Long memberId);
+
+    /**
+     * NIVEL 2: PANTALLA DE DETALLE (GRÁFICO)
+     * Busca todas las sesiones de entrenamiento de un alumno que contengan un ejercicio específico,
+     * a partir de una fecha determinada (ej. los últimos 6 meses), ordenadas de más vieja a más nueva.
+     */
+    @Query("SELECT DISTINCT ts FROM TrainingSessionJpaEntity ts JOIN ts.sets s " +
+            "WHERE ts.memberId = :memberId " +
+            "AND s.exerciseId = :exerciseId " +
+            "AND ts.status = 'COMPLETED' " +
+            "AND ts.startTime >= :since " +
+            "ORDER BY ts.startTime ASC")
+    List<TrainingSessionJpaEntity> findSessionsByMemberAndExercise(
+            @Param("memberId") Long memberId,
+            @Param("exerciseId") Long exerciseId,
+            @Param("since") LocalDateTime since);
 }

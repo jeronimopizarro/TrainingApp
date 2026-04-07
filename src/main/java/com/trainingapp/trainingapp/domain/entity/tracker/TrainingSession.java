@@ -85,4 +85,27 @@ public class TrainingSession {
         this.status = SessionStatus.CANCELLED;
         this.endTime = LocalDateTime.now();
     }
+
+    /**
+     * Calcula el e1RM promedio de todas las series de un ejercicio específico
+     * realizadas dentro de esta sesión.
+     */
+    public java.math.BigDecimal calculateAverageE1RMForExercise(Long exerciseId) {
+        if (this.sets == null || this.sets.isEmpty()) {
+            return java.math.BigDecimal.ZERO;
+        }
+
+        List<java.math.BigDecimal> e1rms = this.sets.stream()
+                .filter(set -> set.getExerciseId().equals(exerciseId))
+                .map(SetLog::calculateEstimated1RM)
+                .filter(val -> val.compareTo(java.math.BigDecimal.ZERO) > 0)
+                .toList();
+
+        if (e1rms.isEmpty()) {
+            return java.math.BigDecimal.ZERO;
+        }
+
+        java.math.BigDecimal sum = e1rms.stream().reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+        return sum.divide(java.math.BigDecimal.valueOf(e1rms.size()), 1, java.math.RoundingMode.HALF_UP);
+    }
 }
