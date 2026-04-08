@@ -26,13 +26,10 @@ public class TakeRoutineRequestUseCase {
         RoutineRequest request = routineRequestRepository.findById(requestId)
                 .orElseThrow(() -> new RoutineRequestNotFoundException(requestId));
 
-        // 1. Barrera Multi-tenant: el profe no puede tomar solicitudes de otro gimnasio
         securityUtils.validateSameGym(request.getGymId());
 
-        // 2. Transición de estado en el Dominio (Pasa a IN_PROGRESS y asigna el trainerId)
         request.assignTrainer(currentTrainerId);
 
-        // 3. Guardamos los cambios
         routineRequestRepository.save(request);
     }
 }

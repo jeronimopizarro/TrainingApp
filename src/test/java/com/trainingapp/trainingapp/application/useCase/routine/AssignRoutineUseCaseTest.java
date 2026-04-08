@@ -66,7 +66,7 @@ public class AssignRoutineUseCaseTest {
         when(mapper.toDomain(any(AssignRoutineRequest.class), eq(2L), eq(10L))).thenReturn(savedRoutine);
         when(routineRepository.save(any())).thenReturn(savedRoutine);
 
-        // Acá está la magia: Simulamos que había un Request EN PROGRESO para este alumno y profe
+        // Simulamos que había un Request EN PROGRESO para este alumno y profe
         RoutineRequest inProgressRequest = RoutineRequest.restore(
                 1L, 100L, 10L, LocalDateTime.now(), RoutineRequestStatus.IN_PROGRESS, 2L, null,
                 null, 3, ExperienceLevel.BEGINNER, "", "Hipertrofia"
@@ -80,7 +80,6 @@ public class AssignRoutineUseCaseTest {
         AssignRoutineRequest request = new AssignRoutineRequest( "Rutina", 100L , List.of());
         useCase.execute(request);
 
-        // Assert
         assertEquals(RoutineRequestStatus.COMPLETED, inProgressRequest.getStatus(),
                 "La solicitud debió cambiar a COMPLETED");
         assertEquals(50L, inProgressRequest.getRoutineId(),
