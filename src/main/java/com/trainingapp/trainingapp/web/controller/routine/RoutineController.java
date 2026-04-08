@@ -27,6 +27,7 @@ public class RoutineController {
     private final CompleteRoutineUseCase completeRoutineUseCase;
     private final GetAllRoutinesByTrainerIdUseCase getAllRoutinesByTrainerIdUseCase;
     private final RequestRoutineUseCase requestRoutineUseCase;
+    private final TakeRoutineRequestUseCase takeRoutineRequestUseCase;
 
     public RoutineController(
             CreatePersonalRoutineUseCase createPersonalRoutineUseCase,
@@ -40,7 +41,8 @@ public class RoutineController {
             DeleteRoutineUseCase deleteRoutineUseCase,
             CompleteRoutineUseCase completeRoutineUseCase,
             GetAllRoutinesByTrainerIdUseCase getAllRoutinesByTrainerIdUseCase,
-            RequestRoutineUseCase requestRoutineUseCase) {
+            RequestRoutineUseCase requestRoutineUseCase,
+            TakeRoutineRequestUseCase takeRoutineRequestUseCase) {
         this.createPersonalRoutineUseCase = createPersonalRoutineUseCase;
         this.assignRoutineUseCase = assignRoutineUseCase;
         this.getRoutineByIdUseCase = getRoutineByIdUseCase;
@@ -54,6 +56,7 @@ public class RoutineController {
         this.completeRoutineUseCase = completeRoutineUseCase;
         this.getAllRoutinesByTrainerIdUseCase = getAllRoutinesByTrainerIdUseCase;
         this.requestRoutineUseCase = requestRoutineUseCase;
+        this.takeRoutineRequestUseCase = takeRoutineRequestUseCase;
     }
 
     @PostMapping("/personal")
@@ -155,5 +158,12 @@ public class RoutineController {
     public ResponseEntity<Void> requestRoutine(@Valid @RequestBody RequestRoutineMessage request) {
         requestRoutineUseCase.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/requests/{requestId}/take")
+    @PreAuthorize("hasAnyRole('TRAINER', 'GYM_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<Void> takeRoutineRequest(@PathVariable Long requestId) {
+        takeRoutineRequestUseCase.execute(requestId);
+        return ResponseEntity.ok().build();
     }
 }

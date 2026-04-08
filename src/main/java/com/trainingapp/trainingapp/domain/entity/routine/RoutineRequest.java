@@ -19,7 +19,7 @@ public class RoutineRequest {
     private Long routineId;
 
     private final Long targetTrainerId; // El profe que el alumno eligió
-    private final Integer availableDays; // ¿Cuántos días entrenara el miembro?
+    private final Integer availableDays; // ¿Cuántos días entrenará el miembro?
     private final ExperienceLevel experienceLevel;
     private final String injuries;
     private final String primaryGoal;
@@ -82,7 +82,7 @@ public class RoutineRequest {
     }
 
     public void completeRequest(Long routineId) {
-        if (this.status == RoutineRequestStatus.IN_PROGRESS) {
+        if (this.status != RoutineRequestStatus.IN_PROGRESS) {
             throw new InvalidRoutineRequestStateException("Solo se pueden completar solicitudes que están IN_PROGRESS");
         }
         this.status = RoutineRequestStatus.COMPLETED;
