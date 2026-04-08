@@ -4,10 +4,12 @@ import com.trainingapp.trainingapp.application.useCase.dashboard.AdminDashboardU
 import com.trainingapp.trainingapp.application.useCase.dashboard.MemberDashboardUseCase;
 import com.trainingapp.trainingapp.application.useCase.dashboard.TrainerDashboardUseCase;
 import com.trainingapp.trainingapp.config.TestSecurityConfig;
+import com.trainingapp.trainingapp.domain.enums.routine.ExperienceLevel;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.CustomUserDetailsService;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.JwtService;
 import com.trainingapp.trainingapp.web.dto.dashboard.AdminDashboardResponse;
 import com.trainingapp.trainingapp.web.dto.dashboard.MemberDashboardResponse;
+import com.trainingapp.trainingapp.web.dto.dashboard.TrainerDashboardResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -118,6 +121,29 @@ class DashboardControllerTest {
                     .andExpect(jsonPath("$.activeRoutine.suggestedDay.name").value("Día de Pecho"))
                     // Verificamos que la lista de días de entrenamiento tenga 2 elementos
                     .andExpect(jsonPath("$.trainingDaysThisMonth.length()").value(2));
+        }
+
+        @Test
+        @WithMockUser(roles = "TRAINER") // Rol exacto que pide el controlador
+        @DisplayName("GET /dashboard/trainer - Debería retornar 200 y la lista de solicitudes")
+        void shouldReturnTrainerDashboard() throws Exception {
+            // Arrange
+            TrainerDashboardResponse.PendingRoutineRequestDTO requestDTO =
+                    new TrainerDashboardResponse.PendingRoutineRequestDTO(
+                            1L, 100L, "Lionel Messi", LocalDateTime.now(),
+                            null, 3, ExperienceLevel.BEGINNER, "Ninguna", "Fuerza"
+                    );
+
+            TrainerDashboardResponse fakeResponse = new TrainerDashboardResponse(List.of(requestDTO));
+
+            when(trainerDashboardUseCase.execute()).thenReturn(fakeResponse);
+
+            // Act & Assert
+            mockMvc.perform(get("/dashboard/trainer"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.pendingRequests.length()").value(1))
+                    .andExpect(jsonPath("$.pendingRequests[0].memberFullName").value("Lionel Messi"))
+                    .andExpect(jsonPath("$.pendingRequests[0].primaryGoal").value("Fuerza"));
         }
     }
 }
