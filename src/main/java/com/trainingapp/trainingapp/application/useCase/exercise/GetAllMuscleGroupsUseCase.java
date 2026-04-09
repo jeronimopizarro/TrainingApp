@@ -1,4 +1,4 @@
-package com.trainingapp.trainingapp.application.useCase.exercise.muscleGroup;
+package com.trainingapp.trainingapp.application.useCase.exercise;
 
 import com.trainingapp.trainingapp.domain.entity.exercise.MuscleGroup;
 import com.trainingapp.trainingapp.domain.repository.exercise.MuscleGroupRepository;
