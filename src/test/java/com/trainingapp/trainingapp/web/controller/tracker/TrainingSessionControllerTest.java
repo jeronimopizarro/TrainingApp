@@ -10,6 +10,7 @@ import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.JwtService;
 import com.trainingapp.trainingapp.web.dto.tracker.LogSetRequest;
 import com.trainingapp.trainingapp.web.dto.tracker.SessionResponse;
+import com.trainingapp.trainingapp.web.dto.tracker.SetLogResponse;
 import com.trainingapp.trainingapp.web.dto.tracker.StartSessionRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,13 +27,16 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TrainingSessionController.class)
-@Import(TestSecurityConfig.class) // CARGAMOS LA CONFIG DE SEGURIDAD PROFESIONAL
+@Import(TestSecurityConfig.class)
 @AutoConfigureJson
 class TrainingSessionControllerTest {
 
@@ -49,16 +53,16 @@ class TrainingSessionControllerTest {
     private CustomUserDetailsService userDetailsService;
 
     @MockitoBean
-    private StartTrainingSessionUseCase startSessionUseCase;
+    private StartTrainingSessionUseCase startTrainingSessionUseCase;
 
     @MockitoBean
-    private LogTrainingSetUseCase logSetUseCase;
+    private LogTrainingSetUseCase logTrainingSetUseCase;
 
     @MockitoBean
-    private FinishTrainingSessionUseCase finishSessionUseCase;
+    private FinishTrainingSessionUseCase finishTrainignSessionUseCase;
 
     @Test
-    @WithMockUser(roles = "MEMBER") // Simulamos de forma limpia un usuario con rol
+    @WithMockUser(roles = "MEMBER")
     @DisplayName("Debería retornar 201 CREATED al iniciar sesión correctamente")
     void shouldStartSessionSuccessfully() throws Exception {
         StartSessionRequest request = new StartSessionRequest(100L, 5L);
@@ -66,12 +70,12 @@ class TrainingSessionControllerTest {
                 1L, 10L, 100L, LocalDateTime.now(), null, SessionStatus.IN_PROGRESS
         );
 
-        when(startSessionUseCase.execute(any(StartSessionRequest.class))).thenReturn(fakeResponse);
+        when(startTrainingSessionUseCase.execute(any(StartSessionRequest.class))).thenReturn(fakeResponse);
 
         mockMvc.perform(post("/sessions/start")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated()) // Verificamos el 201
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.status").value("IN_PROGRESS"));
     }
@@ -88,5 +92,43 @@ class TrainingSessionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(roles = "MEMBER")
+    @DisplayName("POST /sessions/{sessionId}/sets - Debería retornar 201 al registrar serie")
+    void shouldLogSet() throws Exception {
+        LogSetRequest request = new LogSetRequest(
+                5L, 1, 10, new BigDecimal("50.0"), 2, "Nota"
+        );
+
+        SetLogResponse mockResponse = new SetLogResponse(
+                1L, 5L, 1, 10, new BigDecimal("50.0"), 2, "Nota"
+        );
+
+        // Usamos logSetUseCase que es el nombre correcto del MockitoBean
+        when(logTrainingSetUseCase.execute(eq(1L), any(LogSetRequest.class))).thenReturn(mockResponse);
+
+        // CORRECCIÓN: La URL real es /sessions/1/sets
+        mockMvc.perform(post("/sessions/1/sets")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.weightLifted").value(50.0));
+    }
+
+    @Test
+    @WithMockUser(roles = "MEMBER")
+    @DisplayName("PATCH /sessions/{sessionId}/finish - Debería retornar 200 al finalizar")
+    void shouldFinishSession() throws Exception {
+        SessionResponse mockResponse = mock(SessionResponse.class);
+
+        // Usamos finishSessionUseCase que es el nombre correcto del MockitoBean
+        when(finishTrainignSessionUseCase.execute(1L)).thenReturn(mockResponse);
+
+        // CORRECCIÓN: La URL real es /sessions/1/finish
+        mockMvc.perform(patch("/sessions/1/finish"))
+                .andExpect(status().isOk());
     }
 }
