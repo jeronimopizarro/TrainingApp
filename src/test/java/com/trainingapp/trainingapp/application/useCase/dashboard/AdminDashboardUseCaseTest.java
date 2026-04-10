@@ -41,7 +41,6 @@ class AdminDashboardUseCaseTest {
     void shouldReturnAdminDashboardMetrics() {
         when(securityUtils.getCurrentUserGymId()).thenReturn(10L);
 
-        // Mock Financial Summary
         when(transactionRepository.sumRevenueByDateRange(eq(10L), any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(new BigDecimal("5000.00")); // Mensual
         when(transactionRepository.sumRevenueByCategoryAndDateRange(eq(10L), eq(TransactionCategory.MEMBERSHIP), any(LocalDateTime.class), any(LocalDateTime.class)))
@@ -49,7 +48,6 @@ class AdminDashboardUseCaseTest {
         when(transactionRepository.sumRevenueByCategoryAndDateRange(eq(10L), eq(TransactionCategory.PRODUCT), any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(new BigDecimal("1000.00")); // Productos
 
-        // Mock Audience Summary
         when(subscriptionRepository.countActiveMembersByGymId(10L)).thenReturn(150L);
         when(subscriptionRepository.countNewMembersByGymIdAndDateRange(eq(10L), any(LocalDate.class), any(LocalDate.class))).thenReturn(20L);
         when(subscriptionRepository.countChurnedMembersByGymIdAndDateRange(eq(10L), any(LocalDate.class), any(LocalDate.class))).thenReturn(5L);
