@@ -1,4 +1,14 @@
 package com.trainingapp.trainingapp.web.dto.auth;
 
-public record LoginRequest(String email, String password) {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginRequest(
+        @NotBlank(message = "El email es obligatorio")
+        @Email(message = "El formato del email no es válido")
+        String email,
+
+        @NotBlank(message = "La contraseña es obligatoria")
+        String password
+) {
 }
