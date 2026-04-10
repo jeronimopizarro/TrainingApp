@@ -42,13 +42,11 @@ class MemberProgressControllerTest {
     @WithMockUser(roles = "MEMBER")
     @DisplayName("GET /tracker/progress/summary - Debería retornar 200 y el resumen")
     void shouldReturnSummary() throws Exception {
-        // Armamos el objeto con tu Record anidado real
         MemberProgressSummaryResponse.ExerciseSummaryDTO dto =
                 new MemberProgressSummaryResponse.ExerciseSummaryDTO(1L, "Press Banca", new BigDecimal("100.5"));
 
         MemberProgressSummaryResponse mockResponse = new MemberProgressSummaryResponse(List.of(dto));
 
-        // Tu caso de uso NO recibe argumentos, saca todo del SecurityContext
         when(getMemberProgressSummaryUseCase.execute()).thenReturn(mockResponse);
 
         mockMvc.perform(get("/progress/summary"))
@@ -63,7 +61,6 @@ class MemberProgressControllerTest {
     void shouldReturnExerciseProgress() throws Exception {
         ExerciseProgressResponse mockResponse = new ExerciseProgressResponse(5L, "Sentadilla", List.of());
 
-        // Tu caso de uso recibe el ID del ejercicio y los meses (asumimos que el controller manda un int)
         when(getExerciseProgressUseCase.execute(eq(5L), anyInt())).thenReturn(mockResponse);
 
         mockMvc.perform(get("/progress/exercise/5").param("monthsBack", "6"))

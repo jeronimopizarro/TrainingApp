@@ -50,7 +50,6 @@ public class GymController {
         return ResponseEntity.ok(getAllGymsUseCase.execute());
     }
 
-    //TODO: logica de negocio que valide que el gym admin solo puede modificar su propio gimnasio.
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<GymResponse> updateGym(@PathVariable Long id, @RequestBody UpdateGymRequest request) {

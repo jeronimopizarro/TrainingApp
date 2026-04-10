@@ -71,5 +71,4 @@ public class ReceptionistController {
         deleteReceptionistUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
-
 }
