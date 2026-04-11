@@ -58,8 +58,8 @@ erDiagram
     SET_LOG }|--|| EXERCISE : "de"
 
     GYM ||--o{ TRANSACTION : "registra flujo de"
-    TRANSACTION ||--o? SALE : "vinculada a"
-    TRANSACTION ||--o? SUBSCRIPTION : "vinculada a"
+    TRANSACTION ||--o| SALE : "vinculada a"
+    TRANSACTION ||--o| SUBSCRIPTION : "vinculada a"
 
     SALE ||--o{ SALE_DETAIL : "contiene"
     SALE_DETAIL }|--|| PRODUCT : "incluye"
