@@ -39,9 +39,9 @@ erDiagram
 
     USER ||--o{ ACCESS_LOG : "registra"
 
-    USER <|-- MEMBER : "es un"
-    USER <|-- TRAINER : "es un"
-    USER <|-- ADMIN : "es un"
+    USER ||--o| MEMBER : "como"
+    USER ||--o| TRAINER : "como"
+    USER ||--o| ADMIN : "como"
 
     MEMBER ||--o{ SUBSCRIPTION : "tiene"
     SUBSCRIPTION }|--|| MEMBERSHIP_PLAN : "basada en"
