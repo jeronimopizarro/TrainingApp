@@ -40,10 +40,10 @@ export const Sidebar = () => {
       {/* LOGO AREA */}
       <div className="p-8">
         <h1 className="text-3xl font-display font-black tracking-tighter text-text-main italic">
-          KINETIC<span className="text-primary text-4xl">.</span>
+          TrainingApp<span className="text-primary text-4xl">.</span>
         </h1>
         <p className="text-[10px] uppercase tracking-[0.2em] text-text-secondary mt-[5px] font-semibold opacity-60">
-          Gym Management System
+          Sistema de Gestión Integral
         </p>
       </div>
 
