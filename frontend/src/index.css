@@ -1,33 +1,61 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lexend:wght@400;600;700;800;900&display=swap');
 
+@theme {
+  /* Paleta de Colores KINETIC */
+  --color-background: #0c0e11;
+  --color-surface-low: #111417;
+  --color-surface-med: #1d2024;
+  --color-surface-high: #23262a;
+
+  --color-primary: #89acff;
+  --color-primary-dark: #0f6df3;
+  --color-secondary: #8496ff;
+  --color-error: #ff716c;
+
+  --color-text-main: #f9f9fd;
+  --color-text-secondary: #aaabaf;
+
+  /* Tipografías */
+  --font-display: "Lexend", sans-serif;
+  --font-sans: "Inter", sans-serif;
+
+  /* Gradientes */
+  --background-image-gradient-primary: linear-gradient(135deg, #89acff 0%, #0f6df3 100%);
+}
+
+/* Estilos Globales KINETIC */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  background-color: var(--color-background);
+  color: var(--color-text-main);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-#root {
-  width: 100%;
+/* Scrollbar personalizada minimalista */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-@theme {
-  --color-primary: #2563eb;
-  --color-secondary: #64748b;
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-med);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-surface-high);
+}
+
+/* Utilidad para profundidad sin bordes */
+.surface-lift {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45);
 }
