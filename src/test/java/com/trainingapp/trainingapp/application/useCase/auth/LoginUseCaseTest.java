@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,8 +47,7 @@ class LoginUseCaseTest {
 
         when(userDetailsService.loadUserByUsername("admin@test.com")).thenReturn(mockUserDetails);
 
-        // El JwtService recibe UserDetails y retorna un String
-        when(jwtService.generateToken(mockUserDetails)).thenReturn(expectedToken);
+        when(jwtService.generateToken(anyMap(), any(UserDetails.class))).thenReturn(expectedToken);
 
         AuthResponse response = useCase.execute(request);
 

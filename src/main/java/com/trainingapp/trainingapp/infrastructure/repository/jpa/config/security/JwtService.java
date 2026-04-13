@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -30,14 +31,20 @@ public class JwtService {
     private String secretKey;
 
     public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
+    }
+
+    /**
+     * Genera un token JWT incluyendo información adicional (Claims).
+     * Esto permite al frontend conocer el rol y el gymId directamente decodificando el token.
+     */
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder()
-                .setClaims(new HashMap<>())
-                .setSubject(userDetails.getUsername()) // El "Dueño"
-                .setIssuedAt(new Date(System.currentTimeMillis())) // Fecha de creación (hoy, ahora)
-                .setExpiration(new Date(
-                        System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // Vence en 24 horas
-                .signWith(getSigningKey(),
-                        SignatureAlgorithm.HS256) // Lo firmamos con la clave secreta
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 

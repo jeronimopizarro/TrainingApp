@@ -9,6 +9,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class LoginUseCase {
 
@@ -26,18 +29,25 @@ public class LoginUseCase {
 
     public AuthResponse execute(LoginRequest request) {
         // 1. Se verifica que el email y la contraseña coincidan.
-        // Si la contraseña está mal, esto lanza una excepción automáticamente y corta el flujo.
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
 
-        // 2. Si pasó la validación, buscamos los datos del usuario para armar la pulsera.
+        // 2. Buscamos los datos extendidos del usuario para inyectar en el token.
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.email());
+        
+        // 3. Preparamos los "Claims" (datos extra) para el frontend.
+        Map<String, Object> claims = new HashMap<>();
+        if (userDetails instanceof CustomUserDetailsService.SecurityUser securityUser) {
+            claims.put("role", securityUser.getRole());
+            claims.put("gymId", securityUser.getGymId());
+            claims.put("userName", securityUser.getFirstName());
+        }
 
-        // 3. Imprimimos el Token JWT.
-        String jwtToken = jwtService.generateToken(userDetails);
+        // 4. Generamos el token enriquecido con el rol y el gimnasio.
+        String jwtToken = jwtService.generateToken(claims, userDetails);
 
-        // 4. Se lo devolvemos al cliente.
+        // 5. Se lo devolvemos al cliente.
         return new AuthResponse(jwtToken);
     }
 }
