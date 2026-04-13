@@ -57,9 +57,10 @@ class DashboardControllerTest {
         @WithMockUser(roles = "GYM_ADMIN")
         @DisplayName("GET /dashboard/admin - Debería retornar 200 y métricas de Admin con estructura anidada")
         void shouldReturnAdminDashboard() throws Exception {
-            // Arrange: Instanciamos usando los sub-records correspondientes
+            // Arrange: Instanciamos usando los sub-records correspondientes con los nuevos campos históricos
             AdminDashboardResponse.FinancialSummary financial = new AdminDashboardResponse.FinancialSummary(
                     new BigDecimal("5000.00"), // monthly
+                    new BigDecimal("4500.00"), // last month
                     new BigDecimal("1200.00"), // weekly
                     new BigDecimal("200.00"),  // daily
                     new BigDecimal("4000.00"), // membership
@@ -68,8 +69,10 @@ class DashboardControllerTest {
 
             AdminDashboardResponse.AudienceSummary audience = new AdminDashboardResponse.AudienceSummary(
                     150L, // active
+                    145L, // last month active
                     20L,  // new
-                    5L    // churned
+                    5L,   // churned
+                    8L    // last month churned
             );
 
             AdminDashboardResponse fakeResponse = new AdminDashboardResponse(

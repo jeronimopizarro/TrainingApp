@@ -13,6 +13,7 @@ public record AdminDashboardResponse(
     // Resumen de Plata
     public record FinancialSummary(
             BigDecimal monthlyRevenue,    // Recaudado en el mes actual
+            BigDecimal lastMonthRevenue,  // Recaudado el mes pasado (NUEVO)
             BigDecimal weeklyRevenue,     // Recaudado esta semana
             BigDecimal dailyRevenue,      // Recaudado HOY
             BigDecimal membershipRevenue, // Cuota de socios (del mes)
@@ -21,9 +22,11 @@ public record AdminDashboardResponse(
 
     // Resumen de Gente
     public record AudienceSummary(
-            long activeMembers,     // Socios con cuota al día
-            long newMembersThisMonth, // Altas del mes
-            long churnedMembersThisMonth // Bajas del mes (venció y no renovó)
+            long activeMembers,           // Socios actuales
+            long lastMonthActiveMembers,  // Socios el mes pasado (NUEVO)
+            long newMembersThisMonth,     // Altas del mes
+            long churnedMembersThisMonth, // Bajas del mes
+            long lastMonthChurnedMembers  // Bajas el mes pasado (NUEVO)
     ) {}
 
     // Kiosco

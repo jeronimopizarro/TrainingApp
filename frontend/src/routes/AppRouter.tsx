@@ -4,6 +4,7 @@ import { ProtectedRoute } from '@/routes/guards/ProtectedRoute';
 import { MainLayout } from '@/shared/components/layout/MainLayout';
 import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { authService } from '@/features/auth/services/auth.service';
+import { AdminDashboardPage } from '@/features/dashboard/pages/AdminDashboardPage';
 
 /**
  * PublicRoute: Evita que usuarios logueados vuelvan al Login.
@@ -20,7 +21,7 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 /**
- * COMPONENTES TEMPORALES
+ * COMPONENTES TEMPORALES (Se irán reemplazando por sus respectivas páginas)
  */
 const MemberHome = () => (
   <div className="min-h-screen bg-background p-10 flex flex-col items-center justify-center text-center">
@@ -38,18 +39,11 @@ const MemberHome = () => (
   </div>
 );
 
-const AdminDashboard = () => (
-  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-    <h1 className="text-4xl font-display font-black text-text-main tracking-tight">Panel Administrativo</h1>
-    <p className="text-text-secondary mt-2">Bienvenido al control central de TrainingApp.</p>
-  </div>
-);
-
 export const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* RUTAS PÚBLICAS (Protegidas por PublicRoute) */}
+        {/* RUTAS PÚBLICAS */}
         <Route path="/login" element={
           <PublicRoute>
             <LoginPage />
@@ -69,7 +63,7 @@ export const AppRouter = () => {
         <Route path="/admin" element={<ProtectedRoute allowedRoles={['GYM_ADMIN']} />}>
           <Route element={<MainLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboardPage />} />
             <Route path="members" element={<div className="text-text-main font-display font-bold text-2xl">Gestión de Socios</div>} />
             <Route path="staff" element={<div className="text-text-main font-display font-bold text-2xl">Personal</div>} />
             <Route path="memberships" element={<div className="text-text-main font-display font-bold text-2xl">Membresías</div>} />

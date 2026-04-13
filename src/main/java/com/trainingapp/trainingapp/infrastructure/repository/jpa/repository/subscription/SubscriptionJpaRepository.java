@@ -36,9 +36,11 @@ public interface SubscriptionJpaRepository extends JpaRepository<SubscriptionJpa
                                             @Param("startDate") LocalDate startDate,
                                             @Param("endDate") LocalDate endDate);
 
-    @Query("SELECT COUNT(s) FROM SubscriptionJpaEntity s WHERE s.status = 'EXPIRED' " +
+    @Query("SELECT COUNT(DISTINCT s.memberId) FROM SubscriptionJpaEntity s " +
+            "WHERE s.status = 'EXPIRED' " +
             "AND s.endDate >= :startDate AND s.endDate <= :endDate " +
-            "AND s.memberId IN (SELECT m.id FROM MemberJpaEntity m WHERE m.gymId = :gymId)")
+            "AND s.memberId IN (SELECT m.id FROM MemberJpaEntity m WHERE m.gymId = :gymId) " +
+            "AND s.memberId NOT IN (SELECT s2.memberId FROM SubscriptionJpaEntity s2 WHERE s2.status = 'ACTIVE')")
     long countChurnedMembersByGymIdAndDateRange(@Param("gymId") Long gymId,
                                                 @Param("startDate") LocalDate startDate,
                                                 @Param("endDate") LocalDate endDate);

@@ -52,11 +52,19 @@ public class AdminDashboardUseCase {
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
         LocalDateTime startOfWeek = today.with(DayOfWeek.MONDAY).atStartOfDay();
+        
+        // Mes Actual
         LocalDateTime startOfMonth = today.withDayOfMonth(1).atStartOfDay();
         LocalDateTime endOfMonth = today.withDayOfMonth(today.lengthOfMonth()).atTime(LocalTime.MAX);
+        
+        // Mes Pasado
+        LocalDate lastMonthDate = today.minusMonths(1);
+        LocalDateTime startOfLastMonth = lastMonthDate.withDayOfMonth(1).atStartOfDay();
+        LocalDateTime endOfLastMonth = lastMonthDate.withDayOfMonth(lastMonthDate.lengthOfMonth()).atTime(LocalTime.MAX);
 
         return new FinancialSummary(
                 transactionRepository.sumRevenueByDateRange(gymId, startOfMonth, endOfMonth),
+                transactionRepository.sumRevenueByDateRange(gymId, startOfLastMonth, endOfLastMonth),
                 transactionRepository.sumRevenueByDateRange(gymId, startOfWeek, endOfDay),
                 transactionRepository.sumRevenueByDateRange(gymId, startOfDay, endOfDay),
                 transactionRepository.sumRevenueByCategoryAndDateRange(gymId, TransactionCategory.MEMBERSHIP, startOfMonth, endOfMonth),
@@ -67,11 +75,17 @@ public class AdminDashboardUseCase {
     private AudienceSummary buildAudienceSummary(Long gymId, LocalDate today) {
         LocalDate startOfMonth = today.withDayOfMonth(1);
         LocalDate endOfMonth = today.withDayOfMonth(today.lengthOfMonth());
+        
+        LocalDate lastMonthDate = today.minusMonths(1);
+        LocalDate startOfLastMonth = lastMonthDate.withDayOfMonth(1);
+        LocalDate endOfLastMonth = lastMonthDate.withDayOfMonth(lastMonthDate.lengthOfMonth());
 
         return new AudienceSummary(
                 subscriptionRepository.countActiveMembersByGymId(gymId),
+                subscriptionRepository.countActiveMembersByGymId(gymId), // Por ahora usamos el actual como base
                 subscriptionRepository.countNewMembersByGymIdAndDateRange(gymId, startOfMonth, endOfMonth),
-                subscriptionRepository.countChurnedMembersByGymIdAndDateRange(gymId, startOfMonth, endOfMonth)
+                subscriptionRepository.countChurnedMembersByGymIdAndDateRange(gymId, startOfMonth, endOfMonth),
+                subscriptionRepository.countChurnedMembersByGymIdAndDateRange(gymId, startOfLastMonth, endOfLastMonth)
         );
     }
 
