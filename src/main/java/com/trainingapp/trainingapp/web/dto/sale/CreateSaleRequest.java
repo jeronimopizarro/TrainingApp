@@ -8,9 +8,6 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record CreateSaleRequest(
-        // memberId puede ser null (venta a un no-socio)
-        Long memberId,
-
         @NotNull(message = "El método de pago es obligatorio")
         PaymentMethod paymentMethod,
 

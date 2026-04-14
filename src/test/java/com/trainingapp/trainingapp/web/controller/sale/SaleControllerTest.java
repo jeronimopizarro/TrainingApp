@@ -58,11 +58,11 @@ class SaleControllerTest {
         // Arrange
         SaleDetailRequest detail = new SaleDetailRequest(5L, 2);
         CreateSaleRequest request =
-                new CreateSaleRequest(100L, PaymentMethod.CASH, List.of(detail));
+                new CreateSaleRequest(PaymentMethod.CASH, List.of(detail));
 
         SaleResponse fakeResponse =
                 new SaleResponse(1L, LocalDateTime.now(), new BigDecimal("10.00"),
-                        PaymentMethod.CASH, 10L, 2L, 100L, List.of());
+                        PaymentMethod.CASH, 10L, 2L, List.of());
 
         when(processSaleUseCase.execute(any(CreateSaleRequest.class))).thenReturn(fakeResponse);
 
@@ -82,7 +82,7 @@ class SaleControllerTest {
         // Arrange
         SaleResponse fakeResponse =
                 new SaleResponse(1L, LocalDateTime.now(), new BigDecimal("15.50"),
-                        PaymentMethod.CARD, 10L, 1L, 100L, List.of());
+                        PaymentMethod.CARD, 10L, 1L, List.of());
 
         when(getSaleByIdUseCase.execute(1L)).thenReturn(fakeResponse);
 

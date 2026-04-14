@@ -39,7 +39,6 @@ export interface SaleResponse {
   paymentMethod: PaymentMethod;
   gymId: number;
   registeredByAdminId: number;
-  memberId?: number;
   details: SaleDetailResponse[];
 }
 
@@ -49,7 +48,6 @@ export interface SaleDetailRequest {
 }
 
 export interface CreateSaleRequest {
-  memberId?: number | null;
   paymentMethod: PaymentMethod;
   details: SaleDetailRequest[];
 }

@@ -23,7 +23,6 @@ public class SaleMapper {
                 entity.getPaymentMethod(),
                 entity.getGymId(),
                 entity.getRegisteredByAdminId(),
-                entity.getMemberId(),
                 domainDetails
         );
     }
@@ -54,7 +53,6 @@ public class SaleMapper {
         entity.setPaymentMethod(domain.getPaymentMethod());
         entity.setGymId(domain.getGymId());
         entity.setRegisteredByAdminId(domain.getRegisteredByAdminId());
-        entity.setMemberId(domain.getMemberId());
 
         // Usamos el Helper Method para mantener la bidireccionalidad segura
         domain.getDetails().forEach(detail -> entity.addDetail(toDetailEntity(detail)));

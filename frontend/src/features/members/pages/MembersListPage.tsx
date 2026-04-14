@@ -53,23 +53,23 @@ const MemberRow = ({ member }: { member: any }) => {
         {initials}
       </div>
       <div className="flex-1 min-w-0">
-        <h3 className="text-sm font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1">
+        <h3 className="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1.5">
           {member.firstName} {member.lastName}
         </h3>
-        <p className="text-[11px] text-text-secondary opacity-50 font-medium truncate flex items-center gap-2">
+        <p className="text-xs text-text-secondary opacity-60 font-medium truncate flex items-center gap-2">
           <Mail size={12} /> {member.email}
         </p>
       </div>
       <div className="hidden lg:block w-32">
-        <p className="text-[10px] uppercase tracking-widest text-text-secondary font-bold opacity-30 mb-1">DNI</p>
-        <p className="text-xs font-mono font-bold text-text-main">{member.dni}</p>
+        <p className="text-[11px] uppercase tracking-widest text-text-secondary font-bold opacity-40 mb-1">DNI</p>
+        <p className="text-sm font-mono font-bold text-text-main">{member.dni}</p>
       </div>
       <div className="w-48">
-        <p className="text-xs font-bold text-text-main leading-none mb-1 truncate">
+        <p className="text-sm font-bold text-text-main leading-none mb-1.5 truncate">
           {member.planName}
         </p>
         {member.endDate && (
-          <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black opacity-40">
+          <p className="text-xs uppercase tracking-widest text-text-secondary font-black opacity-40">
             Vence: {member.endDate}
           </p>
         )}

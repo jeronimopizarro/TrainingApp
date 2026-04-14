@@ -18,18 +18,16 @@ public class Sale {
     private PaymentMethod paymentMethod;
     private Long gymId;
     private Long registeredByAdminId;
-    private Long memberId;
     private List<SaleDetail> details;
 
     public Sale(Long id, LocalDateTime saleDate, BigDecimal totalAmount, PaymentMethod paymentMethod,
-                Long gymId, Long registeredByAdminId, Long memberId, List<SaleDetail> details) {
+                Long gymId, Long registeredByAdminId, List<SaleDetail> details) {
         this.id = id;
         this.saleDate = saleDate;
         this.totalAmount = totalAmount;
         this.paymentMethod = paymentMethod;
         this.gymId = gymId;
         this.registeredByAdminId = registeredByAdminId;
-        this.memberId = memberId;
         this.details = details != null ? new ArrayList<>(details) : new ArrayList<>();
         validate();
     }
@@ -50,17 +48,17 @@ public class Sale {
     }
 
     public static Sale createNew(PaymentMethod paymentMethod, Long gymId, Long registeredByAdminId,
-                                 Long memberId, List<SaleDetail> details) {
+                                 List<SaleDetail> details) {
         // La venta calcula su propio total sumando los subtotales de cada detalle
         BigDecimal total = details != null ? details.stream()
                 .map(SaleDetail::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add) : BigDecimal.ZERO;
 
-        return new Sale(null, LocalDateTime.now(), total, paymentMethod, gymId, registeredByAdminId, memberId, details);
+        return new Sale(null, LocalDateTime.now(), total, paymentMethod, gymId, registeredByAdminId, details);
     }
 
     public static Sale restore(Long id, LocalDateTime saleDate, BigDecimal totalAmount, PaymentMethod paymentMethod,
-                               Long gymId, Long registeredByAdminId, Long memberId, List<SaleDetail> details) {
-        return new Sale(id, saleDate, totalAmount, paymentMethod, gymId, registeredByAdminId, memberId, details);
+                               Long gymId, Long registeredByAdminId, List<SaleDetail> details) {
+        return new Sale(id, saleDate, totalAmount, paymentMethod, gymId, registeredByAdminId, details);
     }
 }

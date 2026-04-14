@@ -42,9 +42,6 @@ public class SaleJpaEntity extends BaseJpaEntity {
     @Column(name = "registered_by_admin_id", nullable = false)
     private Long registeredByAdminId;
 
-    @Column(name = "member_id")
-    private Long memberId;
-
     // CascadeType.ALL y orphanRemoval aseguran que si se borra la Venta, se borran sus Detalles automáticamente.
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SaleDetailJpaEntity> details = new ArrayList<>();

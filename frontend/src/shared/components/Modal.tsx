@@ -6,12 +6,19 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  size?: 'md' | 'lg' | 'xl';
 }
 
 /**
  * Modal Premium: Implementa la profundidad visual Kinetic con backdrop blur.
  */
-export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+export const Modal: React.FC<ModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  title, 
+  children,
+  size = 'md'
+}) => {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -22,6 +29,12 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
 
   if (!isOpen) return null;
 
+  const sizeClasses = {
+    md: 'max-w-3xl',
+    lg: 'max-w-5xl',
+    xl: 'max-w-7xl'
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       {/* Backdrop con Blur Dinámico */}
@@ -31,7 +44,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
       />
 
       {/* Contenedor del Modal */}
-      <div className="relative w-full max-w-2xl bg-surface-low rounded-[2.5rem] shadow-2xl border border-white/[0.05] overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-8 duration-500 surface-lift">
+      <div className={`relative w-full ${sizeClasses[size]} bg-surface-low rounded-[2.5rem] shadow-2xl border border-white/[0.05] overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-8 duration-500 surface-lift`}>
         
         {/* Header del Modal */}
         <div className="flex items-center justify-between p-8 border-b border-white/[0.03]">

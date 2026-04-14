@@ -90,7 +90,7 @@ public class ProcessSaleUseCase {
     }
 
     private Sale persistSale(CreateSaleRequest request, Long gymId, Long adminId, List<SaleDetail> details) {
-        Sale sale = Sale.createNew(request.paymentMethod(), gymId, adminId, request.memberId(), details);
+        Sale sale = Sale.createNew(request.paymentMethod(), gymId, adminId, details);
         return saleRepository.save(sale);
     }
 

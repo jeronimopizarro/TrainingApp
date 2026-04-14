@@ -44,8 +44,8 @@ const RoleBadge = ({ role }: { role: StaffRole }) => {
   const Icon = config.icon;
 
   return (
-    <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all duration-500 ${config.class}`}>
-      <Icon size={12} />
+    <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border transition-all duration-500 ${config.class}`}>
+      <Icon size={14} />
       {config.label}
     </div>
   );
@@ -60,26 +60,26 @@ const StaffRow = ({ member }: { member: StaffMember }) => {
         {initials}
       </div>
       <div className="flex-1 min-w-0">
-        <h3 className="text-sm font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1">
+        <h3 className="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1.5">
           {member.firstName} {member.lastName}
         </h3>
-        <p className="text-[11px] text-text-secondary opacity-50 font-medium truncate flex items-center gap-2">
+        <p className="text-xs text-text-secondary opacity-60 font-medium truncate flex items-center gap-2">
           <Mail size={12} /> {member.email}
         </p>
       </div>
       <div className="hidden lg:block w-32">
-        <p className="text-[10px] uppercase tracking-widest text-text-secondary font-bold opacity-30 mb-1">DNI</p>
-        <p className="text-xs font-mono font-bold text-text-main">{member.dni}</p>
+        <p className="text-[11px] uppercase tracking-widest text-text-secondary font-bold opacity-40 mb-1">DNI</p>
+        <p className="text-sm font-mono font-bold text-text-main">{member.dni}</p>
       </div>
       <div className="w-48">
-        <p className="text-xs font-bold text-text-main leading-none mb-1 truncate">
+        <p className="text-sm font-bold text-text-main leading-none mb-1.5 truncate">
           {member.role === 'TRAINER' ? (member as any).specialization : 'Gestión Administrativa'}
         </p>
-        <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black opacity-40">
+        <p className="text-xs uppercase tracking-widest text-text-secondary font-black opacity-40">
           {member.role === 'TRAINER' ? 'Especialidad' : 'Responsabilidad'}
         </p>
       </div>
-      <div className="w-40 flex justify-center">
+      <div className="w-44 flex justify-center">
         <RoleBadge role={member.role} />
       </div>
       <div className="flex items-center gap-2">

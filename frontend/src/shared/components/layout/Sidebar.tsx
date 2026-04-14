@@ -77,13 +77,7 @@ export const Sidebar = () => {
 
       {/* BOTTOM ACTIONS */}
       <div className="p-6 border-t border-surface-med/30 mt-auto">
-        <button 
-          onClick={() => {}} 
-          className="flex items-center gap-3 w-full px-4 py-3 text-text-secondary hover:text-text-main hover:bg-surface-med rounded-xl transition-all mb-2"
-        >
-          <Settings size={20} />
-          <span className="text-sm font-medium">Configuración</span>
-        </button>
+        
         
         <button 
           onClick={handleLogout}

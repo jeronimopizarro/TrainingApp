@@ -66,7 +66,7 @@ class ProcessSaleUseCaseTest {
         when(saleRepository.save(any(Sale.class))).thenReturn(fakeSale);
 
         CreateSaleRequest request = new CreateSaleRequest(
-                100L, PaymentMethod.CARD, List.of(new SaleDetailRequest(5L, 2))
+                PaymentMethod.CARD, List.of(new SaleDetailRequest(5L, 2))
                 );
         useCase.execute(request);
 
@@ -91,7 +91,7 @@ class ProcessSaleUseCaseTest {
         when(productRepository.findById(5L)).thenReturn(Optional.of(product));
 
         // Intentamos comprar 5
-        CreateSaleRequest request = new CreateSaleRequest(100L,
+        CreateSaleRequest request = new CreateSaleRequest(
                 PaymentMethod.CASH, List.of(new SaleDetailRequest(5L, 5)));
 
         assertThrows(InsufficientStockException.class, () -> useCase.execute(request));

@@ -81,12 +81,12 @@ export const ExerciseForm: React.FC<ExerciseFormProps> = ({
             required 
           />
           <div className="space-y-2">
-            <label className="text-[10px] uppercase tracking-widest text-text-secondary font-black ml-1">Descripción / Técnica</label>
+            <label className="text-[11px] uppercase tracking-widest text-text-secondary font-black ml-1">Descripción / Técnica</label>
             <textarea 
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              className="w-full bg-surface-high border border-white/[0.05] rounded-2xl py-4 px-4 text-sm text-text-main focus:outline-none focus:border-primary/50 transition-all resize-none min-h-[120px]"
+              className="w-full bg-surface-high border border-white/[0.05] rounded-2xl py-4 px-4 text-base text-text-main focus:outline-none focus:border-primary/50 transition-all resize-none min-h-[120px]"
               placeholder="Explica la ejecución correcta..."
               required
             />
@@ -111,11 +111,11 @@ export const ExerciseForm: React.FC<ExerciseFormProps> = ({
 
         <div className="space-y-6">
           <div className="space-y-4">
-            <label className="text-[10px] uppercase tracking-widest text-text-secondary font-black ml-1">Grupos Musculares</label>
-            <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+            <label className="text-[11px] uppercase tracking-widest text-text-secondary font-black ml-1">Grupos Musculares</label>
+            <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
               {muscleGroups.length === 0 ? (
                 <div className="col-span-2 p-8 text-center border border-dashed border-white/10 rounded-2xl">
-                  <p className="text-[10px] text-text-secondary uppercase font-bold opacity-40">No hay grupos musculares definidos en el sistema</p>
+                  <p className="text-[11px] text-text-secondary uppercase font-bold opacity-40">No hay grupos musculares definidos en el sistema</p>
                 </div>
               ) : (
                 muscleGroups.map(mg => {
@@ -124,14 +124,14 @@ export const ExerciseForm: React.FC<ExerciseFormProps> = ({
                     <div
                       key={mg.id}
                       onClick={() => handleMuscleSelection(mg.id)}
-                      className={`flex flex-col items-start p-3 rounded-xl border transition-all text-left cursor-pointer ${isSelected ? 'bg-primary/10 border-primary/30' : 'bg-surface-high border-white/5 opacity-50 hover:opacity-100'}`}
+                      className={`flex flex-col items-start p-4 rounded-xl border transition-all text-left cursor-pointer ${isSelected ? 'bg-primary/10 border-primary/30' : 'bg-surface-high border-white/5 opacity-50 hover:opacity-100'}`}
                     >
-                      <span className={`text-[10px] font-bold ${isSelected ? 'text-primary' : 'text-text-secondary'}`}>{mg.name}</span>
+                      <span className={`text-sm font-bold ${isSelected ? 'text-primary' : 'text-text-secondary'}`}>{mg.name}</span>
                       {isSelected && (
                         <button
                           type="button"
                           onClick={(e) => { e.stopPropagation(); setPrimaryMuscle(mg.id); }}
-                          className={`mt-2 text-[8px] uppercase tracking-tighter font-black px-2 py-0.5 rounded-full ${isSelected.isPrimary ? 'bg-primary text-white' : 'bg-white/5 text-text-secondary'}`}
+                          className={`mt-3 text-[10px] uppercase tracking-tighter font-black px-3 py-1 rounded-full ${isSelected.isPrimary ? 'bg-primary text-white' : 'bg-white/5 text-text-secondary'}`}
                         >
                           {isSelected.isPrimary ? 'Primario' : 'Hacer Primario'}
                         </button>

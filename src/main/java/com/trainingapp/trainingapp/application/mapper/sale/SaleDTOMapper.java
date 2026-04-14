@@ -32,7 +32,6 @@ public class SaleDTOMapper {
                 sale.getPaymentMethod(),
                 sale.getGymId(),
                 sale.getRegisteredByAdminId(),
-                sale.getMemberId(),
                 detailResponses
         );
     }

@@ -13,7 +13,6 @@ public record SaleResponse(
         PaymentMethod paymentMethod,
         Long gymId,
         Long registeredByAdminId,
-        Long memberId,
         List<SaleDetailResponse> details
 ) {
 }

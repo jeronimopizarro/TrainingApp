@@ -17,7 +17,7 @@ class SaleTest {
         SaleDetail agua = SaleDetail.createNew(1L, 2, new BigDecimal("2.50")); // Subtotal: 5.00
         SaleDetail barra = SaleDetail.createNew(2L, 1, new BigDecimal("3.00")); // Subtotal: 3.00
 
-        Sale sale = Sale.createNew(PaymentMethod.CASH, 10L, 2L, 100L, List.of(agua, barra));
+        Sale sale = Sale.createNew(PaymentMethod.CASH, 10L, 2L, List.of(agua, barra));
 
         assertEquals(new BigDecimal("8.00"), sale.getTotalAmount());
     }

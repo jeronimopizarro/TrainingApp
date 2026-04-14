@@ -29,6 +29,7 @@
   background-color: var(--color-background);
   color: var(--color-text-main);
   font-family: var(--font-sans);
+  font-size: 110%; /* Aumento global de tipografía */
   -webkit-font-smoothing: antialiased;
 }
 

@@ -8,13 +8,18 @@ import {
   TrendingUp,
   CreditCard,
   Wallet,
-  Banknote
+  Banknote,
+  Package, 
+  User, 
+  Clock, 
+  CheckCircle2
 } from 'lucide-react';
 import { useTransactions } from '../hooks/useTransactions';
+import { useSales } from '../hooks/useSales';
 import { Button } from '@/shared/components/Button';
 import { StatCard } from '@/shared/components/StatCard';
 import { Modal } from '@/shared/components/Modal';
-import { PaymentMethod, TransactionCategory } from '../types/sale.types';
+import { PaymentMethod, TransactionCategory, SaleResponse } from '../types/sale.types';
 import { SaleModal } from '../components/SaleModal';
 
 const PaymentMethodBadge = ({ method }: { method: PaymentMethod }) => {
@@ -65,10 +70,10 @@ const TransactionRow = ({ transaction, onClick }: { transaction: any; onClick: (
         <Receipt size={20} className={transaction.category === TransactionCategory.MEMBERSHIP ? 'text-primary' : 'text-secondary'} />
       </div>
       <div className="flex-1 min-w-0">
-        <h3 className="text-sm font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1">
+        <h3 className="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1.5">
           {transaction.category === TransactionCategory.MEMBERSHIP ? 'Cobro de Membresía' : 'Venta de Productos'}
         </h3>
-        <p className="text-[10px] text-text-secondary opacity-50 font-bold uppercase tracking-widest flex items-center gap-2">
+        <p className="text-xs text-text-secondary opacity-60 font-bold uppercase tracking-widest flex items-center gap-2">
           {formattedDate} • {formattedTime}
         </p>
       </div>
@@ -87,10 +92,93 @@ const TransactionRow = ({ transaction, onClick }: { transaction: any; onClick: (
   );
 };
 
+const SaleDetailModalContent = ({ sale }: { sale: SaleResponse }) => {
+  return (
+    <div className="p-8 space-y-8">
+      {/* Header Info */}
+      <div className="flex flex-col md:flex-row gap-6 justify-between items-start border-b border-white/5 pb-8">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-surface-high flex items-center justify-center text-text-secondary border border-white/5">
+            <Clock size={24} />
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-1 opacity-50">Fecha de Venta</p>
+            <p className="text-xl font-display font-black text-text-main tracking-tight">{new Date(sale.saleDate).toLocaleString()}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-4 md:text-right">
+          <div className="p-4 bg-surface-low rounded-xl border border-white/5">
+             <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black opacity-50">Referencia</p>
+             <p className="text-xs font-bold text-text-main">Venta #{sale.id}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Items Table */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-2">
+          <Package size={16} className="text-secondary" />
+          <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black">Desglose de Productos</p>
+        </div>
+        
+        <div className="bg-surface-high/20 rounded-2xl border border-white/5 overflow-hidden">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-surface-high/40 border-b border-white/5">
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-text-secondary">Producto</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-text-secondary text-center">Cant.</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-text-secondary text-right">Precio</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-text-secondary text-right">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {sale.details.map((item) => (
+                <tr key={item.id} className="hover:bg-white/[0.02] transition-colors">
+                  <td className="px-6 py-4 text-sm font-bold text-text-main">{item.productName}</td>
+                  <td className="px-6 py-4 text-sm font-bold text-text-main text-center">{item.quantity}u.</td>
+                  <td className="px-6 py-4 text-sm font-bold text-text-main text-right">${item.unitPrice.toLocaleString()}</td>
+                  <td className="px-6 py-4 text-sm font-black text-primary text-right">${item.subtotal.toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="bg-surface-high/40 font-black">
+                <td colSpan={3} className="px-6 py-6 text-[10px] uppercase tracking-[0.2em] text-text-secondary text-right">Total Final</td>
+                <td className="px-6 py-6 text-2xl font-display text-primary text-right">${sale.totalAmount.toLocaleString()}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      {/* Footer Info */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="p-4 bg-surface-low rounded-xl border border-white/5 flex items-center gap-3">
+           <CheckCircle2 size={16} className="text-green-400" />
+           <div>
+             <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black opacity-50">Medio de Pago</p>
+             <p className="text-xs font-bold text-text-main">{sale.paymentMethod}</p>
+           </div>
+        </div>
+        <div className="p-4 bg-surface-low rounded-xl border border-white/5 flex items-center gap-3">
+           <div className="w-2 h-2 rounded-full bg-primary" />
+           <div>
+             <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black opacity-50">Referencia de Venta</p>
+             <p className="text-xs font-bold text-text-main">Venta #{sale.id}</p>
+           </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const CashierPage = () => {
   const { transactions, loading, error, refreshTransactions, currentCategory } = useTransactions();
+  const { getSaleDetails, loading: loadingDetails } = useSales();
+  
   const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+  const [selectedSale, setSelectedSale] = useState<SaleResponse | null>(null);
   
   // Correction for toDateString
   const isToday = (dateString: string) => {
@@ -106,6 +194,13 @@ export const CashierPage = () => {
 
   const handleFilterChange = (category?: TransactionCategory) => {
     refreshTransactions(category);
+  };
+
+  const handleViewSaleDetails = async (saleId: number) => {
+    const details = await getSaleDetails(saleId);
+    if (details) {
+      setSelectedSale(details);
+    }
   };
 
   if (loading && transactions.length === 0) return (
@@ -201,12 +296,12 @@ export const CashierPage = () => {
         )}
       </div>
 
-      {/* Modals will be added here */}
+      {/* Modal: Nueva Venta */}
       <Modal 
         isOpen={isSaleModalOpen} 
         onClose={() => setIsSaleModalOpen(false)} 
         title="Nueva Venta de Productos"
-        width="max-w-6xl"
+        size="xl"
       >
         <SaleModal 
           onClose={() => setIsSaleModalOpen(false)} 
@@ -217,6 +312,7 @@ export const CashierPage = () => {
         />
       </Modal>
 
+      {/* Modal: Detalle de Transacción */}
       {selectedTransaction && (
         <Modal 
           isOpen={!!selectedTransaction} 
@@ -262,22 +358,34 @@ export const CashierPage = () => {
               )}
 
               {selectedTransaction.saleId && (
-                <div className="pt-4 border-t border-white/5">
+                <div className="pt-6 border-t border-white/5">
                    <Button 
-                    variant="ghost" 
+                    variant="primary" 
                     fullWidth
-                    onClick={() => {
-                       // TODO: Navegar a detalle de venta o mostrarlo aquí
-                       alert(`Cargar detalle de venta ID: ${selectedTransaction.saleId}`);
-                    }}
+                    isLoading={loadingDetails}
+                    icon={<Receipt size={18} />}
+                    onClick={() => handleViewSaleDetails(selectedTransaction.saleId)}
+                    className="py-4 rounded-2xl shadow-lg shadow-primary/10 group"
                    >
-                     Ver Detalle de Venta #{selectedTransaction.saleId}
+                     <span className="group-hover:translate-x-1 transition-transform duration-300">
+                       Ver Desglose de Productos
+                     </span>
                    </Button>
                 </div>
               )}
            </div>
         </Modal>
       )}
+
+      {/* Modal: Detalle de Venta (Productos) */}
+      <Modal
+        isOpen={!!selectedSale}
+        onClose={() => setSelectedSale(null)}
+        title="Detalle de Venta de Productos"
+        size="lg"
+      >
+        {selectedSale && <SaleDetailModalContent sale={selectedSale} />}
+      </Modal>
     </div>
   );
 };
