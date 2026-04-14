@@ -8,6 +8,7 @@ import { AdminDashboardPage } from '@/features/dashboard/pages/AdminDashboardPag
 import { MembersListPage } from '@/features/members/pages/MembersListPage';
 import { StaffListPage } from '@/features/staff/pages/StaffListPage';
 import { MembershipsPage } from '@/features/memberships/pages/MembershipsPage';
+import { ExercisesListPage } from '@/features/exercises/pages/ExercisesListPage';
 
 /**
  * PublicRoute: Evita que usuarios logueados vuelvan al Login.
@@ -70,8 +71,7 @@ export const AppRouter = () => {
             <Route path="members" element={<MembersListPage />} />
             <Route path="staff" element={<StaffListPage />} />
             <Route path="memberships" element={<MembershipsPage />} />
-            <Route path="exercises" element={<div className="text-text-main font-display font-bold text-2xl">Ejercicios</div>} />
-            <Route path="products" element={<div className="text-text-main font-display font-bold text-2xl">Productos</div>} />
+            <Route path="exercises" element={<ExercisesListPage />} />            <Route path="products" element={<div className="text-text-main font-display font-bold text-2xl">Productos</div>} />
             <Route path="sales" element={<div className="text-text-main font-display font-bold text-2xl">Ventas</div>} />
             <Route path="access" element={<div className="text-text-main font-display font-bold text-2xl">Accesos</div>} />
           </Route>

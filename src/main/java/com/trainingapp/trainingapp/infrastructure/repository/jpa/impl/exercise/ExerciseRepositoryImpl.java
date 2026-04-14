@@ -17,10 +17,12 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
 
     private final ExerciseJpaRepository jpaRepository;
     private final ExerciseMapper mapper;
+    private final com.trainingapp.trainingapp.infrastructure.repository.jpa.repository.exercise.MuscleGroupJpaRepository muscleGroupJpaRepository;
 
-    public ExerciseRepositoryImpl(ExerciseJpaRepository jpaRepository, ExerciseMapper mapper) {
+    public ExerciseRepositoryImpl(ExerciseJpaRepository jpaRepository, ExerciseMapper mapper, com.trainingapp.trainingapp.infrastructure.repository.jpa.repository.exercise.MuscleGroupJpaRepository muscleGroupJpaRepository) {
         this.jpaRepository = jpaRepository;
         this.mapper = mapper;
+        this.muscleGroupJpaRepository = muscleGroupJpaRepository;
     }
 
     @Override
@@ -31,12 +33,15 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
         if (domain.getId() != null) {
             entityToSave = jpaRepository.findById(domain.getId())
                     .orElse(new ExerciseJpaEntity());
-
-            updateEntityFromDomain(entityToSave, domain);
         } else {
             entityToSave = mapper.toEntity(domain);
+            // Limpiamos los muscle groups temporales del mapper para reconstruirlos con entidades reales
+            entityToSave.getMuscleGroups().clear();
         }
-        // 2. Usamos saveAndFlush para obligar a Hibernate a sincronizar los borrados del .clear()
+
+        // Centralizamos la actualización de datos y la asociación de entidades reales
+        updateEntityFromDomain(entityToSave, domain);
+        
         ExerciseJpaEntity savedEntity = jpaRepository.saveAndFlush(entityToSave);
         return mapper.toDomain(savedEntity);
     }
@@ -47,6 +52,9 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
         entity.setImageUrl(domain.getImageUrl());
         entity.setVideoUrl(domain.getVideoUrl());
         entity.setIsBase(domain.getIsBase());
+        entity.setCreatedByUserId(domain.getCreatedByUserId());
+        entity.setGymId(domain.getGymId());
+        entity.setActive(domain.isActive());
 
         entity.getMuscleGroups().clear();
 
@@ -54,15 +62,18 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
             domain.getMuscleGroups().forEach(mgDomain -> {
                 ExerciseMuscleGroupJpaEntity mgEntity = new ExerciseMuscleGroupJpaEntity();
 
-                MuscleGroupJpaEntity muscle = new MuscleGroupJpaEntity();
-                muscle.setId(mgDomain.getMuscleGroupId());
+                // BUSCAMOS EL MÚSCULO REAL EN LA DB
+                MuscleGroupJpaEntity muscle = muscleGroupJpaRepository.findById(mgDomain.getMuscleGroupId())
+                        .orElseThrow(() -> new RuntimeException("Muscle group not found: " + mgDomain.getMuscleGroupId()));
 
                 mgEntity.setMuscleGroup(muscle);
                 mgEntity.setExercise(entity);
                 mgEntity.setPrimary(mgDomain.isPrimary());
 
-                // Seteamos manualmente el ID compuesto para evitar que Hibernate se pierda
-                mgEntity.getId().setExerciseId(entity.getId());
+                // Seteamos manualmente el ID compuesto
+                if (entity.getId() != null) {
+                    mgEntity.getId().setExerciseId(entity.getId());
+                }
                 mgEntity.getId().setMuscleGroupId(mgDomain.getMuscleGroupId());
 
                 entity.getMuscleGroups().add(mgEntity);
