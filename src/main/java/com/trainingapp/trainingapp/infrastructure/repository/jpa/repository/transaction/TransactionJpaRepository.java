@@ -16,6 +16,8 @@ public interface TransactionJpaRepository extends JpaRepository<TransactionJpaEn
 
     List<TransactionJpaEntity> findAllByGymIdOrderByTransactionDateDesc(Long gymId);
 
+    List<TransactionJpaEntity> findAllByGymIdAndCategoryOrderByTransactionDateDesc(Long gymId, TransactionCategory category);
+
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM TransactionJpaEntity t " +
             "WHERE t.gymId = :gymId " +
             "AND t.transactionDate >= :startDate " +

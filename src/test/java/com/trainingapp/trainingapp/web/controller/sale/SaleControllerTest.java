@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.web.controller.sale;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trainingapp.trainingapp.application.useCase.sale.GetSaleByIdUseCase;
 import com.trainingapp.trainingapp.application.useCase.sale.ProcessSaleUseCase;
 import com.trainingapp.trainingapp.config.TestSecurityConfig;
 import com.trainingapp.trainingapp.domain.enums.transaction.PaymentMethod;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,12 +45,14 @@ class SaleControllerTest {
     @MockitoBean
     private ProcessSaleUseCase processSaleUseCase;
     @MockitoBean
+    private GetSaleByIdUseCase getSaleByIdUseCase;
+    @MockitoBean
     private JwtService jwtService;
     @MockitoBean
     private CustomUserDetailsService userDetailsService;
 
     @Test
-    @WithMockUser(roles = "RECEPTIONIST") // El recepcionista es el que cobra
+    @WithMockUser(roles = "RECEPTIONIST")
     @DisplayName("POST /sales - Debería procesar la venta y retornar 201 con el monto total")
     void shouldReturn201_WhenProcessingSale() throws Exception {
         // Arrange
@@ -69,5 +73,24 @@ class SaleControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.totalAmount").value(10.00));
+    }
+
+    @Test
+    @WithMockUser(roles = "GYM_ADMIN")
+    @DisplayName("GET /sales/{id} - Debería retornar 200 con la información de la venta")
+    void shouldReturn200_WhenGettingSaleById() throws Exception {
+        // Arrange
+        SaleResponse fakeResponse =
+                new SaleResponse(1L, LocalDateTime.now(), new BigDecimal("15.50"),
+                        PaymentMethod.CARD, 10L, 1L, 100L, List.of());
+
+        when(getSaleByIdUseCase.execute(1L)).thenReturn(fakeResponse);
+
+        // Act & Assert
+        mockMvc.perform(get("/sales/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.totalAmount").value(15.50))
+                .andExpect(jsonPath("$.paymentMethod").value("CARD"));
     }
 }

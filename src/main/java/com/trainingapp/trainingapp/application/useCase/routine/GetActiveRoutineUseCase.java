@@ -5,7 +5,7 @@ import com.trainingapp.trainingapp.application.validator.RoutineAccessValidator;
 import com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus;
 import com.trainingapp.trainingapp.domain.entity.routine.Routine;
 import com.trainingapp.trainingapp.domain.exception.routine.RoutineNotFoundException;
-import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;;
+import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
 import com.trainingapp.trainingapp.web.dto.routine.RoutineResponse;
 import org.springframework.stereotype.Service;
 

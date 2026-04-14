@@ -10,6 +10,7 @@ import { StaffListPage } from '@/features/staff/pages/StaffListPage';
 import { MembershipsPage } from '@/features/memberships/pages/MembershipsPage';
 import { ExercisesListPage } from '@/features/exercises/pages/ExercisesListPage';
 import { ProductsPage } from '@/features/products/pages/ProductsPage';
+import { CashierPage } from '@/features/sales/pages/CashierPage';
 
 /**
  * PublicRoute: Evita que usuarios logueados vuelvan al Login.
@@ -74,7 +75,7 @@ export const AppRouter = () => {
             <Route path="memberships" element={<MembershipsPage />} />
             <Route path="exercises" element={<ExercisesListPage />} />
             <Route path="products" element={<ProductsPage />} />
-            <Route path="sales" element={<div className="text-text-main font-display font-bold text-2xl">Ventas</div>} />
+            <Route path="sales" element={<CashierPage />} />
             <Route path="access" element={<div className="text-text-main font-display font-bold text-2xl">Accesos</div>} />
           </Route>
         </Route>
