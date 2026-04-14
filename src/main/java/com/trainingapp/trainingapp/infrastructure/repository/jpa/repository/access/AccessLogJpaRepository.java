@@ -9,5 +9,7 @@ public interface AccessLogJpaRepository extends JpaRepository<AccessLogJpaEntity
 
     List<AccessLogJpaEntity> findByGymIdOrderByTimestampDesc(Long gymId);
 
+    List<AccessLogJpaEntity> findByGymIdAndAccessGrantedOrderByTimestampDesc(Long gymId, boolean accessGranted);
+
     List<AccessLogJpaEntity> findByMemberIdOrderByTimestampDesc(Long memberId);
 }

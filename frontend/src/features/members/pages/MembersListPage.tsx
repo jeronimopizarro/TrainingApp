@@ -8,7 +8,8 @@ import {
   Clock,
   UserCheck,
   Target,
-  CalendarDays
+  CalendarDays,
+  Zap
 } from 'lucide-react';
 import { useMembers } from '../hooks/useMembers';
 import { Button } from '@/shared/components/Button';
@@ -16,6 +17,7 @@ import { StatCard } from '@/shared/components/StatCard';
 import { Modal } from '@/shared/components/Modal';
 import { UserFormLayout } from '@/shared/components/UserFormLayout';
 import { Input } from '@/shared/components/Input';
+import { RenewMembershipModal } from '@/features/memberships/components/RenewMembershipModal';
 
 const INITIAL_FORM_STATE = {
   firstName: '',
@@ -44,11 +46,11 @@ const StatusBadge = ({ status }: { status?: string }) => {
   );
 };
 
-const MemberRow = ({ member }: { member: any }) => {
+const MemberRow = ({ member, onRenew }: { member: any; onRenew: () => void }) => {
   const initials = `${member.firstName[0]}${member.lastName[0]}`.toUpperCase();
 
   return (
-    <div className="group flex items-center gap-6 p-6 bg-surface-low hover:bg-surface-med/50 transition-all cursor-pointer border-b border-white/[0.02] last:border-0 first:rounded-t-[1.5rem] last:rounded-b-[1.5rem]">
+    <div className="group flex items-center gap-6 p-6 bg-surface-low hover:bg-surface-med/50 transition-all border-b border-white/[0.02] last:border-0 first:rounded-t-[1.5rem] last:rounded-b-[1.5rem]">
       <div className="w-12 h-12 rounded-2xl bg-surface-high flex items-center justify-center font-display font-black text-primary group-hover:scale-105 transition-all duration-300 shadow-xl border border-white/5">
         {initials}
       </div>
@@ -78,6 +80,13 @@ const MemberRow = ({ member }: { member: any }) => {
         <StatusBadge status={member.subscriptionStatus} />
       </div>
       <div className="flex items-center gap-2">
+        <button 
+          onClick={(e) => { e.stopPropagation(); onRenew(); }}
+          className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl text-[10px] font-black uppercase tracking-widest border border-primary/20 hover:bg-primary hover:text-white transition-all duration-300"
+        >
+          <Zap size={14} />
+          Renovar
+        </button>
         <button className="p-2 text-text-secondary hover:text-primary transition-colors hover:bg-primary/10 rounded-xl">
           <ChevronRight size={20} />
         </button>
@@ -93,6 +102,8 @@ export const MembersListPage = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRenewModalOpen, setIsRenewModalOpen] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
 
   // Efecto para controlar la carga inicial vs recargas de filtros
@@ -129,6 +140,11 @@ export const MembersListPage = () => {
       setIsModalOpen(false);
       handleResetForm();
     }
+  };
+
+  const handleOpenRenew = (member: any) => {
+    setSelectedMember(member);
+    setIsRenewModalOpen(true);
   };
 
   // Solo mostramos el spinner central en la carga inicial
@@ -215,12 +231,13 @@ export const MembersListPage = () => {
         ) : (
           <div className="flex flex-col">
             {filteredMembers.map(member => (
-              <MemberRow key={member.id} member={member} />
+              <MemberRow key={member.id} member={member} onRenew={() => handleOpenRenew(member)} />
             ))}
           </div>
         )}
       </div>
 
+      {/* Modal: Alta de Socio */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Alta de Socio">
         <UserFormLayout formData={formData} onChange={handleInputChange} onReset={handleResetForm} onSubmit={handleSubmit} isLoading={isLoading}
           specificFields={
@@ -230,6 +247,25 @@ export const MembersListPage = () => {
             </>
           }
         />
+      </Modal>
+
+      {/* Modal: Renovación de Membresía */}
+      <Modal 
+        isOpen={isRenewModalOpen} 
+        onClose={() => setIsRenewModalOpen(false)} 
+        title="Renovar Membresía"
+        size="lg"
+      >
+        {selectedMember && (
+          <RenewMembershipModal 
+            memberId={selectedMember.id}
+            memberName={`${selectedMember.firstName} ${selectedMember.lastName}`}
+            onSuccess={() => {
+              setIsRenewModalOpen(false);
+              refresh(activeTab);
+            }}
+          />
+        )}
       </Modal>
     </div>
   );

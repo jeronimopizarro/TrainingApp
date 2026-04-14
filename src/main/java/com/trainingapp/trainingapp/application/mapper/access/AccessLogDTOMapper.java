@@ -1,6 +1,8 @@
 package com.trainingapp.trainingapp.application.mapper.access;
 
 import com.trainingapp.trainingapp.domain.entity.Access.AccessLog;
+import com.trainingapp.trainingapp.domain.entity.user.Member;
+import com.trainingapp.trainingapp.domain.repository.user.MemberRepository;
 import com.trainingapp.trainingapp.web.dto.access.AccessLogResponse;
 import com.trainingapp.trainingapp.web.dto.access.GymAccessSummaryResponse;
 import com.trainingapp.trainingapp.web.dto.access.MemberAccessSummaryResponse;
@@ -12,12 +14,31 @@ import java.util.stream.Collectors;
 @Component
 public class AccessLogDTOMapper {
 
+    private final MemberRepository memberRepository;
+
+    public AccessLogDTOMapper(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
     public AccessLogResponse toResponse(AccessLog domain) {
         if (domain == null) return null;
+
+        String firstName = "Socio";
+        String lastName = "Desconocido";
+
+        if (domain.getMemberId() != null) {
+            Member member = memberRepository.findById(domain.getMemberId()).orElse(null);
+            if (member != null) {
+                firstName = member.getFirstName();
+                lastName = member.getLastName();
+            }
+        }
 
         return new AccessLogResponse(
                 domain.getId(),
                 domain.getMemberId(),
+                firstName,
+                lastName,
                 domain.getTimestamp(),
                 domain.isAccessGranted(),
                 domain.getMessage()

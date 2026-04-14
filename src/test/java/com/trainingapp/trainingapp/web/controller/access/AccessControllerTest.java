@@ -2,11 +2,13 @@ package com.trainingapp.trainingapp.web.controller.access;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trainingapp.trainingapp.application.useCase.access.GenerateAccessQrUseCase;
+import com.trainingapp.trainingapp.application.useCase.access.GetAccessLogsByGymUseCase;
 import com.trainingapp.trainingapp.application.useCase.access.ValidateAccessUseCase;
 import com.trainingapp.trainingapp.config.TestSecurityConfig;
 import com.trainingapp.trainingapp.domain.enums.access.AccessMethod;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.CustomUserDetailsService;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.JwtService;
+import com.trainingapp.trainingapp.web.dto.access.GymAccessSummaryResponse;
 import com.trainingapp.trainingapp.web.dto.access.QrTokenResponse;
 import com.trainingapp.trainingapp.web.dto.access.ValidateAccessRequest;
 import com.trainingapp.trainingapp.web.dto.access.ValidateAccessResponse;
@@ -20,6 +22,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -38,6 +42,7 @@ class AccessControllerTest {
 
     @MockitoBean private GenerateAccessQrUseCase generateAccessQrUseCase;
     @MockitoBean private ValidateAccessUseCase validateAccessUseCase;
+    @MockitoBean private GetAccessLogsByGymUseCase getAccessLogsByGymUseCase;
 
     // Seguridad
     @MockitoBean private JwtService jwtService;
@@ -79,6 +84,20 @@ class AccessControllerTest {
                 .andExpect(jsonPath("$.accessGranted").value(true))
                 .andExpect(jsonPath("$.memberName").value("Juan Perez"))
                 .andExpect(jsonPath("$.message").value("Acceso concedido"));
+    }
+
+    @Test
+    @WithMockUser(roles = "GYM_ADMIN")
+    @DisplayName("GET /access/logs - Debería retornar 200 OK con el historial de accesos")
+    void shouldReturnAccessLogs() throws Exception {
+        GymAccessSummaryResponse mockResponse = new GymAccessSummaryResponse(5L, 2L, List.of());
+
+        when(getAccessLogsByGymUseCase.execute(null)).thenReturn(mockResponse);
+
+        mockMvc.perform(get("/access/logs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalSuccessfulEntriesToday").value(5))
+                .andExpect(jsonPath("$.totalFailedAttemptsToday").value(2));
     }
 
     @Test

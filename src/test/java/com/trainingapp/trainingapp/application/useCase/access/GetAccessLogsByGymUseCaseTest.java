@@ -49,7 +49,7 @@ class GetAccessLogsByGymUseCaseTest {
         // Esperamos que se hayan calculado 1 acceso exitoso y 0 fallidos para el día de hoy
         when(accessLogDTOMapper.toGymSummaryResponse(1L, 0L, logs)).thenReturn(mockResponse);
 
-        GymAccessSummaryResponse response = useCase.execute();
+        GymAccessSummaryResponse response = useCase.execute(null);
 
         assertNotNull(response);
         verify(accessLogRepository).findByGymId(gymId);

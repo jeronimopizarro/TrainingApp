@@ -1,3 +1,10 @@
+export enum PaymentMethod {
+  CASH = "CASH",
+  CARD = "CARD",
+  TRANSFER = "TRANSFER",
+  VIRTUAL_WALLET = "VIRTUAL_WALLET",
+}
+
 export interface MembershipPlan {
   id: number;
   name: string;
@@ -21,4 +28,22 @@ export interface UpdateMembershipPlanRequest {
   description: string;
   price: number;
   durationMonths: number;
+}
+
+export interface CreateSubscriptionRequest {
+  memberId: number;
+  planId: number;
+  startDate: string;
+  paymentMethod: PaymentMethod;
+}
+
+export interface SubscriptionResponse {
+  id: number;
+  memberId: number;
+  planId: number;
+  planName: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  isActive: boolean;
 }

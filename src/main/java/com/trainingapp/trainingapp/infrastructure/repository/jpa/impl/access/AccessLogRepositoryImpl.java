@@ -36,6 +36,13 @@ public class AccessLogRepositoryImpl implements AccessLogRepository {
     }
 
     @Override
+    public List<AccessLog> findByGymIdAndStatus(Long gymId, boolean accessGranted) {
+        return jpaRepository.findByGymIdAndAccessGrantedOrderByTimestampDesc(gymId, accessGranted).stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<AccessLog> findByMemberId(Long memberId) {
         return jpaRepository.findByMemberIdOrderByTimestampDesc(memberId).stream()
                 .map(mapper::toDomain)

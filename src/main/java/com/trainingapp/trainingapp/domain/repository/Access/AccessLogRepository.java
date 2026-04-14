@@ -9,5 +9,7 @@ public interface AccessLogRepository {
 
     List<AccessLog> findByGymId(Long gymId);
 
+    List<AccessLog> findByGymIdAndStatus(Long gymId, boolean accessGranted);
+
     List<AccessLog> findByMemberId(Long memberId);
 }

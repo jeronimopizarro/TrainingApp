@@ -27,17 +27,20 @@ public class GetAccessLogsByGymUseCase {
     }
 
     @Transactional(readOnly = true)
-    public GymAccessSummaryResponse execute() {
+    public GymAccessSummaryResponse execute(Boolean granted) {
         Long gymId = securityUtils.getCurrentUserGymId();
 
-        List<AccessLog> logs = accessLogRepository.findByGymId(gymId);
+        List<AccessLog> allLogs = accessLogRepository.findByGymId(gymId);
+        List<AccessLog> filteredLogs = granted == null 
+            ? allLogs 
+            : accessLogRepository.findByGymIdAndStatus(gymId, granted);
 
         LocalDate today = LocalDate.now();
 
-        long successfulToday = countSuccessfulEntriesToday(logs, today);
-        long failedToday = countFailedAttemptsToday(logs, today);
+        long successfulToday = countSuccessfulEntriesToday(allLogs, today);
+        long failedToday = countFailedAttemptsToday(allLogs, today);
 
-        return accessLogDTOMapper.toGymSummaryResponse(successfulToday, failedToday, logs);
+        return accessLogDTOMapper.toGymSummaryResponse(successfulToday, failedToday, filteredLogs);
     }
 
     private long countSuccessfulEntriesToday(List<AccessLog> logs, LocalDate today) {
