@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -62,9 +64,25 @@ public class AdminDashboardUseCase {
         LocalDateTime startOfLastMonth = lastMonthDate.withDayOfMonth(1).atStartOfDay();
         LocalDateTime endOfLastMonth = lastMonthDate.withDayOfMonth(lastMonthDate.lengthOfMonth()).atTime(LocalTime.MAX);
 
+        BigDecimal currentRevenue = transactionRepository.sumRevenueByDateRange(gymId, startOfMonth, endOfMonth);
+        BigDecimal lastRevenue = transactionRepository.sumRevenueByDateRange(gymId, startOfLastMonth, endOfLastMonth);
+        
+        // Calcular Porcentaje de Crecimiento
+        String growth = "0%";
+        if (lastRevenue != null && lastRevenue.compareTo(BigDecimal.ZERO) > 0) {
+            BigDecimal diff = currentRevenue.subtract(lastRevenue);
+            BigDecimal percentage = diff.divide(lastRevenue, 4, RoundingMode.HALF_UP)
+                    .multiply(new BigDecimal("100"));
+            growth = (percentage.compareTo(BigDecimal.ZERO) >= 0 ? "+" : "") + 
+                     percentage.setScale(1, RoundingMode.HALF_UP).toString() + "%";
+        } else if (currentRevenue != null && currentRevenue.compareTo(BigDecimal.ZERO) > 0) {
+            growth = "+100%";
+        }
+
         return new FinancialSummary(
-                transactionRepository.sumRevenueByDateRange(gymId, startOfMonth, endOfMonth),
-                transactionRepository.sumRevenueByDateRange(gymId, startOfLastMonth, endOfLastMonth),
+                currentRevenue,
+                lastRevenue,
+                growth,
                 transactionRepository.sumRevenueByDateRange(gymId, startOfWeek, endOfDay),
                 transactionRepository.sumRevenueByDateRange(gymId, startOfDay, endOfDay),
                 transactionRepository.sumRevenueByCategoryAndDateRange(gymId, TransactionCategory.MEMBERSHIP, startOfMonth, endOfMonth),
@@ -80,12 +98,19 @@ public class AdminDashboardUseCase {
         LocalDate startOfLastMonth = lastMonthDate.withDayOfMonth(1);
         LocalDate endOfLastMonth = lastMonthDate.withDayOfMonth(lastMonthDate.lengthOfMonth());
 
+        long currentActive = subscriptionRepository.countActiveMembersByGymId(gymId);
+        long lastActive = subscriptionRepository.countActiveMembersByGymId(gymId); // Simulación mes pasado
+        long currentChurn = subscriptionRepository.countChurnedMembersByGymIdAndDateRange(gymId, startOfMonth, endOfMonth);
+        long lastChurn = subscriptionRepository.countChurnedMembersByGymIdAndDateRange(gymId, startOfLastMonth, endOfLastMonth);
+
         return new AudienceSummary(
-                subscriptionRepository.countActiveMembersByGymId(gymId),
-                subscriptionRepository.countActiveMembersByGymId(gymId), // Por ahora usamos el actual como base
+                currentActive,
+                lastActive,
+                currentActive - lastActive,
                 subscriptionRepository.countNewMembersByGymIdAndDateRange(gymId, startOfMonth, endOfMonth),
-                subscriptionRepository.countChurnedMembersByGymIdAndDateRange(gymId, startOfMonth, endOfMonth),
-                subscriptionRepository.countChurnedMembersByGymIdAndDateRange(gymId, startOfLastMonth, endOfLastMonth)
+                currentChurn,
+                lastChurn,
+                lastChurn >= currentChurn ? "Mejoró" : "Subió"
         );
     }
 

@@ -6,7 +6,6 @@ import {
   AlertCircle, 
   Package, 
   ArrowUpRight, 
-  ArrowDownRight,
   Clock
 } from 'lucide-react';
 import { 
@@ -23,12 +22,6 @@ import { useDashboard } from '../hooks/useDashboard';
 import { Button } from '@/shared/components/Button';
 import { StatCard } from '@/shared/components/StatCard';
 
-const calculateGrowth = (current: number, previous: number) => {
-  if (previous === 0) return current > 0 ? '+100%' : '0%';
-  const diff = ((current - previous) / previous) * 100;
-  return `${diff > 0 ? '+' : ''}${diff.toFixed(1)}%`;
-};
-
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
@@ -44,22 +37,16 @@ const CustomTooltip = ({ active, payload }: any) => {
 export const AdminDashboardPage = () => {
   const { data, isLoading, error } = useDashboard();
 
-  const chartData = [
-    { name: 'Membresías', value: data?.financialSummary.membershipRevenue || 0, color: '#89acff' },
-    { name: 'Productos', value: data?.financialSummary.productsRevenue || 0, color: '#8496ff' }
-  ];
-
   if (isLoading) return <div className="p-10 text-text-secondary animate-pulse font-display font-bold uppercase tracking-widest text-center">Iniciando TrainingApp...</div>;
   if (error) return <div className="p-10 text-error text-center font-bold">{error}</div>;
+  if (!data) return null;
 
-  const revenueGrowth = calculateGrowth(data?.financialSummary.monthlyRevenue || 0, data?.financialSummary.lastMonthRevenue || 0);
-  const activeGrowth = (data?.audienceSummary.activeMembers || 0) - (data?.audienceSummary.lastMonthActiveMembers || 0);
-  const churnDiff = (data?.audienceSummary.lastMonthChurnedMembers || 0) - (data?.audienceSummary.churnedMembersThisMonth || 0);
+  const chartData = [
+    { name: 'Membresías', value: data.financialSummary.membershipRevenue || 0, color: '#89acff' },
+    { name: 'Productos', value: data.financialSummary.productsRevenue || 0, color: '#8496ff' }
+  ];
 
-  // Lógica de Vencimientos
-  const expiringCount = data?.expiringMemberships.length || 0;
-
-  if (!data) return null; // Resguardo adicional para TypeScript
+  const expiringCount = data.expiringMemberships.length;
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10">
@@ -75,20 +62,20 @@ export const AdminDashboardPage = () => {
         </div>
       </header>
 
-      {/* KPI GRID */}
+      {/* KPI GRID - DATOS CALCULADOS EN BACKEND */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         <StatCard 
           label="Ingresos Mensuales" 
           value={`$${data.financialSummary.monthlyRevenue.toLocaleString()}`} 
           trend={data.financialSummary.monthlyRevenue >= data.financialSummary.lastMonthRevenue ? 'up' : 'down'} 
-          trendValue={revenueGrowth} 
+          trendValue={data.financialSummary.revenueGrowthPercentage} 
           icon={DollarSign} 
         />
         <StatCard 
           label="Socios Activos" 
           value={data.audienceSummary.activeMembers} 
-          trend={activeGrowth >= 0 ? 'up' : 'down'} 
-          trendValue={`${activeGrowth >= 0 ? '+' : ''}${activeGrowth} socios`} 
+          trend={data.audienceSummary.activeMembersGrowth >= 0 ? 'up' : 'down'} 
+          trendValue={`${data.audienceSummary.activeMembersGrowth >= 0 ? '+' : ''}${data.audienceSummary.activeMembersGrowth} socios`} 
           icon={Users} 
         />
         <StatCard 
@@ -101,8 +88,8 @@ export const AdminDashboardPage = () => {
         <StatCard 
           label="Bajas del Mes" 
           value={data.audienceSummary.churnedMembersThisMonth} 
-          trend={churnDiff >= 0 ? 'up' : 'down'} 
-          trendValue={churnDiff >= 0 ? "Mejoró" : "Subió"} 
+          trend={data.audienceSummary.churnTrend === "Mejoró" ? 'up' : 'down'} 
+          trendValue={data.audienceSummary.churnTrend} 
           icon={AlertCircle} 
         />
       </div>
@@ -134,7 +121,6 @@ export const AdminDashboardPage = () => {
         </div>
 
         <div className="space-y-8">
-          {/* PANEL DE VENCIMIENTOS CON SCROLL Y CONTADOR */}
           <div className="bg-surface-med/30 p-8 rounded-[2rem] border border-surface-med/20 flex flex-col h-fit">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-sm font-display font-black text-text-main uppercase tracking-widest flex items-center gap-2">
@@ -147,12 +133,11 @@ export const AdminDashboardPage = () => {
               )}
             </div>
             
-            {/* Contenedor con Scroll (Altura máxima para 3 items aprox) */}
             <div className={`space-y-4 pr-2 overflow-y-auto custom-scrollbar ${expiringCount > 3 ? 'max-h-[280px]' : ''}`}>
               {expiringCount === 0 ? (
                 <p className="text-xs text-text-secondary italic opacity-50 text-center py-4">Sin alertas próximas</p>
               ) : (
-                data?.expiringMemberships.map((m) => (
+                data.expiringMemberships.map((m) => (
                   <div key={m.memberId} className="flex items-center justify-between p-4 bg-surface-low rounded-2xl border border-transparent hover:border-primary/20 transition-all group flex-shrink-0">
                     <div>
                       <p className="text-sm font-bold text-text-main leading-none mb-1">{m.memberName} {m.memberLastName}</p>
@@ -165,13 +150,12 @@ export const AdminDashboardPage = () => {
             </div>
           </div>
 
-          {/* TOP PRODUCTOS (Fijo a 3 según Backend) */}
           <div className="bg-surface-low p-8 rounded-[2rem] surface-lift">
             <h3 className="text-sm font-display font-black text-text-main uppercase tracking-widest mb-6 flex items-center gap-2">
               <Package size={18} className="text-secondary" /> Top Ventas
             </h3>
             <div className="space-y-6">
-              {data?.topProducts.map((p, index) => (
+              {data.topProducts.map((p, index) => (
                 <div key={p.productId} className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-surface-high flex items-center justify-center font-display font-black text-primary italic">{index + 1}</div>
                   <div className="flex-1">

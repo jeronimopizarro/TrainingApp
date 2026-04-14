@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   UserPlus, 
   Search, 
-  Filter, 
   Mail, 
   ChevronRight,
   Clock,
@@ -27,9 +26,6 @@ const INITIAL_FORM_STATE = {
   primaryGoal: ''
 };
 
-/**
- * StatusBadge: Insignia de estado premium para la membresía.
- */
 const StatusBadge = ({ status }: { status?: string }) => {
   const configs: Record<string, { label: string; class: string }> = {
     'ACTIVE': { label: 'Activo', class: 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.1)]' },
@@ -42,18 +38,14 @@ const StatusBadge = ({ status }: { status?: string }) => {
   const config = configs[status || 'NONE'] || configs['NONE'];
 
   return (
-    <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${config.class}`}>
+    <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all duration-500 ${config.class}`}>
       {config.label}
     </div>
   );
 };
 
-/**
- * MemberRow: Componente para renderizar una fila de socio
- */
 const MemberRow = ({ member }: { member: any }) => {
   const initials = `${member.firstName[0]}${member.lastName[0]}`.toUpperCase();
-  const subscription = member.subscription;
 
   return (
     <div className="group flex items-center gap-6 p-6 bg-surface-low hover:bg-surface-med/50 transition-all cursor-pointer border-b border-white/[0.02] last:border-0 first:rounded-t-[1.5rem] last:rounded-b-[1.5rem]">
@@ -74,16 +66,16 @@ const MemberRow = ({ member }: { member: any }) => {
       </div>
       <div className="w-48">
         <p className="text-xs font-bold text-text-main leading-none mb-1 truncate">
-          {subscription?.planName || 'Sin plan activo'}
+          {member.planName}
         </p>
-        {subscription && (
+        {member.endDate && (
           <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black opacity-40">
-            Vence: {subscription.endDate}
+            Vence: {member.endDate}
           </p>
         )}
       </div>
       <div className="w-32 flex justify-center">
-        <StatusBadge status={subscription?.status} />
+        <StatusBadge status={member.subscriptionStatus} />
       </div>
       <div className="flex items-center gap-2">
         <button className="p-2 text-text-secondary hover:text-primary transition-colors hover:bg-primary/10 rounded-xl">
@@ -98,9 +90,17 @@ export const MembersListPage = () => {
   const { members, stats, isLoading, error, refresh, registerMember } = useMembers();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<string | undefined>(undefined);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
+
+  // Efecto para controlar la carga inicial vs recargas de filtros
+  useEffect(() => {
+    if (!isLoading && isInitialLoad) {
+      setIsInitialLoad(false);
+    }
+  }, [isLoading, isInitialLoad]);
 
   const filteredMembers = members.filter(m => 
     `${m.firstName} ${m.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -131,12 +131,15 @@ export const MembersListPage = () => {
     }
   };
 
-  if (isLoading && members.length === 0) return (
+  // Solo mostramos el spinner central en la carga inicial
+  if (isLoading && isInitialLoad) return (
     <div className="p-20 flex flex-col items-center justify-center gap-6 text-text-secondary animate-pulse">
       <div className="w-12 h-12 border-4 border-primary/10 border-t-primary rounded-full animate-spin" />
       <p className="font-display font-black uppercase tracking-[0.3em] text-[10px]">Sincronizando Base de Datos...</p>
     </div>
   );
+
+  if (error) return <div className="p-10 text-error font-bold text-center">{error}</div>;
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10">
@@ -184,8 +187,9 @@ export const MembersListPage = () => {
         </div>
       </div>
 
-      <div className={`bg-surface-low/30 rounded-[1.5rem] border border-white/[0.03] shadow-2xl overflow-hidden transition-opacity ${isLoading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-        {filteredMembers.length === 0 ? (
+      {/* LISTADO - Solo se aplica opacidad durante las recargas de filtros */}
+      <div className={`bg-surface-low/30 rounded-[1.5rem] border border-white/[0.03] shadow-2xl overflow-hidden transition-all duration-500 ${isLoading ? 'opacity-40 grayscale-[50%] pointer-events-none' : 'opacity-100'}`}>
+        {!isLoading && filteredMembers.length === 0 ? (
           <div className="p-20 text-center">
             <Users size={48} className="mx-auto text-surface-high mb-4" />
             <p className="text-text-secondary font-bold italic">No se encontraron socios</p>
@@ -199,35 +203,12 @@ export const MembersListPage = () => {
         )}
       </div>
 
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        title="Alta de Socio"
-      >
-        <UserFormLayout 
-          formData={formData}
-          onChange={handleInputChange}
-          onReset={handleResetForm}
-          onSubmit={handleSubmit}
-          isLoading={isLoading}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Alta de Socio">
+        <UserFormLayout formData={formData} onChange={handleInputChange} onReset={handleResetForm} onSubmit={handleSubmit} isLoading={isLoading}
           specificFields={
             <>
-              <Input 
-                label="Fecha de Nacimiento" 
-                name="birthDate" 
-                type="date" 
-                value={formData.birthDate} 
-                onChange={handleInputChange} 
-                icon={<CalendarDays size={18} />}
-              />
-              <Input 
-                label="Objetivo Principal" 
-                name="primaryGoal" 
-                value={formData.primaryGoal} 
-                onChange={handleInputChange} 
-                placeholder="Ej. Ganar masa muscular"
-                icon={<Target size={18} />}
-              />
+              <Input label="Fecha de Nacimiento" name="birthDate" type="date" value={formData.birthDate} onChange={handleInputChange} icon={<CalendarDays size={18} />} />
+              <Input label="Objetivo Principal" name="primaryGoal" value={formData.primaryGoal} onChange={handleInputChange} placeholder="Ej. Ganar masa muscular" icon={<Target size={18} />} />
             </>
           }
         />

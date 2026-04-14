@@ -4,6 +4,16 @@ import { MemberSubscription } from '../types/member.types';
 
 export const memberService = {
   /**
+   * Obtiene el resumen consolidado de socios (Lista + KPIs)
+   * Resuelve el problema N+1 delegando al Backend
+   */
+  getSummary: async (gymId: number, status?: string): Promise<MemberSummaryResponse> => {
+    const url = status ? `/members/summary?gymId=${gymId}&status=${status}` : `/members/summary?gymId=${gymId}`;
+    const { data } = await api.get<MemberSummaryResponse>(url);
+    return data;
+  },
+
+  /**
    * Obtener todos los socios por Gym ID con filtro opcional de estado
    */
   getAll: async (gymId: number, status?: string): Promise<Member[]> => {

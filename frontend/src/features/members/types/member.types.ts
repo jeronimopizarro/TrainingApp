@@ -1,11 +1,25 @@
-export type SubscriptionStatus = 'ACTIVE' | 'INACTIVE' | 'EXPIRED' | 'CANCELLED';
+export type SubscriptionStatus = 'ACTIVE' | 'INACTIVE' | 'EXPIRED' | 'CANCELLED' | 'NONE';
 
-export interface MemberSubscription {
-  status: SubscriptionStatus;
+export interface MemberListItem {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  dni: string;
   planName: string;
-  endDate: string;
-  remainingDays: number;
-  isActive: boolean;
+  subscriptionStatus: SubscriptionStatus;
+  endDate: string | null;
+}
+
+export interface MemberStats {
+  total: number;
+  active: number;
+  inactive: number;
+}
+
+export interface MemberSummaryResponse {
+  stats: MemberStats;
+  members: MemberListItem[];
 }
 
 export interface Member {
@@ -18,7 +32,6 @@ export interface Member {
   gymId: number;
   birthDate: string;
   primaryGoal?: string;
-  subscription?: MemberSubscription;
 }
 
 export interface RegisterMemberRequest {

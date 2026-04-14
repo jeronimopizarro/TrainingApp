@@ -1,6 +1,7 @@
 export interface FinancialSummary {
   monthlyRevenue: number;
-  lastMonthRevenue: number; // NUEVO
+  lastMonthRevenue: number;
+  revenueGrowthPercentage: string; // NUEVO: "+15.5%"
   weeklyRevenue: number;
   dailyRevenue: number;
   membershipRevenue: number;
@@ -9,10 +10,12 @@ export interface FinancialSummary {
 
 export interface AudienceSummary {
   activeMembers: number;
-  lastMonthActiveMembers: number; // NUEVO
+  lastMonthActiveMembers: number;
+  activeMembersGrowth: number;
   newMembersThisMonth: number;
   churnedMembersThisMonth: number;
-  lastMonthChurnedMembers: number; // NUEVO
+  lastMonthChurnedMembers: number;
+  churnTrend: string;
 }
 
 export interface TopProduct {

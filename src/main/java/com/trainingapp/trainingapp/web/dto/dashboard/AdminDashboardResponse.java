@@ -12,21 +12,24 @@ public record AdminDashboardResponse(
 ) {
     // Resumen de Plata
     public record FinancialSummary(
-            BigDecimal monthlyRevenue,    // Recaudado en el mes actual
-            BigDecimal lastMonthRevenue,  // Recaudado el mes pasado (NUEVO)
-            BigDecimal weeklyRevenue,     // Recaudado esta semana
-            BigDecimal dailyRevenue,      // Recaudado HOY
-            BigDecimal membershipRevenue, // Cuota de socios (del mes)
-            BigDecimal productsRevenue   // Ventas de kiosco (del mes)
+            BigDecimal monthlyRevenue,    
+            BigDecimal lastMonthRevenue,  
+            String revenueGrowthPercentage, // CALCULADO: "+15.5%"
+            BigDecimal weeklyRevenue,     
+            BigDecimal dailyRevenue,      
+            BigDecimal membershipRevenue, 
+            BigDecimal productsRevenue   
     ) {}
 
     // Resumen de Gente
     public record AudienceSummary(
-            long activeMembers,           // Socios actuales
-            long lastMonthActiveMembers,  // Socios el mes pasado (NUEVO)
-            long newMembersThisMonth,     // Altas del mes
-            long churnedMembersThisMonth, // Bajas del mes
-            long lastMonthChurnedMembers  // Bajas el mes pasado (NUEVO)
+            long activeMembers,           
+            long lastMonthActiveMembers,  
+            long activeMembersGrowth,     // CALCULADO: "+5" o "-2"
+            long newMembersThisMonth,     
+            long churnedMembersThisMonth, 
+            long lastMonthChurnedMembers,
+            String churnTrend             // CALCULADO: "Mejoró" o "Subió"
     ) {}
 
     // Kiosco

@@ -47,6 +47,8 @@ class MemberControllerTest {
     @MockitoBean
     private GetAllMembersByGymIdUseCase getAllMembersByGymIdUseCase;
     @MockitoBean
+    private GetGymMembersSummaryUseCase getGymMembersSummaryUseCase;
+    @MockitoBean
     private UpdateMemberUseCase updateMemberUseCase;
     @MockitoBean
     private DeleteMemberUseCase deleteMemberUseCase;
