@@ -9,8 +9,14 @@ public class ReceptionistDTOMapper {
     public ReceptionistResponse toResponse(Receptionist receptionist) {
         if (receptionist == null) return null;
         return new ReceptionistResponse(
-                receptionist.getId(), receptionist.getFirstName(), receptionist.getLastName(),
-                receptionist.getEmail(), receptionist.getDni(), receptionist.getGymId()
+                receptionist.getId(),
+                receptionist.getFirstName(),
+                receptionist.getLastName(),
+                receptionist.getEmail(),
+                receptionist.getDni(),
+                receptionist.getGymId(),
+                receptionist.getRole(),
+                receptionist.isActive()
         );
     }
 }

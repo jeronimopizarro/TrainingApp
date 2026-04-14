@@ -2,8 +2,7 @@ import React from 'react';
 import { UserCircle } from 'lucide-react';
 
 /**
- * Topbar: Cabecera superior de TrainingApp re-estilizada.
- * Se eliminan buscadores e iconos secundarios para un look más minimalista y premium.
+ * Topbar: Cabecera superior de TrainingApp
  */
 export const Topbar = () => {
   const userName = localStorage.getItem('user_name') || 'Administrador';

@@ -57,9 +57,6 @@ export const AdminDashboardPage = () => {
             Control de <span className="text-primary-dark">Rendimiento</span>.
           </h1>
         </div>
-        <div className="flex gap-3">
-          <Button icon={<Package size={18} />}>Registrar Venta</Button>
-        </div>
       </header>
 
       {/* KPI GRID - DATOS CALCULADOS EN BACKEND */}

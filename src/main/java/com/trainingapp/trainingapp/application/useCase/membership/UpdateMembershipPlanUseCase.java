@@ -2,8 +2,8 @@ package com.trainingapp.trainingapp.application.useCase.membership;
 
 import com.trainingapp.trainingapp.application.mapper.membershipPlan.MembershipPlanDTOMapper;
 import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
-import com.trainingapp.trainingapp.domain.exception.membership.DuplicateMembershipPlanNameException;
-import com.trainingapp.trainingapp.domain.exception.membership.MembershipNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.membership.MembershipPlanAlreadyExistsException;
+import com.trainingapp.trainingapp.domain.exception.membership.MembershipPlanNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.membership.MembershipPlanRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.membership.MembershipPlanResponse;
@@ -14,38 +14,36 @@ import org.springframework.stereotype.Service;
 @Service
 public class UpdateMembershipPlanUseCase {
 
-    private final MembershipPlanRepository planRepository;
+    private final MembershipPlanRepository repository;
+    private final MembershipPlanDTOMapper mapper;
     private final SecurityUtils securityUtils;
-    private final MembershipPlanDTOMapper membershipPlanDTOMapper;
 
-    public UpdateMembershipPlanUseCase(MembershipPlanRepository planRepository, SecurityUtils securityUtils,
-                                       MembershipPlanDTOMapper membershipPlanDTOMapper) {
-        this.planRepository = planRepository;
+    public UpdateMembershipPlanUseCase(MembershipPlanRepository repository,
+                                       MembershipPlanDTOMapper mapper,
+                                       SecurityUtils securityUtils) {
+        this.repository = repository;
+        this.mapper = mapper;
         this.securityUtils = securityUtils;
-        this.membershipPlanDTOMapper = membershipPlanDTOMapper;
     }
 
     @Transactional
     public MembershipPlanResponse execute(Long id, UpdateMembershipPlanRequest request) {
-        MembershipPlan plan = findMembershipPlanOrThrow(id);
+        MembershipPlan plan = repository.findById(id)
+                .orElseThrow(MembershipPlanNotFoundException::new);
 
         securityUtils.validateSameGym(plan.getGymId());
-        validatePlanNameIsUniqueForUpdate(request.name(), plan.getGymId(), id);
 
-        plan.updateDetails(request.name(), request.description(), request.price(), request.durationMonths());
-
-        MembershipPlan updatedPlan = planRepository.save(plan);
-        return membershipPlanDTOMapper.toResponse(updatedPlan);
-    }
-
-    private MembershipPlan findMembershipPlanOrThrow(Long id) {
-        return planRepository.findById(id)
-                .orElseThrow(() -> new MembershipNotFoundException(id));
-    }
-
-    private void validatePlanNameIsUniqueForUpdate(String name, Long gymId, Long currentId) {
-        if (planRepository.existsByNameAndGymIdAndIdNot(name, gymId, currentId)) {
-            throw new DuplicateMembershipPlanNameException(name);
+        if (repository.existsByNameAndGymIdAndIdNot(request.name(), plan.getGymId(), id)) {
+            throw new MembershipPlanAlreadyExistsException();
         }
+
+        plan.updateDetails(
+                request.name(),
+                request.description(),
+                request.price(),
+                request.durationMonths()
+        );
+
+        return mapper.toResponse(repository.save(plan));
     }
 }

@@ -10,7 +10,6 @@ public class MembershipPlanDTOMapper {
 
     public MembershipPlan toDomain(CreateMembershipPlanRequest request) {
         if (request == null) return null;
-
         return MembershipPlan.createNew(
                 request.name(),
                 request.description(),
@@ -20,17 +19,16 @@ public class MembershipPlanDTOMapper {
         );
     }
 
-    public MembershipPlanResponse toResponse(MembershipPlan domainEntity) {
-        if (domainEntity == null) return null;
-
+    public MembershipPlanResponse toResponse(MembershipPlan plan) {
+        if (plan == null) return null;
         return new MembershipPlanResponse(
-                domainEntity.getId(),
-                domainEntity.getName(),
-                domainEntity.getDescription(),
-                domainEntity.getPrice(),
-                domainEntity.getDurationMonths(),
-                domainEntity.getGymId(),
-                domainEntity.isActive()
+                plan.getId(),
+                plan.getName(),
+                plan.getDescription(),
+                plan.getPrice(),
+                plan.getDurationMonths(),
+                plan.getGymId(),
+                plan.isActive()
         );
     }
 }

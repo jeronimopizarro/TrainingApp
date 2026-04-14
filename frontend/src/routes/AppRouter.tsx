@@ -6,6 +6,8 @@ import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { authService } from '@/features/auth/services/auth.service';
 import { AdminDashboardPage } from '@/features/dashboard/pages/AdminDashboardPage';
 import { MembersListPage } from '@/features/members/pages/MembersListPage';
+import { StaffListPage } from '@/features/staff/pages/StaffListPage';
+import { MembershipsPage } from '@/features/memberships/pages/MembershipsPage';
 
 /**
  * PublicRoute: Evita que usuarios logueados vuelvan al Login.
@@ -66,8 +68,8 @@ export const AppRouter = () => {
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboardPage />} />
             <Route path="members" element={<MembersListPage />} />
-            <Route path="staff" element={<div className="text-text-main font-display font-bold text-2xl">Personal</div>} />
-            <Route path="memberships" element={<div className="text-text-main font-display font-bold text-2xl">Membresías</div>} />
+            <Route path="staff" element={<StaffListPage />} />
+            <Route path="memberships" element={<MembershipsPage />} />
             <Route path="exercises" element={<div className="text-text-main font-display font-bold text-2xl">Ejercicios</div>} />
             <Route path="products" element={<div className="text-text-main font-display font-bold text-2xl">Productos</div>} />
             <Route path="sales" element={<div className="text-text-main font-display font-bold text-2xl">Ventas</div>} />

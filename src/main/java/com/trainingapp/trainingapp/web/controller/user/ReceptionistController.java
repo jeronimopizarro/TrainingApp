@@ -42,7 +42,7 @@ public class ReceptionistController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTIONIST')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
     public ResponseEntity<ReceptionistResponse> getReceptionistById(@PathVariable Long id) {
         // Un recepcionista puede ver su propio perfil, y el admin puede ver cualquiera
         ReceptionistResponse response = getReceptionistByIdUseCase.execute(id);
@@ -50,14 +50,14 @@ public class ReceptionistController {
     }
 
     @GetMapping("/gym/{gymId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     public ResponseEntity<List<ReceptionistResponse>> getAllReceptionistsByGymId(@PathVariable Long gymId) {
         List<ReceptionistResponse> responses = getAllReceptionistsByGymIdUseCase.execute(gymId);
         return ResponseEntity.ok(responses);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     public ResponseEntity<ReceptionistResponse> updateReceptionist(
             @PathVariable Long id,
             @Valid @RequestBody UpdateReceptionistRequest request) {
@@ -66,7 +66,7 @@ public class ReceptionistController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
     public ResponseEntity<Void> deleteReceptionist(@PathVariable Long id) {
         deleteReceptionistUseCase.execute(id);
         return ResponseEntity.noContent().build();

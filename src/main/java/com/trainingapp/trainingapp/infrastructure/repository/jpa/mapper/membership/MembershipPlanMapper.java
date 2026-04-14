@@ -4,13 +4,24 @@ import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.entity.membership.MembershipPlanJpaEntity;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class MembershipPlanMapper {
 
+    public MembershipPlanJpaEntity toEntity(MembershipPlan plan) {
+        if (plan == null) return null;
+        return new MembershipPlanJpaEntity(
+                plan.getId(),
+                plan.getName(),
+                plan.getDescription(),
+                plan.getPrice(),
+                plan.getDurationMonths(),
+                plan.getGymId(),
+                plan.isActive()
+        );
+    }
+
     public MembershipPlan toDomain(MembershipPlanJpaEntity entity) {
         if (entity == null) return null;
-
         return MembershipPlan.restore(
                 entity.getId(),
                 entity.getName(),
@@ -20,20 +31,5 @@ public class MembershipPlanMapper {
                 entity.getGymId(),
                 entity.isActive()
         );
-    }
-
-    public MembershipPlanJpaEntity toEntity(MembershipPlan domainEntity) {
-        if (domainEntity == null) return null;
-
-        MembershipPlanJpaEntity entity = new MembershipPlanJpaEntity();
-        entity.setId(domainEntity.getId());
-        entity.setName(domainEntity.getName());
-        entity.setDescription(domainEntity.getDescription());
-        entity.setPrice(domainEntity.getPrice());
-        entity.setDurationMonths(domainEntity.getDurationMonths());
-        entity.setGymId(domainEntity.getGymId());
-        entity.setActive(domainEntity.isActive());
-
-        return entity;
     }
 }

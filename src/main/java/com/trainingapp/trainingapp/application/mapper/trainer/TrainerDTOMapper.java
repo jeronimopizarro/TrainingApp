@@ -29,8 +29,10 @@ public class TrainerDTOMapper {
                 trainer.getFirstName(),
                 trainer.getLastName(),
                 trainer.getEmail(),
+                trainer.getDni(),
                 trainer.getGymId(),
                 trainer.getSpecialization(),
+                trainer.getRole(),
                 trainer.isActive()
         );
     }

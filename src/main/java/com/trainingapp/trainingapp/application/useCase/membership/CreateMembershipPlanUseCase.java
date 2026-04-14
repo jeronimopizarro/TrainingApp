@@ -1,9 +1,8 @@
 package com.trainingapp.trainingapp.application.useCase.membership;
 
 import com.trainingapp.trainingapp.application.mapper.membershipPlan.MembershipPlanDTOMapper;
-import com.trainingapp.trainingapp.application.validator.GymValidator;
 import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
-import com.trainingapp.trainingapp.domain.exception.membership.DuplicateMembershipPlanNameException;
+import com.trainingapp.trainingapp.domain.exception.membership.MembershipPlanAlreadyExistsException;
 import com.trainingapp.trainingapp.domain.repository.membership.MembershipPlanRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.membership.CreateMembershipPlanRequest;
@@ -14,37 +13,34 @@ import org.springframework.stereotype.Service;
 @Service
 public class CreateMembershipPlanUseCase {
 
-    private final MembershipPlanRepository planRepository;
+    private final MembershipPlanRepository repository;
+    private final MembershipPlanDTOMapper mapper;
     private final SecurityUtils securityUtils;
-    private final MembershipPlanDTOMapper membershipPlanDTOMapper;
-    private final GymValidator gymValidator;
 
-    public CreateMembershipPlanUseCase(MembershipPlanRepository planRepository,
-                                       SecurityUtils securityUtils,
-                                       MembershipPlanDTOMapper membershipPlanDTOMapper,
-                                       GymValidator gymValidator) {
-        this.planRepository = planRepository;
+    public CreateMembershipPlanUseCase(MembershipPlanRepository repository,
+                                       MembershipPlanDTOMapper mapper,
+                                       SecurityUtils securityUtils) {
+        this.repository = repository;
+        this.mapper = mapper;
         this.securityUtils = securityUtils;
-        this.membershipPlanDTOMapper = membershipPlanDTOMapper;
-        this.gymValidator = gymValidator;
     }
 
     @Transactional
     public MembershipPlanResponse execute(CreateMembershipPlanRequest request) {
-        gymValidator.validateExists(request.gymId());
         securityUtils.validateSameGym(request.gymId());
-        validatePlanNameIsUnique(request.name(), request.gymId());
 
-        MembershipPlan plan = membershipPlanDTOMapper.toDomain(request);
-
-        MembershipPlan savedPlan = planRepository.save(plan);
-
-        return membershipPlanDTOMapper.toResponse(savedPlan);
-    }
-
-    private void validatePlanNameIsUnique(String name, Long gymId) {
-        if (planRepository.existsByNameAndGymId(name, gymId)) {
-            throw new DuplicateMembershipPlanNameException(name);
+        if (repository.existsByNameAndGymId(request.name(), request.gymId())) {
+            throw new MembershipPlanAlreadyExistsException();
         }
+
+        MembershipPlan plan = MembershipPlan.createNew(
+                request.name(),
+                request.description(),
+                request.price(),
+                request.durationMonths(),
+                request.gymId()
+        );
+
+        return mapper.toResponse(repository.save(plan));
     }
 }

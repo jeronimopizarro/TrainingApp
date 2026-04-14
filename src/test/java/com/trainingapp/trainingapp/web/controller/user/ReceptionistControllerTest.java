@@ -63,7 +63,7 @@ class ReceptionistControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = "GYM_ADMIN")
     @DisplayName("GET /receptionists/gym/{gymId} - Debería retornar 200")
     void shouldGetAllByGymIdAndReturn200() throws Exception {
         when(getAllReceptionistsByGymIdUseCase.execute(10L)).thenReturn(List.of());
@@ -71,7 +71,7 @@ class ReceptionistControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = "GYM_ADMIN")
     @DisplayName("PUT /receptionists/{id} - Debería retornar 200/400 dependiendo del request")
     void shouldUpdateAndReturnStatus() throws Exception {
         mockMvc.perform(put("/receptionists/1")
@@ -81,7 +81,7 @@ class ReceptionistControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = "GYM_ADMIN")
     @DisplayName("DELETE /receptionists/{id} - Debería retornar 204")
     void shouldDeleteAndReturn204() throws Exception {
         doNothing().when(deleteReceptionistUseCase).execute(1L);

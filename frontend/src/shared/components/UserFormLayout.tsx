@@ -86,6 +86,14 @@ export const UserFormLayout: React.FC<UserFormLayoutProps> = ({
         </div>
       )}
 
+            {/* Nota informativa sobre contraseña */}
+      <div className="bg-primary/5 border border-primary/10 rounded-2xl p-4 flex items-start gap-3 mt-2">
+        <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-black shrink-0 mt-0.5">!</div>
+        <p className="text-[11px] text-text-secondary leading-relaxed">
+          <span className="text-primary font-bold">Nota de Seguridad:</span> La contraseña inicial de acceso para el usuario será su número de <span className="text-text-main font-bold italic">DNI / Identificación</span>. Se recomienda que el usuario la cambie en su primer inicio de sesión.
+        </p>
+      </div>
+
       {/* Acciones */}
       <div className="pt-8 flex flex-col sm:flex-row gap-4">
         <Button 
