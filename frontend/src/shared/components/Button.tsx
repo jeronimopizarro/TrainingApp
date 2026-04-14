@@ -4,6 +4,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost';
   isLoading?: boolean;
   fullWidth?: boolean;
+  icon?: React.ReactNode;
 }
 
 /**
@@ -16,6 +17,7 @@ export const Button: React.FC<ButtonProps> = ({
   variant = 'primary', 
   isLoading, 
   fullWidth, 
+  icon,
   className = '', 
   ...props 
 }) => {
@@ -37,7 +39,12 @@ export const Button: React.FC<ButtonProps> = ({
     >
       {isLoading ? (
         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-      ) : children}
+      ) : (
+        <>
+          {icon && <span className="flex-shrink-0">{icon}</span>}
+          {children}
+        </>
+      )}
     </button>
   );
 };

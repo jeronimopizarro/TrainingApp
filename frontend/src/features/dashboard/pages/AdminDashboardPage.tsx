@@ -21,33 +21,13 @@ import {
 } from 'recharts';
 import { useDashboard } from '../hooks/useDashboard';
 import { Button } from '@/shared/components/Button';
+import { StatCard } from '@/shared/components/StatCard';
 
 const calculateGrowth = (current: number, previous: number) => {
   if (previous === 0) return current > 0 ? '+100%' : '0%';
   const diff = ((current - previous) / previous) * 100;
   return `${diff > 0 ? '+' : ''}${diff.toFixed(1)}%`;
 };
-
-const StatCard = ({ label, value, trend, trendValue, icon: Icon }: any) => (
-  <div className="bg-surface-high p-8 rounded-[2rem] relative overflow-hidden group hover:bg-surface-high/80 transition-all cursor-default surface-lift">
-    <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.06] group-hover:scale-110 transition-all duration-500 text-text-main">
-      <Icon size={140} strokeWidth={1} />
-    </div>
-    <div className="relative z-10">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-text-secondary font-bold mb-4 opacity-60">{label}</p>
-      <h3 className="text-4xl font-display font-black text-text-main tracking-tighter mb-4">{value}</h3>
-      <div className="flex items-center gap-2">
-        <div className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold ${
-          trend === 'up' ? 'bg-green-500/10 text-green-400' : 'bg-error/10 text-error'
-        }`}>
-          {trend === 'up' ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-          {trendValue}
-        </div>
-        <span className="text-[10px] text-text-secondary font-medium opacity-40 uppercase tracking-widest italic text-[9px]">vs mes pasado</span>
-      </div>
-    </div>
-  </div>
-);
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -79,6 +59,8 @@ export const AdminDashboardPage = () => {
   // Lógica de Vencimientos
   const expiringCount = data?.expiringMemberships.length || 0;
 
+  if (!data) return null; // Resguardo adicional para TypeScript
+
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -95,10 +77,34 @@ export const AdminDashboardPage = () => {
 
       {/* KPI GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        <StatCard label="Ingresos Mensuales" value={`$${data?.financialSummary.monthlyRevenue.toLocaleString()}`} trend={(data?.financialSummary.monthlyRevenue || 0) >= (data?.financialSummary.lastMonthRevenue || 0) ? 'up' : 'down'} trendValue={revenueGrowth} icon={DollarSign} />
-        <StatCard label="Socios Activos" value={data?.audienceSummary.activeMembers} trend={activeGrowth >= 0 ? 'up' : 'down'} trendValue={`${activeGrowth >= 0 ? '+' : ''}${activeGrowth} socios`} icon={Users} />
-        <StatCard label="Recaudado Hoy" value={`$${data?.financialSummary.dailyRevenue.toLocaleString()}`} trend="up" trendValue="Hoy" icon={TrendingUp} />
-        <StatCard label="Bajas del Mes" value={data?.audienceSummary.churnedMembersThisMonth} trend={churnDiff >= 0 ? 'up' : 'down'} trendValue={churnDiff >= 0 ? "Mejoró" : "Subió"} icon={AlertCircle} />
+        <StatCard 
+          label="Ingresos Mensuales" 
+          value={`$${data.financialSummary.monthlyRevenue.toLocaleString()}`} 
+          trend={data.financialSummary.monthlyRevenue >= data.financialSummary.lastMonthRevenue ? 'up' : 'down'} 
+          trendValue={revenueGrowth} 
+          icon={DollarSign} 
+        />
+        <StatCard 
+          label="Socios Activos" 
+          value={data.audienceSummary.activeMembers} 
+          trend={activeGrowth >= 0 ? 'up' : 'down'} 
+          trendValue={`${activeGrowth >= 0 ? '+' : ''}${activeGrowth} socios`} 
+          icon={Users} 
+        />
+        <StatCard 
+          label="Recaudado Hoy" 
+          value={`$${data.financialSummary.dailyRevenue.toLocaleString()}`} 
+          trend="up" 
+          trendValue="Hoy" 
+          icon={TrendingUp} 
+        />
+        <StatCard 
+          label="Bajas del Mes" 
+          value={data.audienceSummary.churnedMembersThisMonth} 
+          trend={churnDiff >= 0 ? 'up' : 'down'} 
+          trendValue={churnDiff >= 0 ? "Mejoró" : "Subió"} 
+          icon={AlertCircle} 
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">

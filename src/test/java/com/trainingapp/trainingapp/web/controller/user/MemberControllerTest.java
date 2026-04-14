@@ -126,13 +126,34 @@ class MemberControllerTest {
                 LocalDate.of(1990, 5, 15), "Ganar masa"
         );
 
-        when(getAllMembersByGymIdUseCase.execute(gymId)).thenReturn(List.of(mockResponse));
+        when(getAllMembersByGymIdUseCase.execute(gymId, null)).thenReturn(List.of(mockResponse));
 
         mockMvc.perform(get("/members")
                         .param("gymId", String.valueOf(gymId)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
                 .andExpect(jsonPath("$[0].gymId").value(gymId));
+    }
+
+    @Test
+    @WithMockUser(roles = "TRAINER")
+    @DisplayName("GET /members?gymId={id}&status={status} - Debería retornar 200 OK y filtrar por estado")
+    void shouldGetAllMembersByGymIdAndStatusAndReturn200() throws Exception {
+        Long gymId = 10L;
+        String status = "ACTIVE";
+        MemberResponse mockResponse = new MemberResponse(
+                1L, "Juan", "Perez", "juan@test.com", "12345678", true, gymId,
+                LocalDate.of(1990, 5, 15), "Ganar masa"
+        );
+
+        when(getAllMembersByGymIdUseCase.execute(gymId, status)).thenReturn(List.of(mockResponse));
+
+        mockMvc.perform(get("/members")
+                        .param("gymId", String.valueOf(gymId))
+                        .param("status", status))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].id").value(1L));
     }
 
     @Test

@@ -44,11 +44,29 @@ class GetAllMembersByGymIdUseCaseTest {
         // 3. Mapear a respuesta
         when(memberDTOMapper.toResponse(mockMember)).thenReturn(mock(MemberResponse.class));
 
-        List<MemberResponse> response = useCase.execute(gymId);
+        List<MemberResponse> response = useCase.execute(gymId, null);
 
         assertEquals(1, response.size());
-        verify(gymValidator).validateExists(gymId);
-        verify(securityUtils).validateSameGym(gymId);
         verify(memberRepository).findByGymId(gymId);
+    }
+
+    @Test
+    @DisplayName("Debería filtrar miembros por estado si se proporciona")
+    void shouldFilterMembersByStatus() {
+        Long gymId = 10L;
+        String status = "ACTIVE";
+        Member mockMember = mock(Member.class);
+
+        doNothing().when(gymValidator).validateExists(gymId);
+        doNothing().when(securityUtils).validateSameGym(gymId);
+
+        when(memberRepository.findByGymIdAndStatus(gymId, status)).thenReturn(List.of(mockMember));
+        when(memberDTOMapper.toResponse(mockMember)).thenReturn(mock(MemberResponse.class));
+
+        List<MemberResponse> response = useCase.execute(gymId, status);
+
+        assertEquals(1, response.size());
+        verify(memberRepository).findByGymIdAndStatus(gymId, status);
+        verify(memberRepository, never()).findByGymId(anyLong());
     }
 }

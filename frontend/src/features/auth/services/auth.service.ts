@@ -52,6 +52,26 @@ export const authService = {
     }
   },
 
+  /**
+   * Obtiene la información completa de la sesión actual
+   */
+  getUserData: (): UserSession | null => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      const decoded = jwtDecode<DecodedToken>(token);
+      return {
+        token,
+        role: decoded.role,
+        gymId: decoded.gymId,
+        userName: decoded.userName
+      };
+    } catch (error) {
+      return null;
+    }
+  },
+
     logout: () => {
     localStorage.clear();
   },

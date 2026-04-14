@@ -12,5 +12,7 @@ public interface MemberRepository {
 
     List<Member> findByGymId(Long gymId);
 
+    List<Member> findByGymIdAndStatus(Long gymId, String status);
+
     Optional<Member> findByDni(String dni);
 }

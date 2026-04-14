@@ -27,14 +27,19 @@ public class GetAllMembersByGymIdUseCase {
         this.gymValidator = gymValidator;
     }
 
-    public List<MemberResponse> execute(Long gymId) {
+    public List<MemberResponse> execute(Long gymId, String status) {
         gymValidator.validateExists(gymId);
         securityUtils.validateSameGym(gymId);
 
-        List<Member> members = memberRepository.findByGymId(gymId);
+        List<Member> members;
+        if (status != null && !status.isBlank()) {
+            members = memberRepository.findByGymIdAndStatus(gymId, status);
+        } else {
+            members = memberRepository.findByGymId(gymId);
+        }
 
         return members.stream()
                 .map(memberDTOMapper::toResponse)
                 .toList();
     }
-}
+    }

@@ -49,8 +49,10 @@ public class MemberController {
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'RECEPTIONIST')")
     @GetMapping
-    public ResponseEntity<List<MemberResponse>> getAllByGymId(@RequestParam Long gymId) {
-        return ResponseEntity.ok(getAllMembersByGymIdUseCase.execute(gymId));
+    public ResponseEntity<List<MemberResponse>> getAllByGymId(
+            @RequestParam Long gymId,
+            @RequestParam(required = false) String status) {
+        return ResponseEntity.ok(getAllMembersByGymIdUseCase.execute(gymId, status));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'MEMBER')")
