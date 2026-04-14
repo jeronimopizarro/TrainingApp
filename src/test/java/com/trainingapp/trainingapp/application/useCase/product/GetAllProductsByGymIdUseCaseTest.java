@@ -42,11 +42,53 @@ class GetAllProductsByGymIdUseCaseTest {
         ProductResponse mockResponse = mock(ProductResponse.class);
         when(productDTOMapper.toResponse(mockProduct)).thenReturn(mockResponse);
 
-        List<ProductResponse> result = useCase.execute(gymId);
+        List<ProductResponse> result = useCase.execute(gymId, null);
 
         assertEquals(1, result.size());
         verify(gymValidator).validateExists(gymId);
         verify(securityUtils).validateSameGym(gymId);
         verify(productRepository).findAllByGymId(gymId);
+    }
+
+    @Test
+    @DisplayName("Debería retornar productos con bajo stock")
+    void shouldReturnLowStockProducts() {
+        Long gymId = 10L;
+        String stockStatus = "LOW_STOCK";
+
+        doNothing().when(gymValidator).validateExists(gymId);
+        doNothing().when(securityUtils).validateSameGym(gymId);
+
+        Product mockProduct = mock(Product.class);
+        when(productRepository.findByStockRange(gymId, 1, 5)).thenReturn(List.of(mockProduct));
+
+        ProductResponse mockResponse = mock(ProductResponse.class);
+        when(productDTOMapper.toResponse(mockProduct)).thenReturn(mockResponse);
+
+        List<ProductResponse> result = useCase.execute(gymId, stockStatus);
+
+        assertEquals(1, result.size());
+        verify(productRepository).findByStockRange(gymId, 1, 5);
+    }
+
+    @Test
+    @DisplayName("Debería retornar productos sin stock")
+    void shouldReturnNoStockProducts() {
+        Long gymId = 10L;
+        String stockStatus = "OUT_OF_STOCK";
+
+        doNothing().when(gymValidator).validateExists(gymId);
+        doNothing().when(securityUtils).validateSameGym(gymId);
+
+        Product mockProduct = mock(Product.class);
+        when(productRepository.findWithNoStock(gymId)).thenReturn(List.of(mockProduct));
+
+        ProductResponse mockResponse = mock(ProductResponse.class);
+        when(productDTOMapper.toResponse(mockProduct)).thenReturn(mockResponse);
+
+        List<ProductResponse> result = useCase.execute(gymId, stockStatus);
+
+        assertEquals(1, result.size());
+        verify(productRepository).findWithNoStock(gymId);
     }
 }

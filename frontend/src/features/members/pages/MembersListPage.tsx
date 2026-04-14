@@ -166,9 +166,27 @@ export const MembersListPage = () => {
 
       <div className="flex flex-col gap-6 mb-8">
         <div className="flex items-center gap-2 bg-surface-low p-1.5 rounded-2xl w-fit border border-white/[0.03]">
-          <button onClick={() => handleFilterChange(undefined)} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${!activeTab ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-text-secondary hover:text-text-main'}`}>Todos</button>
-          <button onClick={() => handleFilterChange('ACTIVE')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'ACTIVE' ? 'bg-green-500 text-white shadow-lg shadow-green-500/20' : 'text-text-secondary hover:text-text-main'}`}>Activos</button>
-          <button onClick={() => handleFilterChange('INACTIVE')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'INACTIVE' ? 'bg-error text-white shadow-lg shadow-error/20' : 'text-text-secondary hover:text-text-main'}`}>Inactivos</button>
+          <Button 
+            onClick={() => handleFilterChange(undefined)} 
+            variant={!activeTab ? 'primary' : 'ghost'}
+            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${!activeTab ? '' : 'text-text-secondary hover:text-text-main'}`}
+          >
+            Todos
+          </Button>
+          <Button 
+            onClick={() => handleFilterChange('ACTIVE')} 
+            variant={activeTab === 'ACTIVE' ? 'primary' : 'ghost'}
+            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'ACTIVE' ? '' : 'text-text-secondary hover:text-text-main'}`}
+          >
+            Activos
+          </Button>
+          <Button 
+            onClick={() => handleFilterChange('INACTIVE')} 
+            variant={activeTab === 'INACTIVE' ? 'primary' : 'ghost'}
+            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'INACTIVE' ? '' : 'text-text-secondary hover:text-text-main'}`}
+          >
+            Inactivos
+          </Button>
         </div>
 
         <div className="flex flex-col md:flex-row items-center gap-4">

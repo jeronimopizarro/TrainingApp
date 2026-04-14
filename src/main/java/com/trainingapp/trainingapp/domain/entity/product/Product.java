@@ -67,7 +67,7 @@ public class Product {
     }
 
     public void updatePrice(BigDecimal newPrice) {
-        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (newPrice == null || newPrice.compareTo(BigDecimal.ZERO) < 0) {
             throw new NegativeProductPriceException();
         }
         this.price = newPrice;

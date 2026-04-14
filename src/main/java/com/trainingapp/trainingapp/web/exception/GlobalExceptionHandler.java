@@ -11,7 +11,7 @@ import com.trainingapp.trainingapp.domain.exception.membership.DuplicateMembersh
 import com.trainingapp.trainingapp.domain.exception.membership.InactiveMembershipPlanException;
 import com.trainingapp.trainingapp.domain.exception.membership.MembershipNotFoundException;
 import com.trainingapp.trainingapp.domain.exception.membership.MembershipPlanAccessDeniedException;
-import com.trainingapp.trainingapp.domain.exception.product.ProductNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.product.*;
 import com.trainingapp.trainingapp.domain.exception.routine.*;
 import com.trainingapp.trainingapp.domain.exception.subscription.*;
 import com.trainingapp.trainingapp.domain.exception.tracker.*;
@@ -105,7 +105,9 @@ public class GlobalExceptionHandler {
             InvalidRoutineRequestStateException.class,
             InvalidSessionStateException.class,
             UserAlreadyActiveException.class,
-            UserAlreadyInactiveException.class
+            UserAlreadyInactiveException.class,
+            ProductAlreadyActiveException.class,
+            ProductAlreadyInactiveException.class
     })
     public ResponseEntity<ApiErrorResponse> handleConflictExceptions(RuntimeException ex) {
         return buildResponse(HttpStatus.CONFLICT, "Conflict - Business Rule Violation", ex);
@@ -118,7 +120,12 @@ public class GlobalExceptionHandler {
             InvalidRoutineStateException.class,
             InvalidSubscriptionStartDateException.class,
             InactiveMembershipPlanException.class,
-            IllegalArgumentException.class
+            IllegalArgumentException.class,
+            ProductNameRequiredException.class,
+            NegativeProductPriceException.class,
+            NegativeProductStockException.class,
+            InvalidStockOperationException.class,
+            InsufficientStockException.class
     })
     public ResponseEntity<ApiErrorResponse> handleBadRequestExceptions(RuntimeException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, "Bad Request - Invalid Business Rule", ex);

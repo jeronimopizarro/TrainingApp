@@ -28,11 +28,19 @@ public class GetAllProductsByGymIdUseCase {
         this.securityUtils = securityUtils;
     }
 
-    public List<ProductResponse> execute(Long gymId) {
+    public List<ProductResponse> execute(Long gymId, String stockStatus) {
         gymValidator.validateExists(gymId);
         securityUtils.validateSameGym(gymId);
 
-        List<Product> products = productRepository.findAllByGymId(gymId);
+        List<Product> products;
+        
+        if ("LOW_STOCK".equalsIgnoreCase(stockStatus)) {
+            products = productRepository.findByStockRange(gymId, 1, 5);
+        } else if ("OUT_OF_STOCK".equalsIgnoreCase(stockStatus)) {
+            products = productRepository.findWithNoStock(gymId);
+        } else {
+            products = productRepository.findAllByGymId(gymId);
+        }
 
         return products.stream().map(productDTOMapper::toResponse).toList();
     }

@@ -43,6 +43,22 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public List<Product> findByStockRange(Long gymId, int min, int max) {
+        return jpaRepository.findByGymIdAndActiveTrueAndStockBetween(gymId, min, max)
+                .stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Product> findWithNoStock(Long gymId) {
+        return jpaRepository.findByGymIdAndActiveTrueAndStockLessThanEqual(gymId, 0)
+                .stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Product> searchByName(Long gymId, String name) {
         return jpaRepository.findByGymIdAndNameContainingIgnoreCaseAndActiveTrue(gymId, name)
                 .stream()

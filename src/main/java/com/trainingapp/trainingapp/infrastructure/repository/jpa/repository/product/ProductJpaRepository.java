@@ -11,5 +11,9 @@ public interface ProductJpaRepository extends JpaRepository<ProductJpaEntity, Lo
 
     List<ProductJpaEntity> findAllByGymIdAndActiveTrue(Long gymId);
 
+    List<ProductJpaEntity> findByGymIdAndActiveTrueAndStockBetween(Long gymId, int min, int max);
+
+    List<ProductJpaEntity> findByGymIdAndActiveTrueAndStockLessThanEqual(Long gymId, int max);
+
     List<ProductJpaEntity> findByGymIdAndNameContainingIgnoreCaseAndActiveTrue(Long gymId, String name);
 }

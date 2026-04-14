@@ -1,9 +1,6 @@
 package com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security;
 
-import com.trainingapp.trainingapp.domain.entity.user.Admin;
-import com.trainingapp.trainingapp.domain.entity.user.Member;
-import com.trainingapp.trainingapp.domain.entity.user.Trainer;
-import com.trainingapp.trainingapp.domain.entity.user.User;
+import com.trainingapp.trainingapp.domain.entity.user.*;
 import com.trainingapp.trainingapp.domain.exception.auth.UnauthenticatedUserException;
 import com.trainingapp.trainingapp.domain.exception.gym.UnauthorizedGymAccessException;
 import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
@@ -31,7 +28,7 @@ public class SecurityUtils {
         if (currentUser.isSuperAdmin()) return;
 
         Long currentUserGymId = getCurrentUserGymId();
-        if (!targetGymId.equals(currentUserGymId)) {
+        if (targetGymId == null || !targetGymId.equals(currentUserGymId)) {
             throw new UnauthorizedGymAccessException();
         }
     }
@@ -42,6 +39,7 @@ public class SecurityUtils {
         if (user instanceof Admin admin) return admin.getGymId();
         if (user instanceof Trainer trainer) return trainer.getGymId();
         if (user instanceof Member member) return member.getGymId();
+        if (user instanceof Receptionist receptionist) return receptionist.getGymId();
         return null;
     }
 }

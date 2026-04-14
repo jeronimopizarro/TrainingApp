@@ -12,5 +12,9 @@ public interface ProductRepository {
 
     List<Product> findAllByGymId(Long gymId);
 
+    List<Product> findByStockRange(Long gymId, int min, int max);
+
+    List<Product> findWithNoStock(Long gymId);
+
     List<Product> searchByName(Long gymId, String name);
 }

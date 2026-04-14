@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   UserSquare2, 
   UserPlus, 
@@ -95,9 +95,17 @@ export const StaffListPage = () => {
   const { staff, stats, isLoading, error, refresh, registerStaff } = useStaff();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<string | undefined>(undefined);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
+
+  // Marcar que la carga inicial terminó
+  useEffect(() => {
+    if (!isLoading && isFirstLoad) {
+      setIsFirstLoad(false);
+    }
+  }, [isLoading, isFirstLoad]);
 
   const filteredStaff = staff.filter(m => 
     `${m.firstName} ${m.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -128,7 +136,7 @@ export const StaffListPage = () => {
     }
   };
 
-  if (isLoading && staff.length === 0) return (
+  if (isLoading && isFirstLoad) return (
     <div className="p-20 flex flex-col items-center justify-center gap-6 text-text-secondary animate-pulse">
       <div className="w-12 h-12 border-4 border-primary/10 border-t-primary rounded-full animate-spin" />
       <p className="font-display font-black uppercase tracking-[0.3em] text-[10px]">Sincronizando Personal...</p>
@@ -136,7 +144,7 @@ export const StaffListPage = () => {
   );
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10">
+    <div className={`animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10 ${isLoading ? 'opacity-40 grayscale-[50%] pointer-events-none' : 'opacity-100'}`}>
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
           <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3">Administración</h2>
@@ -160,9 +168,27 @@ export const StaffListPage = () => {
 
       <div className="flex flex-col gap-6 mb-8">
         <div className="flex items-center gap-2 bg-surface-low p-1.5 rounded-2xl w-fit border border-white/[0.03]">
-          <button onClick={() => handleFilterChange(undefined)} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${!activeTab ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-text-secondary hover:text-text-main'}`}>Todos</button>
-          <button onClick={() => handleFilterChange('TRAINER')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'TRAINER' ? 'bg-primary-dark text-white shadow-lg shadow-primary/20' : 'text-text-secondary hover:text-text-main'}`}>Entrenadores</button>
-          <button onClick={() => handleFilterChange('RECEPTIONIST')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'RECEPTIONIST' ? 'bg-green-600 text-white shadow-lg shadow-green-500/20' : 'text-text-secondary hover:text-text-main'}`}>Recepción</button>
+          <Button 
+            onClick={() => handleFilterChange(undefined)} 
+            variant={!activeTab ? 'primary' : 'ghost'}
+            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${!activeTab ? '' : 'text-text-secondary hover:text-text-main'}`}
+          >
+            Todos
+          </Button>
+          <Button 
+            onClick={() => handleFilterChange('TRAINER')} 
+            variant={activeTab === 'TRAINER' ? 'primary' : 'ghost'}
+            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'TRAINER' ? '' : 'text-text-secondary hover:text-text-main'}`}
+          >
+            Entrenadores
+          </Button>
+          <Button 
+            onClick={() => handleFilterChange('RECEPTIONIST')} 
+            variant={activeTab === 'RECEPTIONIST' ? 'primary' : 'ghost'}
+            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'RECEPTIONIST' ? '' : 'text-text-secondary hover:text-text-main'}`}
+          >
+            Recepción
+          </Button>
         </div>
 
         <div className="relative flex-1 group w-full">

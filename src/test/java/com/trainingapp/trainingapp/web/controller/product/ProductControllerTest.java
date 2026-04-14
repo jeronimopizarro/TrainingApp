@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -38,6 +39,7 @@ class ProductControllerTest {
 
     // Dependencias de los Casos de Uso
     @MockitoBean private CreateProductUseCase createProductUseCase;
+    @MockitoBean private UpdateProductUseCase updateProductUseCase;
     @MockitoBean private GetAllProductsByGymIdUseCase getAllProductsByGymIdUseCase;
     @MockitoBean private GetProductByIdUseCase getProductByIdUseCase;
     @MockitoBean private SearchProductsByNameUseCase searchProductsByNameUseCase;
@@ -67,9 +69,25 @@ class ProductControllerTest {
 
     @Test
     @WithMockUser(roles = "GYM_ADMIN")
+    @DisplayName("PUT /products/{id} - Debería retornar 200 OK al actualizar")
+    void shouldUpdateProduct() throws Exception {
+        CreateProductRequest request = new CreateProductRequest("Agua Editada", "Botella 500ml", new BigDecimal("600.0"), 60, "url", 10L);
+        ProductResponse mockResponse = new ProductResponse(1L, "Agua Editada", "Botella 500ml", new BigDecimal("600.0"), 60, "url", true, 10L);
+
+        when(updateProductUseCase.execute(eq(1L), any(CreateProductRequest.class))).thenReturn(mockResponse);
+
+        mockMvc.perform(put("/products/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Agua Editada"));
+    }
+
+    @Test
+    @WithMockUser(roles = "GYM_ADMIN")
     @DisplayName("GET /products/gym/{gymId} - Debería retornar 200 OK")
     void shouldGetAllProducts() throws Exception {
-        when(getAllProductsByGymIdUseCase.execute(10L)).thenReturn(List.of());
+        when(getAllProductsByGymIdUseCase.execute(eq(10L), any())).thenReturn(List.of());
 
         mockMvc.perform(get("/products/gym/10"))
                 .andExpect(status().isOk());

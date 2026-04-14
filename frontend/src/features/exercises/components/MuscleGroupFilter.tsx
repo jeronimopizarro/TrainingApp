@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '@/shared/components/Button';
 import { MuscleGroup } from '../types/exercise.types';
 
 interface MuscleGroupFilterProps {
@@ -13,22 +14,25 @@ export const MuscleGroupFilter: React.FC<MuscleGroupFilterProps> = ({
   onSelect
 }) => {
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
-      <button 
+    <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar bg-surface-low p-1.5 rounded-2xl w-fit border border-white/[0.03]">
+      <Button 
         onClick={() => onSelect(undefined)}
-        className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${!selectedId ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-surface-low text-text-secondary hover:text-text-main border border-white/5'}`}
+        variant={!selectedId ? 'primary' : 'ghost'}
+        className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${!selectedId ? '' : 'text-text-secondary hover:text-text-main'}`}
       >
         Todos
-      </button>
+      </Button>
       {muscleGroups.map(mg => (
-        <button 
+        <Button 
           key={mg.id}
           onClick={() => onSelect(mg.id)}
-          className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${selectedId === mg.id ? 'bg-primary-dark text-white shadow-lg shadow-primary/20' : 'bg-surface-low text-text-secondary hover:text-text-main border border-white/5'}`}
+          variant={selectedId === mg.id ? 'primary' : 'ghost'}
+          className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${selectedId === mg.id ? '' : 'text-text-secondary hover:text-text-main'}`}
         >
           {mg.name}
-        </button>
+        </Button>
       ))}
     </div>
   );
 };
+

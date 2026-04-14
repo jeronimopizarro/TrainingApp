@@ -43,7 +43,7 @@ export const ExercisesListPage = () => {
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
 
   // Control de animación de entrada única para evitar que se repita al filtrar
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   // Estado para el reproductor de video
   const [videoPlayer, setVideoPlayer] = useState<{ isOpen: boolean, url: string, title: string }>({
@@ -52,13 +52,12 @@ export const ExercisesListPage = () => {
     title: ''
   });
 
-  // Marcar que la animación ya ocurrió tras la carga inicial
+  // Marcar que la carga inicial terminó
   useEffect(() => {
-    if (!isLoading && exercises.length > 0 && !hasAnimated) {
-      const timer = setTimeout(() => setHasAnimated(true), 1000);
-      return () => clearTimeout(timer);
+    if (!isLoading && isFirstLoad) {
+      setIsFirstLoad(false);
     }
-  }, [isLoading, exercises.length, hasAnimated]);
+  }, [isLoading, isFirstLoad]);
 
   const filteredExercises = exercises.filter(e => 
     e.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -114,7 +113,8 @@ export const ExercisesListPage = () => {
     }
   };
 
-  if (isLoading && exercises.length === 0) return (
+  // Solo mostramos el spinner central en la carga inicial
+  if (isLoading && isFirstLoad) return (
     <div className="p-20 flex flex-col items-center justify-center gap-6 text-text-secondary animate-pulse">
       <div className="w-12 h-12 border-4 border-primary/10 border-t-primary rounded-full animate-spin" />
       <p className="font-display font-black uppercase tracking-[0.3em] text-[10px]">Cargando Biblioteca...</p>
@@ -122,7 +122,7 @@ export const ExercisesListPage = () => {
   );
 
   return (
-    <div className={`pb-10 ${!hasAnimated ? 'animate-in fade-in slide-in-from-bottom-4 duration-1000' : ''}`}>
+    <div className={`pb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 ${isLoading ? 'opacity-40 grayscale-[50%] pointer-events-none' : 'opacity-100'}`}>
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
           <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3">Biblioteca</h2>
