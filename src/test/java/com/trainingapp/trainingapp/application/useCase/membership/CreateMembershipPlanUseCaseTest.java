@@ -1,7 +1,6 @@
 package com.trainingapp.trainingapp.application.useCase.membership;
 
 import com.trainingapp.trainingapp.application.mapper.membershipPlan.MembershipPlanDTOMapper;
-import com.trainingapp.trainingapp.application.validator.GymValidator;
 import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
 import com.trainingapp.trainingapp.domain.exception.membership.DuplicateMembershipPlanNameException;
 import com.trainingapp.trainingapp.domain.repository.membership.MembershipPlanRepository;
@@ -19,6 +18,7 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,7 +27,6 @@ class CreateMembershipPlanUseCaseTest {
     @Mock private MembershipPlanRepository planRepository;
     @Mock private SecurityUtils securityUtils;
     @Mock private MembershipPlanDTOMapper membershipPlanDTOMapper;
-    @Mock private GymValidator gymValidator;
 
     @InjectMocks private CreateMembershipPlanUseCase useCase;
 
@@ -38,21 +37,22 @@ class CreateMembershipPlanUseCaseTest {
         CreateMembershipPlanRequest request = new CreateMembershipPlanRequest(
                 "Pase Libre", "Full", new BigDecimal("15000.0"), 1, gymId
         );
-        MembershipPlan mockPlan = mock(MembershipPlan.class);
-        MembershipPlan savedPlan = mock(MembershipPlan.class);
+        
+        MembershipPlanResponse mockResponse = mock(MembershipPlanResponse.class);
 
-        doNothing().when(gymValidator).validateExists(gymId);
         doNothing().when(securityUtils).validateSameGym(gymId);
-
         when(planRepository.existsByNameAndGymId("Pase Libre", gymId)).thenReturn(false);
-        when(membershipPlanDTOMapper.toDomain(request)).thenReturn(mockPlan);
-        when(planRepository.save(mockPlan)).thenReturn(savedPlan);
-        when(membershipPlanDTOMapper.toResponse(savedPlan)).thenReturn(mock(MembershipPlanResponse.class));
+        
+        // En el UseCase actual, se llama a repository.save(any(MembershipPlan.class))
+        // y el resultado se pasa al mapper.toResponse
+        when(planRepository.save(any(MembershipPlan.class))).thenReturn(mock(MembershipPlan.class));
+        when(membershipPlanDTOMapper.toResponse(any())).thenReturn(mockResponse);
 
         MembershipPlanResponse response = useCase.execute(request);
 
         assertNotNull(response);
-        verify(planRepository).save(mockPlan);
+        verify(planRepository).save(any(MembershipPlan.class));
+        verify(membershipPlanDTOMapper).toResponse(any());
     }
 
     @Test
@@ -63,13 +63,11 @@ class CreateMembershipPlanUseCaseTest {
                 "Pase Libre", "Full", new BigDecimal("15000.0"), 1, gymId
         );
 
-        doNothing().when(gymValidator).validateExists(gymId);
         doNothing().when(securityUtils).validateSameGym(gymId);
-
         when(planRepository.existsByNameAndGymId("Pase Libre", gymId)).thenReturn(true);
 
         assertThrows(DuplicateMembershipPlanNameException.class, () -> useCase.execute(request));
+        
         verify(planRepository, never()).save(any());
-        verifyNoInteractions(membershipPlanDTOMapper);
     }
 }

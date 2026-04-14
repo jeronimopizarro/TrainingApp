@@ -2,8 +2,8 @@ package com.trainingapp.trainingapp.application.useCase.membership;
 
 import com.trainingapp.trainingapp.application.mapper.membershipPlan.MembershipPlanDTOMapper;
 import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
-import com.trainingapp.trainingapp.domain.exception.membership.MembershipPlanAlreadyExistsException;
-import com.trainingapp.trainingapp.domain.exception.membership.MembershipPlanNotFoundException;
+import com.trainingapp.trainingapp.domain.exception.membership.DuplicateMembershipPlanNameException;
+import com.trainingapp.trainingapp.domain.exception.membership.MembershipNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.membership.MembershipPlanRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.membership.MembershipPlanResponse;
@@ -29,12 +29,12 @@ public class UpdateMembershipPlanUseCase {
     @Transactional
     public MembershipPlanResponse execute(Long id, UpdateMembershipPlanRequest request) {
         MembershipPlan plan = repository.findById(id)
-                .orElseThrow(MembershipPlanNotFoundException::new);
+                .orElseThrow(() -> new MembershipNotFoundException(id));
 
         securityUtils.validateSameGym(plan.getGymId());
 
         if (repository.existsByNameAndGymIdAndIdNot(request.name(), plan.getGymId(), id)) {
-            throw new MembershipPlanAlreadyExistsException();
+            throw new DuplicateMembershipPlanNameException(request.name());
         }
 
         plan.updateDetails(

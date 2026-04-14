@@ -2,7 +2,7 @@ package com.trainingapp.trainingapp.application.useCase.membership;
 
 import com.trainingapp.trainingapp.application.mapper.membershipPlan.MembershipPlanDTOMapper;
 import com.trainingapp.trainingapp.domain.entity.membership.MembershipPlan;
-import com.trainingapp.trainingapp.domain.exception.membership.MembershipPlanAlreadyExistsException;
+import com.trainingapp.trainingapp.domain.exception.membership.DuplicateMembershipPlanNameException;
 import com.trainingapp.trainingapp.domain.repository.membership.MembershipPlanRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
 import com.trainingapp.trainingapp.web.dto.membership.CreateMembershipPlanRequest;
@@ -30,7 +30,7 @@ public class CreateMembershipPlanUseCase {
         securityUtils.validateSameGym(request.gymId());
 
         if (repository.existsByNameAndGymId(request.name(), request.gymId())) {
-            throw new MembershipPlanAlreadyExistsException();
+            throw new DuplicateMembershipPlanNameException(request.name());
         }
 
         MembershipPlan plan = MembershipPlan.createNew(
