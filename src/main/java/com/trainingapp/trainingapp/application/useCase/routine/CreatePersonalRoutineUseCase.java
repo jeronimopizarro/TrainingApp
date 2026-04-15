@@ -16,6 +16,8 @@ import com.trainingapp.trainingapp.web.dto.routine.CreateRoutineResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 public class CreatePersonalRoutineUseCase {
 
@@ -48,7 +50,23 @@ public class CreatePersonalRoutineUseCase {
         gymValidator.validateExists(gymId);
         validateExercises(request, gymId);
 
+        // Deactivamos cualquier rutina previa que esté ACTIVE
+        routineRepository.findByMemberIdAndStatus(memberId, com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus.ACTIVE)
+                .ifPresent(oldRoutine -> {
+                    oldRoutine.inactive();
+                    routineRepository.save(oldRoutine);
+                });
+
         Routine routine = routineDTOMapper.toDomain(request, memberId, gymId);
+        
+        // Activamos la nueva rutina inmediatamente
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = request.durationMonths() != null 
+                ? startDate.plusMonths(request.durationMonths()) 
+                : null;
+                
+        routine.activate(startDate, endDate);
+
         Routine savedRoutine = routineRepository.save(routine);
 
         cancelPendingRoutineRequest(memberId);

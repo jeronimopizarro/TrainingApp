@@ -30,6 +30,7 @@ export const MemberRoutineBuilderPage = () => {
 
   // Form State
   const [routineName, setRoutineName] = useState('Mi Rutina Personal');
+  const [durationMonths, setDurationMonths] = useState<number | null>(null);
   const [days, setDays] = useState<CreateTrainingDayRequest[]>([
     { dayName: 'Día 1', exercises: [] }
   ]);
@@ -47,13 +48,26 @@ export const MemberRoutineBuilderPage = () => {
   }, []);
 
   const handleAddDay = () => {
-    setDays([...days, { dayName: `Día ${days.length + 1}`, exercises: [] }]);
+    if (days.length >= 7) {
+      alert("No puedes crear más de 7 días de entrenamiento");
+      return;
+    }
+    const nextNumber = days.length + 1;
+    setDays([...days, { dayName: `Día ${nextNumber}`, exercises: [] }]);
     setActiveDayIndex(days.length);
   };
 
   const handleRemoveDay = (index: number) => {
     if (days.length === 1) return;
-    const newDays = days.filter((_, i) => i !== index);
+    
+    // Filtramos el día a eliminar y re-enumeramos los nombres para mantener consistencia (Día 1, 2, 3...)
+    const newDays = days
+      .filter((_, i) => i !== index)
+      .map((day, i) => ({
+        ...day,
+        dayName: `Día ${i + 1}`
+      }));
+
     setDays(newDays);
     setActiveDayIndex(Math.max(0, index - 1));
   };
@@ -100,7 +114,8 @@ export const MemberRoutineBuilderPage = () => {
     try {
       await routineService.createPersonal({
         name: routineName,
-        days: days
+        days: days,
+        durationMonths: durationMonths
       });
       navigate('/member/dashboard');
     } catch (err) {
@@ -140,15 +155,31 @@ export const MemberRoutineBuilderPage = () => {
       </header>
 
       <main className="max-w-4xl mx-auto p-6">
-        <div className="mb-10">
-          <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary mb-3 block px-1">Nombre de la Rutina</label>
-          <input 
-            type="text" 
-            value={routineName}
-            onChange={(e) => setRoutineName(e.target.value)}
-            className="w-full bg-surface-low border border-white/5 rounded-2xl p-6 text-3xl font-display font-black italic uppercase tracking-tighter text-text-main focus:outline-none focus:border-primary/50 transition-all"
-            placeholder="EJ: MI PLAN DE VOLUMEN"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-10">
+          <div className="md:col-span-8">
+            <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary mb-3 block px-1">Nombre de la Rutina</label>
+            <input 
+              type="text" 
+              value={routineName}
+              onChange={(e) => setRoutineName(e.target.value)}
+              className="w-full bg-surface-low border border-white/5 rounded-2xl p-6 text-3xl font-display font-black italic uppercase tracking-tighter text-text-main focus:outline-none focus:border-primary/50 transition-all"
+              placeholder="EJ: MI PLAN DE VOLUMEN"
+            />
+          </div>
+          <div className="md:col-span-4">
+            <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary mb-3 block px-1">Duración del Plan</label>
+            <select 
+              value={durationMonths || ''}
+              onChange={(e) => setDurationMonths(e.target.value ? Number(e.target.value) : null)}
+              className="w-full h-[84px] bg-surface-low border border-white/5 rounded-2xl p-6 text-xl font-display font-black italic uppercase tracking-tight text-text-main focus:outline-none focus:border-primary/50 transition-all appearance-none cursor-pointer"
+            >
+              <option value="">Indefinido</option>
+              <option value="1">1 Mes</option>
+              <option value="3">3 Meses</option>
+              <option value="6">6 Meses</option>
+              <option value="12">1 Año</option>
+            </select>
+          </div>
         </div>
 
         {/* DAYS TABS */}

@@ -115,7 +115,7 @@ class RoutineControllerTest {
                             List.of(exercise));
 
             CreatePersonalRoutineRequest request =
-                    new CreatePersonalRoutineRequest("Rutina Fuerza", List.of(day));
+                    new CreatePersonalRoutineRequest("Rutina Fuerza", List.of(day), 3);
 
             CreateRoutineResponse fakeResponse =
                     new CreateRoutineResponse(50L, "Rutina personal creada con éxito.");

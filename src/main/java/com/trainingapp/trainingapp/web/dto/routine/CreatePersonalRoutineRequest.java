@@ -14,7 +14,9 @@ public record CreatePersonalRoutineRequest(
 
         @NotEmpty(message = "La rutina debe tener al menos un día de entrenamiento")
         @Valid
-        List<CreateTrainingDayRequest> days
+        List<CreateTrainingDayRequest> days,
+
+        Integer durationMonths
 ) {
     public record CreateTrainingDayRequest(
             @NotBlank(message = "El nombre del día no puede estar vacío")

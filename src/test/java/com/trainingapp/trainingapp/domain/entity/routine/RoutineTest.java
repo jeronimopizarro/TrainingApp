@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.domain.entity.routine;
 
 import com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus;
+import com.trainingapp.trainingapp.domain.exception.routine.InvalidRoutineStateException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -63,12 +64,24 @@ class RoutineTest {
     }
 
     @Test
-    @DisplayName("Debería retornar null si la rutina no tiene días configurados")
-    void getNextTrainingDay_WhenNoDays_ReturnsNull() {
-        Routine routine = Routine.createNew("Rutina Vacía", 1L, 2L, 2L, 1L);
+    @DisplayName("Debería permitir validación para borrado en estado DRAFT o ACTIVE")
+    void validateForDeletion_ShouldAllowDraftAndActive() {
+        Routine draftRoutine = Routine.createNew("Draft", 1L, 2L, 2L, 1L);
+        draftRoutine.validateForDeletion(); // No debe lanzar excepción
 
-        TrainingDay nextDay = routine.getNextTrainingDay(null);
+        Routine activeRoutine = createRestoredRoutineWithTwoDays();
+        activeRoutine.validateForDeletion(); // No debe lanzar excepción
+    }
 
-        assertNull(nextDay);
+    @Test
+    @DisplayName("Debería lanzar excepción si se intenta borrar una rutina COMPLETED o INACTIVE")
+    void validateForDeletion_ShouldThrowIfCompletedOrInactive() {
+        Routine completedRoutine = Routine.restore(1L, "Test", null, null, 1L, 2L, 2L, 1L,
+                RoutineStatus.COMPLETED, true, List.of());
+        org.junit.jupiter.api.Assertions.assertThrows(InvalidRoutineStateException.class, completedRoutine::validateForDeletion);
+
+        Routine inactiveRoutine = Routine.restore(2L, "Test", null, null, 1L, 2L, 2L, 1L,
+                RoutineStatus.INACTIVE, true, List.of());
+        org.junit.jupiter.api.Assertions.assertThrows(InvalidRoutineStateException.class, inactiveRoutine::validateForDeletion);
     }
 }

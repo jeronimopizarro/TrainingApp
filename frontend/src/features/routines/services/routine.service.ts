@@ -39,5 +39,12 @@ export const routineService = {
   createPersonal: async (request: CreatePersonalRoutineRequest): Promise<{id: number, message: string}> => {
     const { data } = await api.post<{id: number, message: string}>('/routines/personal', request);
     return data;
+  },
+
+  /**
+   * Elimina una rutina
+   */
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/routines/${id}`);
   }
 };

@@ -157,7 +157,9 @@ public class Routine {
     }
 
     public void validateForDeletion() {
-        if (this.status != RoutineStatus.DRAFT) throw new InvalidRoutineStateException();
+        if (this.status != RoutineStatus.DRAFT && this.status != RoutineStatus.ACTIVE) {
+            throw new InvalidRoutineStateException();
+        }
     }
 
     public void complete() {

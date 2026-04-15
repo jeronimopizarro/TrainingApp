@@ -8,8 +8,13 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class BaseJpaEntity {
 
+    @jakarta.persistence.Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    @jakarta.persistence.Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @jakarta.persistence.Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     @PrePersist

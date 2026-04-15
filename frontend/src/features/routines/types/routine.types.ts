@@ -26,7 +26,7 @@ export interface RoutineDetail {
   id: number;
   name: string;
   startDate: string;
-  endDate: string;
+  endDate: string | null;
   memberId: number;
   trainerId: number;
   createdByUserId: number;
@@ -38,7 +38,7 @@ export interface RoutineSummary {
   id: number;
   name: string;
   startDate: string;
-  endDate: string;
+  endDate: string | null;
   status: RoutineStatus;
   trainerName: string;
 }
@@ -69,4 +69,5 @@ export interface CreateTrainingDayRequest {
 export interface CreatePersonalRoutineRequest {
   name: string;
   days: CreateTrainingDayRequest[];
+  durationMonths?: number | null;
 }
