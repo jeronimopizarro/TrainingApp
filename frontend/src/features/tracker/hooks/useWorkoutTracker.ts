@@ -7,25 +7,29 @@ export const useWorkoutTracker = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const startWorkout = useCallback(async (routineDayId: number) => {
+  const startWorkout = useCallback(async (routineId: number, trainingDayId: number) => {
     try {
       setLoading(true);
-      const data = await trackerService.startSession({ routineDayId });
+      const data = await trackerService.startSession({ routineId, trainingDayId });
       setSession(data);
       setError(null);
       return data;
-    } catch (err) {
-      setError('Error al iniciar la sesión de entrenamiento');
+    } catch (err: any) {
+      if (err.response?.status === 403) {
+        setError('No tienes una membresía activa para iniciar este entrenamiento.');
+      } else {
+        setError('Error al iniciar la sesión de entrenamiento');
+      }
       throw err;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const logSet = useCallback(async (exerciseId: number, reps: number, weight: number, rir: number) => {
+  const logSet = useCallback(async (exerciseId: number, setNumber: number, repsPerformed: number, weightLifted: number, rir: number) => {
     if (!session) return;
     try {
-      const request: LogSetRequest = { exerciseId, reps, weight, rir };
+      const request: LogSetRequest = { exerciseId, setNumber, repsPerformed, weightLifted, rir };
       await trackerService.logSet(session.id, request);
     } catch (err) {
       console.error('Error logging set', err);

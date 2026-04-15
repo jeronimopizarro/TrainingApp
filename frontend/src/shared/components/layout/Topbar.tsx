@@ -8,7 +8,7 @@ import { authService } from '@/features/auth/services/auth.service';
 export const Topbar = () => {
   const userData = authService.getUserData();
   const userName = userData?.userName || 'Usuario';
-  const roleLabel = userData?.role === 'GYM_ADMIN' ? 'Administrador Gym' : 'Socio Premium';
+  const roleLabel = userData?.role === 'GYM_ADMIN' ? 'Administrador Gym' : 'Socio';
 
   return (
     <header className="h-[80px] w-full sticky top-0 z-40 bg-surface-med/50 backdrop-blur-xl px-10 flex items-center justify-end">

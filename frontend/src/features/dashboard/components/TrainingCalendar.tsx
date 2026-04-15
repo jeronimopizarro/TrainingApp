@@ -37,20 +37,13 @@ export const TrainingCalendar: React.FC<TrainingCalendarProps> = ({ trainingDays
             Progreso <span className="text-primary">{monthName}</span>
           </h3>
           <p className="text-xl font-display font-black text-text-main italic uppercase tracking-tighter leading-none">
-            Actividad <span className="text-primary-dark">Mensual</span>
+            Actividad <span className="text-primary">Mensual</span>
           </p>
         </div>
         
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <p className="text-[10px] font-black text-text-secondary uppercase tracking-widest opacity-40">Sesiones</p>
-            <p className="text-xl font-display font-black text-primary italic leading-none">{trainingDays.length}</p>
-          </div>
-          <div className="h-6 w-px bg-white/[0.05]" />
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(137,172,255,0.6)]" />
-            <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Entrenado</span>
-          </div>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(137,172,255,0.6)]" />
+          <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Entrenado</span>
         </div>
       </div>
       
@@ -70,9 +63,8 @@ export const TrainingCalendar: React.FC<TrainingCalendarProps> = ({ trainingDays
           {days.map(({ day, isTrainingDay, isToday }, idx) => (
             <div 
               key={day}
-              style={{ animationDelay: `${idx * 10}ms` }}
               className={clsx(
-                "h-9 rounded-xl flex items-center justify-center text-[11px] font-black transition-all duration-500 border animate-in fade-in zoom-in-90 duration-700 fill-mode-both",
+                "h-9 rounded-xl flex items-center justify-center text-[11px] font-black transition-all duration-500 border",
                 isTrainingDay 
                   ? "bg-primary/20 text-primary border-primary/40 shadow-[0_0_12px_rgba(137,172,255,0.1)]" 
                   : "bg-surface-high/20 text-text-secondary border-white/[0.03] hover:border-white/10 hover:bg-surface-high/40",

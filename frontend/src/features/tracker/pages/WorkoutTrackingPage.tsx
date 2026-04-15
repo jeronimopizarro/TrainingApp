@@ -79,15 +79,21 @@ export const WorkoutTrackingPage = () => {
   }, [isTimerActive, isResting]);
 
   const handleStartSession = async () => {
-    if (!dayId) return;
-    await startWorkout(Number(dayId));
-    setIsTimerActive(true);
+    if (!dayId || !routineId) return;
+    try {
+      await startWorkout(Number(routineId), Number(dayId));
+      setIsTimerActive(true);
+    } catch (err: any) {
+      // Error handled by hook and displayed in UI if needed, 
+      // but we show alert for immediate feedback
+      alert(err.response?.data?.message || "No puedes iniciar el entrenamiento. Verifica tu suscripción.");
+    }
   };
 
   const handleLogSet = async (exerciseId: number, setIndex: number) => {
     const record = setsRecords[exerciseId][setIndex];
     try {
-      await logSet(exerciseId, record.reps, record.weight, record.rir);
+      await logSet(exerciseId, setIndex + 1, record.reps, record.weight, record.rir);
       
       const newRecords = { ...setsRecords };
       newRecords[exerciseId][setIndex].isLogged = true;
@@ -138,7 +144,7 @@ export const WorkoutTrackingPage = () => {
 
   if (isFinishing) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-10 text-center animate-in zoom-in duration-700">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-10 text-center">
         <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mb-8 shadow-[0_0_50px_rgba(255,182,0,0.2)]">
           <Trophy size={48} className="text-primary" />
         </div>
@@ -146,7 +152,7 @@ export const WorkoutTrackingPage = () => {
         <p className="text-text-secondary text-lg font-medium mb-12 max-w-md">
           Has completado todos los objetivos de hoy. Tus progresos han sido guardados exitosamente.
         </p>
-        <Button onClick={() => navigate('/member/home')} variant="primary" className="px-12 py-5 rounded-2xl font-black uppercase tracking-widest">
+        <Button onClick={() => navigate('/member/dashboard')} variant="primary" className="px-12 py-5 rounded-2xl font-black uppercase tracking-widest">
           Volver al Dashboard
         </Button>
       </div>
@@ -296,7 +302,7 @@ export const WorkoutTrackingPage = () => {
                           value={record.rir}
                           onChange={(e) => handleUpdateRecord(activeExercise.exerciseId, idx, 'rir', Number(e.target.value))}
                           disabled={record.isLogged}
-                          className="w-full bg-background/50 border border-white/5 rounded-xl py-3 px-1 text-center text-xs font-black text-blue-400 focus:outline-none focus:border-blue-400/50 appearance-none"
+                          className="w-full bg-background/50 border border-white/5 rounded-xl py-3 px-1 text-center text-xs font-black text-primary focus:outline-none focus:border-primary/50 appearance-none"
                         >
                           {[0,1,2,3,4,5].map(v => <option key={v} value={v}>{v}</option>)}
                         </select>

@@ -1,5 +1,12 @@
 import api from '@/shared/services/api';
-import { StartSessionRequest, SessionResponse, LogSetRequest, SetLogResponse } from '../types/tracker.types';
+import { 
+  StartSessionRequest, 
+  SessionResponse, 
+  LogSetRequest, 
+  SetLogResponse,
+  MemberProgressSummaryResponse,
+  ExerciseProgressResponse
+} from '../types/tracker.types';
 
 export const trackerService = {
   /**
@@ -23,6 +30,24 @@ export const trackerService = {
    */
   finishSession: async (sessionId: number): Promise<SessionResponse> => {
     const { data } = await api.patch<SessionResponse>(`/sessions/${sessionId}/finish`);
+    return data;
+  },
+
+  /**
+   * Obtiene el resumen de progreso del miembro
+   */
+  getProgressSummary: async (): Promise<MemberProgressSummaryResponse> => {
+    const { data } = await api.get<MemberProgressSummaryResponse>('/progress/summary');
+    return data;
+  },
+
+  /**
+   * Obtiene el progreso detallado de un ejercicio
+   */
+  getExerciseProgress: async (exerciseId: number, monthsBack: number = 6): Promise<ExerciseProgressResponse> => {
+    const { data } = await api.get<ExerciseProgressResponse>(`/progress/exercise/${exerciseId}`, {
+      params: { monthsBack }
+    });
     return data;
   }
 };

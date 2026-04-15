@@ -50,7 +50,7 @@ export const Modal: React.FC<ModalProps> = ({
         <div className="flex items-center justify-between p-8 border-b border-white/[0.03]">
           <div>
             <h2 className="text-2xl font-display font-black text-text-main tracking-tight italic uppercase">
-              {title.split(' ')[0]} <span className="text-primary-dark">{title.split(' ').slice(1).join(' ')}</span>
+              {title.split(' ')[0]} <span className="text-primary">{title.split(' ').slice(1).join(' ')}</span>
             </h2>
           </div>
           <button 

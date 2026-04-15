@@ -77,7 +77,7 @@ export const MemberDashboardPage = () => {
   );
 
   const qrUrl = qrData 
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData.qrToken)}&bgcolor=121417&color=ffb600`
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData.qrToken)}&bgcolor=121417&color=89acff`
     : null;
 
   const handleOpenQr = () => {
@@ -104,20 +104,20 @@ export const MemberDashboardPage = () => {
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-2 max-h-screen overflow-hidden">
+    <div className="pb-10">
       {/* HEADER - ULTRA COMPACT */}
-      <header className="mb-4 animate-in fade-in slide-in-from-left-6 duration-700 delay-150">
+      <header className="mb-12">
         <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3">Operaciones</h2>
-        <h1 className="text-5xl font-display font-black text-text-main tracking-tighter italic leading-none">
+        <h1 className="text-5xl font-display font-black text-text-main tracking-tight italic leading-none">
           Focus <span className="text-primary-dark">Daily</span>.
         </h1>
       </header>
 
-      {/* BENTO GRID - ROW 1: Identity & Access (4/4/4) */}
+      {/* BENTO GRID - ROW 1: Identity & Access (3/3/3/3) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 mb-3">
         
         {/* 1. MEMBERSHIP */}
-        <div className="lg:col-span-4 animate-in fade-in zoom-in-95 duration-700 delay-200">
+        <div className="lg:col-span-3">
           <StatCard 
             label="Estado de Membresía" 
             value={
@@ -134,7 +134,7 @@ export const MemberDashboardPage = () => {
         </div>
 
         {/* 2. MY PLAN */}
-        <div className="lg:col-span-4 animate-in fade-in zoom-in-95 duration-700 delay-250">
+        <div className="lg:col-span-3">
           <Link to="/member/routine" className="block h-full">
             <div className="bg-surface-low border border-white/[0.02] p-4 rounded-[1.5rem] h-full flex flex-col justify-between group hover:border-primary/30 transition-all duration-700 shadow-md relative overflow-hidden surface-lift min-h-[120px]">
                <div className="absolute -bottom-10 -left-10 w-28 h-28 bg-primary/5 rounded-full blur-[40px] group-hover:bg-primary/10 transition-all duration-1000" />
@@ -154,8 +154,29 @@ export const MemberDashboardPage = () => {
           </Link>
         </div>
 
-        {/* 3. QR ACCESS CARD */}
-        <div className="lg:col-span-4 animate-in fade-in zoom-in-95 duration-700 delay-300">
+        {/* 3. PROGRESS */}
+        <div className="lg:col-span-3">
+          <Link to="/member/progress" className="block h-full">
+            <div className="bg-surface-low border border-white/[0.02] p-4 rounded-[1.5rem] h-full flex flex-col justify-between group hover:border-primary/30 transition-all duration-700 shadow-md relative overflow-hidden surface-lift min-h-[120px]">
+               <div className="absolute -bottom-10 -left-10 w-28 h-28 bg-primary/5 rounded-full blur-[40px] group-hover:bg-primary/10 transition-all duration-1000" />
+               <div className="relative z-10">
+                 <div className="w-8 h-8 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center text-primary mb-2 group-hover:scale-110 group-hover:rotate-12 transition-all duration-700">
+                   <Trophy size={18} />
+                 </div>
+                 <h3 className="text-xl font-display font-black text-text-main uppercase italic mb-0.5 tracking-tighter">Mis <span className="text-primary">Progresos</span></h3>
+                 <p className="text-[10px] text-text-secondary font-bold uppercase tracking-[0.2em] opacity-40">Evolución fuerza</p>
+               </div>
+               <div className="flex justify-end relative z-10">
+                  <div className="w-7 h-7 rounded-full bg-surface-high border border-white/5 flex items-center justify-center text-text-secondary group-hover:text-primary transition-all duration-500">
+                    <ArrowRight size={14} />
+                  </div>
+               </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* 4. QR ACCESS CARD */}
+        <div className="lg:col-span-3">
           <button 
             onClick={handleOpenQr}
             className="w-full h-full bg-surface-low border border-white/[0.02] p-4 rounded-[1.5rem] flex flex-col justify-between group hover:border-primary/40 transition-all duration-700 shadow-md relative overflow-hidden surface-lift min-h-[120px] text-left"
@@ -181,12 +202,12 @@ export const MemberDashboardPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch overflow-hidden">
         
         {/* 4. CALENDAR (LEFT) */}
-        <div className="lg:col-span-8 animate-in fade-in slide-in-from-left-8 duration-1000 delay-400">
+        <div className="lg:col-span-8">
           <TrainingCalendar trainingDays={data?.trainingDaysThisMonth || []} />
         </div>
 
         {/* 5. NEXT SESSION (RIGHT) */}
-        <div className="lg:col-span-4 animate-in fade-in zoom-in-95 duration-700 delay-350">
+        <div className="lg:col-span-4">
           <div className="bg-surface-low rounded-[2rem] border border-white/[0.02] p-6 flex flex-col items-center justify-center shadow-lg relative group overflow-hidden surface-lift h-full min-h-[220px] text-center">
             <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/[0.01] rounded-full blur-[40px] group-hover:bg-white/[0.03] transition-all duration-1000" />
             
@@ -220,7 +241,7 @@ export const MemberDashboardPage = () => {
                   </Button>
                 </>
               ) : data?.hasPendingRequest ? (
-                <div className="flex flex-col items-center gap-4 py-4 animate-in fade-in duration-700">
+                <div className="flex flex-col items-center gap-4 py-4">
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-2 border border-primary/20">
                     <Loader2 size={24} className="animate-spin" />
                   </div>
@@ -285,13 +306,15 @@ export const MemberDashboardPage = () => {
              <p className="text-xs text-text-secondary font-medium leading-relaxed mb-8">
                Este código es personal e intransferible. Expira automáticamente en <span className="text-primary font-bold">60 segundos</span> por seguridad.
              </p>
-             <Button 
-                onClick={refreshQr} 
-                variant="ghost" 
-                className="text-[10px] font-black uppercase tracking-widest text-text-secondary hover:text-primary"
-              >
-               Actualizar Código
-             </Button>
+             <div className="flex justify-center">
+               <Button 
+                  onClick={refreshQr} 
+                  variant="primary" 
+                  className="text-[10px] font-black uppercase tracking-widest px-8"
+                >
+                 Actualizar Código
+               </Button>
+             </div>
            </div>
         </div>
       </Modal>

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lexend:wght@400;600;700;800;900&display=swap');
 
 @theme {
@@ -31,6 +32,11 @@
   font-family: var(--font-sans);
   font-size: 110%; /* Aumento global de tipografía */
   -webkit-font-smoothing: antialiased;
+
+  /* Variables para Animaciones */
+  --tw-enter-opacity: 0;
+  --tw-enter-translate-y: 1rem;
+  --tw-enter-scale: 0.95;
 }
 
 body {

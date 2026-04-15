@@ -27,10 +27,11 @@ public class MemberProgressController {
      */
     @GetMapping("/summary")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<MemberProgressSummaryResponse> getProgressSummary() {
+    public ResponseEntity<MemberProgressSummaryResponse> getMemberProgressSummary() {
         MemberProgressSummaryResponse response = getMemberProgressSummaryUseCase.execute();
         return ResponseEntity.ok(response);
     }
+
 
     /**
      * Obtiene el historial detallado de un ejercicio específico para graficar.

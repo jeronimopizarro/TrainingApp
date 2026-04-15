@@ -62,7 +62,7 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository 
 
     @Override
     public Optional<TrainingSession> findLastSessionByMemberIdAndRoutineId(Long memberId, Long routineId) {
-        return jpaRepository.findFirstByMemberIdAndRoutineIdOrderByStartTimeDesc(memberId, routineId)
+        return jpaRepository.findFirstByMemberIdAndRoutineIdAndStatusOrderByStartTimeDesc(memberId, routineId, SessionStatus.COMPLETED)
                 .map(mapper::toDomain);
     }
 

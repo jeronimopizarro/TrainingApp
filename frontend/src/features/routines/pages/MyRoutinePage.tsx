@@ -10,7 +10,8 @@ import {
   ChevronDown,
   Loader2,
   AlertCircle,
-  Trash2
+  Trash2,
+  Trophy
 } from 'lucide-react';
 import { useRoutine } from '@/features/routines/hooks/useRoutine';
 import { routineService } from '@/features/routines/services/routine.service';
@@ -24,7 +25,7 @@ import { clsx } from 'clsx';
 export const MyRoutinePage = () => {
   const userData = authService.getUserData();
   const { detail, loading, error, refresh } = useRoutine(userData?.userId);
-  const [expandedDay, setExpandedDay] = useState<number | null>(0);
+  const [expandedDay, setExpandedDay] = useState<number | null>(null);
   const [videoData, setVideoData] = useState<{url: string, title: string} | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -61,13 +62,14 @@ export const MyRoutinePage = () => {
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10">
+    <div className="pb-10">
       {/* HEADER */}
+
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 px-6">
         <div>
           <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3">Tu Plan de Entrenamiento</h2>
           <h1 className="text-5xl font-display font-black text-text-main tracking-tight italic uppercase">
-            {detail.name}
+            Gestión de <span className="text-primary-dark">Rutina</span>.
           </h1>
           <div className="flex flex-wrap items-center gap-6 mt-6">
              <div className="flex items-center gap-2 text-text-secondary">
@@ -165,7 +167,7 @@ export const MyRoutinePage = () => {
                            </div>
                            <div className="bg-surface-high/40 p-3 rounded-xl border border-white/[0.03]">
                              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary opacity-50 mb-1">Esfuerzo (RIR)</p>
-                             <p className="text-lg font-display font-black text-blue-400 italic">{exercise.targetRIR}</p>
+                             <p className="text-lg font-display font-black text-primary italic">{exercise.targetRIR}</p>
                            </div>
                         </div>
                       </div>
@@ -178,10 +180,6 @@ export const MyRoutinePage = () => {
                           </p>
                         </div>
                       )}
-
-                      <div className="flex items-center justify-end">
-                         <ChevronRight size={20} className="text-text-secondary opacity-20 group-hover:text-primary group-hover:opacity-100 transition-all" />
-                      </div>
                     </div>
                   ))}
 

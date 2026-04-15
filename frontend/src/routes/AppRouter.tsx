@@ -16,6 +16,7 @@ import { MemberDashboardPage } from '@/features/dashboard/pages/MemberDashboardP
 import { MyRoutinePage } from '@/features/routines/pages/MyRoutinePage';
 import { MemberRoutineBuilderPage } from '@/features/routines/pages/MemberRoutineBuilderPage';
 import { WorkoutTrackingPage } from '@/features/tracker/pages/WorkoutTrackingPage';
+import { ProgressDashboardPage } from '@/features/tracker/pages/ProgressDashboardPage';
 
 /**
  * PublicRoute: Evita que usuarios logueados vuelvan al Login.
@@ -73,6 +74,7 @@ export const AppRouter = () => {
              <Route path="dashboard" element={<MemberDashboardPage />} />
              <Route path="routine" element={<MyRoutinePage />} />
              <Route path="routine/builder" element={<MemberRoutineBuilderPage />} />
+             <Route path="progress" element={<ProgressDashboardPage />} />
            </Route>
            {/* El tracker de entrenamiento suele ser pantalla completa para mejor experiencia en el gym */}
            <Route path="workout/:routineId/day/:dayId" element={<WorkoutTrackingPage />} />
