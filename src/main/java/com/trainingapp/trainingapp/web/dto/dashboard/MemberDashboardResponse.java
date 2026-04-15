@@ -6,7 +6,8 @@ import java.util.List;
 public record MemberDashboardResponse(
         Integer daysUntilExpiration,
         ActiveRoutineDTO activeRoutine,
-        List<LocalDate> trainingDaysThisMonth
+        List<LocalDate> trainingDaysThisMonth,
+        boolean hasPendingRequest
 ) {
     public record ActiveRoutineDTO(
             Long routineId,

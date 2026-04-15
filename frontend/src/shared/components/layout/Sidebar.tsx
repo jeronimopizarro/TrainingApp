@@ -10,7 +10,9 @@ import {
   History, 
   ShieldCheck, 
   Settings,
-  LogOut
+  LogOut,
+  QrCode,
+  Trophy
 } from 'lucide-react';
 import { authService } from '@/features/auth/services/auth.service';
 
@@ -19,7 +21,9 @@ import { authService } from '@/features/auth/services/auth.service';
  * Sigue el diseño KINETIC: Superficie baja (#111417) y sin bordes visibles.
  */
 export const Sidebar = () => {
-  const menuItems = [
+  const role = authService.getUserRole();
+
+  const adminMenuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/admin/dashboard' },
     { name: 'Socios', icon: <Users size={20} />, path: '/admin/members' },
     { name: 'Staff', icon: <UserSquare2 size={20} />, path: '/admin/staff' },
@@ -29,6 +33,14 @@ export const Sidebar = () => {
     { name: 'Caja', icon: <History size={20} />, path: '/admin/sales' },
     { name: 'Accesos', icon: <ShieldCheck size={20} />, path: '/admin/access' },
   ];
+
+  const memberMenuItems = [
+    { name: 'Inicio', icon: <LayoutDashboard size={20} />, path: '/member/dashboard' },
+    { name: 'Mi Rutina', icon: <Dumbbell size={20} />, path: '/member/routine' },
+    { name: 'Progresos', icon: <Trophy size={20} />, path: '/member/progress' },
+  ];
+
+  const menuItems = role === 'GYM_ADMIN' ? adminMenuItems : memberMenuItems;
 
   const handleLogout = () => {
     authService.logout();

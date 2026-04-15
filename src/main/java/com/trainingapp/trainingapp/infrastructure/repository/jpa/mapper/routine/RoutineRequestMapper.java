@@ -36,6 +36,13 @@ public class RoutineRequestMapper {
         entity.setGymId(domain.getGymId());
         entity.setRequestDate(domain.getRequestDate());
         entity.setStatus(domain.getStatus());
+        entity.setAssignedTrainerId(domain.getAssignedTrainerId());
+        entity.setRoutineId(domain.getRoutineId());
+        entity.setTargetTrainerId(domain.getTargetTrainerId());
+        entity.setAvailableDays(domain.getAvailableDays());
+        entity.setExperienceLevel(domain.getExperienceLevel());
+        entity.setInjuries(domain.getInjuries());
+        entity.setPrimaryGoal(domain.getPrimaryGoal());
 
         return entity;
     }

@@ -24,3 +24,8 @@ export interface ValidateAccessResponse {
   memberName: string;
   message: string;
 }
+
+export interface QrTokenResponse {
+  qrToken: string;
+  expiresAt: string;
+}

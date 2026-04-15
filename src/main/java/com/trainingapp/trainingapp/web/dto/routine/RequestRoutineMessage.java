@@ -1,5 +1,6 @@
 package com.trainingapp.trainingapp.web.dto.routine;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.trainingapp.trainingapp.domain.enums.routine.ExperienceLevel;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record RequestRoutineMessage(
 
+        @JsonProperty("targetTrainerId")
         Long targetTrainerId, // Opcional: Puede ser null si le da igual qué profe le arme la rutina
 
         @NotNull(message = "Debe especificar la cantidad de días disponibles")

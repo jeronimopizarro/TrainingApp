@@ -22,6 +22,17 @@ export interface MemberSummaryResponse {
   members: MemberListItem[];
 }
 
+export interface MemberSubscription {
+  id: number;
+  memberId: number;
+  planId: number;
+  planName: string;
+  startDate: string;
+  endDate: string;
+  status: SubscriptionStatus;
+  pricePaid: number;
+}
+
 export interface Member {
   id: number;
   firstName: string;

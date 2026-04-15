@@ -11,6 +11,7 @@ export interface AuthResponse {
 // Datos que viajan adentro del token JWT (Claims)
 export interface DecodedToken {
   sub: string;       // Email del usuario (Standard JWT Claim)
+  userId: number;    // Claim personalizado: ID del usuario
   role: string;      // Claim personalizado: 'GYM_ADMIN', etc.
   gymId: number;     // Claim personalizado: ID del gimnasio
   userName: string;  // Claim personalizado: Nombre del usuario
@@ -20,6 +21,7 @@ export interface DecodedToken {
 
 export interface UserSession {
   token: string;
+  userId: number;
   role: string;
   gymId: number;
   userName: string;

@@ -114,7 +114,8 @@ class DashboardControllerTest {
             MemberDashboardResponse fakeResponse = new MemberDashboardResponse(
                     15, // daysUntilExpiration
                     activeRoutine,
-                    List.of(LocalDate.now().minusDays(1), LocalDate.now()) // trainingDaysThisMonth
+                    List.of(LocalDate.now().minusDays(1), LocalDate.now()), // trainingDaysThisMonth
+                    false // hasPendingRequest
             );
 
             when(memberDashboardUseCase.execute()).thenReturn(fakeResponse);

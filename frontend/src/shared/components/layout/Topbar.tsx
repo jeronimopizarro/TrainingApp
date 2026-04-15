@@ -1,11 +1,14 @@
 import React from 'react';
 import { UserCircle } from 'lucide-react';
+import { authService } from '@/features/auth/services/auth.service';
 
 /**
  * Topbar: Cabecera superior de TrainingApp
  */
 export const Topbar = () => {
-  const userName = localStorage.getItem('user_name') || 'Administrador';
+  const userData = authService.getUserData();
+  const userName = userData?.userName || 'Usuario';
+  const roleLabel = userData?.role === 'GYM_ADMIN' ? 'Administrador Gym' : 'Socio Premium';
 
   return (
     <header className="h-[80px] w-full sticky top-0 z-40 bg-surface-med/50 backdrop-blur-xl px-10 flex items-center justify-end">
@@ -18,7 +21,7 @@ export const Topbar = () => {
               {userName}
             </p>
             <p className="text-[9px] font-sans font-black text-text-secondary uppercase tracking-[0.2em] opacity-40 italic">
-              Administrador Gym
+              {roleLabel}
             </p>
           </div>
           

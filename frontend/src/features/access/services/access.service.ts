@@ -1,5 +1,5 @@
 import api from "../../../shared/services/api";
-import { GymAccessSummaryResponse, ValidateAccessRequest, ValidateAccessResponse } from "../types/access.types";
+import { GymAccessSummaryResponse, QrTokenResponse, ValidateAccessRequest, ValidateAccessResponse } from "../types/access.types";
 
 const ACCESS_ENDPOINT = "/access";
 
@@ -18,6 +18,14 @@ export const accessService = {
    */
   validateAccess: async (request: ValidateAccessRequest): Promise<ValidateAccessResponse> => {
     const response = await api.post<ValidateAccessResponse>(`${ACCESS_ENDPOINT}/validate`, request);
+    return response.data;
+  },
+
+  /**
+   * Genera un token QR para un socio
+   */
+  generateQr: async (memberId: number): Promise<QrTokenResponse> => {
+    const response = await api.get<QrTokenResponse>(`${ACCESS_ENDPOINT}/qr`, { params: { memberId } });
     return response.data;
   }
 };

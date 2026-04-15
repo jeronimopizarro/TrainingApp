@@ -11,6 +11,7 @@ export const authService = {
     
     // Persistimos los datos en el navegador
     localStorage.setItem('token', data.token);
+    localStorage.setItem('user_id', decoded.userId.toString());
     localStorage.setItem('user_role', decoded.role);
     localStorage.setItem('gym_id', decoded.gymId.toString());
     localStorage.setItem('user_name', decoded.userName);
@@ -18,6 +19,7 @@ export const authService = {
     // Retornamos la sesión completa para que la UI pueda reaccionar
     return {
       token: data.token,
+      userId: decoded.userId,
       role: decoded.role,
       gymId: decoded.gymId,
       userName: decoded.userName
@@ -63,6 +65,7 @@ export const authService = {
       const decoded = jwtDecode<DecodedToken>(token);
       return {
         token,
+        userId: decoded.userId,
         role: decoded.role,
         gymId: decoded.gymId,
         userName: decoded.userName

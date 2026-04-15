@@ -1,6 +1,5 @@
 import api from '@/shared/services/api';
-import { Member, RegisterMemberRequest, UpdateMemberRequest } from '../types/member.types';
-import { MemberSubscription } from '../types/member.types';
+import { Member, RegisterMemberRequest, UpdateMemberRequest, MemberSubscription, MemberSummaryResponse } from '../types/member.types';
 
 export const memberService = {
   /**

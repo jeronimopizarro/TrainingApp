@@ -39,6 +39,7 @@ public class LoginUseCase {
         // 3. Preparamos los "Claims" (datos extra) para el frontend.
         Map<String, Object> claims = new HashMap<>();
         if (userDetails instanceof CustomUserDetailsService.SecurityUser securityUser) {
+            claims.put("userId", securityUser.getUserId());
             claims.put("role", securityUser.getRole());
             claims.put("gymId", securityUser.getGymId());
             claims.put("userName", securityUser.getFirstName());

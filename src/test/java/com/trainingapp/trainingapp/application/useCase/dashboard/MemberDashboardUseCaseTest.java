@@ -6,8 +6,10 @@ import com.trainingapp.trainingapp.domain.entity.subscription.Subscription;
 import com.trainingapp.trainingapp.domain.entity.tracker.TrainingSession;
 import com.trainingapp.trainingapp.domain.entity.user.User;
 import com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus;
+import com.trainingapp.trainingapp.domain.enums.routine.RoutineRequestStatus;
 import com.trainingapp.trainingapp.domain.enums.subscription.SubscriptionStatus;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
+import com.trainingapp.trainingapp.domain.repository.routine.RoutineRequestRepository;
 import com.trainingapp.trainingapp.domain.repository.subscription.SubscriptionRepository;
 import com.trainingapp.trainingapp.domain.repository.tracker.TrainingSessionRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
@@ -38,6 +40,7 @@ class MemberDashboardUseCaseTest {
     @Mock private SubscriptionRepository subscriptionRepository;
     @Mock private RoutineRepository routineRepository;
     @Mock private TrainingSessionRepository trainingSessionRepository;
+    @Mock private RoutineRequestRepository routineRequestRepository;
 
     @InjectMocks private MemberDashboardUseCase useCase;
 
@@ -73,6 +76,10 @@ class MemberDashboardUseCaseTest {
         when(trainingSessionRepository.findTrainingDatesByMemberIdAndMonth(eq(100L), any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(dates);
 
+        // 4. Mock de Solicitud Pendiente
+        when(routineRequestRepository.existsByMemberIdAndStatus(eq(100L), eq(RoutineRequestStatus.PENDING)))
+                .thenReturn(false);
+
         // Act
         MemberDashboardResponse response = useCase.execute();
 
@@ -84,5 +91,6 @@ class MemberDashboardUseCaseTest {
         assertEquals("Día de Piernas", response.activeRoutine().suggestedDay().name(), "Debe sugerir el día siguiente según el algoritmo");
 
         assertEquals(2, response.trainingDaysThisMonth().size());
+        assertEquals(false, response.hasPendingRequest());
     }
 }

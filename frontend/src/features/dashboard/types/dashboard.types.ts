@@ -37,3 +37,22 @@ export interface AdminDashboardData {
   topProducts: TopProduct[];
   expiringMemberships: ExpiringMembership[];
 }
+
+export interface SuggestedDay {
+  dayId: number;
+  name: string;
+}
+
+export interface ActiveRoutineSummary {
+  routineId: number;
+  name: string;
+  endDate: string;
+  suggestedDay: SuggestedDay | null;
+}
+
+export interface MemberDashboardData {
+  daysUntilExpiration: number;
+  activeRoutine: ActiveRoutineSummary | null;
+  trainingDaysThisMonth: string[]; // List of LocalDate strings
+  hasPendingRequest: boolean;
+}

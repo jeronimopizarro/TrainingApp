@@ -50,6 +50,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         return new SecurityUser(
+                userEntity.getId(),
                 userEntity.getEmail(),
                 userEntity.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + userEntity.getRole().name())),
@@ -57,24 +58,26 @@ public class CustomUserDetailsService implements UserDetailsService {
                 gymId,
                 userEntity.getFirstName()
         );
-    }
+        }
 
-    /**
-     * Clase personalizada para extender los detalles del usuario de Spring Security.
-     * Esto nos permite transportar datos extra (como gymId y firstName) a través del flujo de autenticación.
-     */
-    @Getter
-    public static class SecurityUser extends org.springframework.security.core.userdetails.User {
+        /**
+        * Clase personalizada para extender los detalles del usuario de Spring Security.
+        * Esto nos permite transportar datos extra (como gymId y firstName) a través del flujo de autenticación.
+        */
+        @Getter
+        public static class SecurityUser extends org.springframework.security.core.userdetails.User {
+        private final Long userId;
         private final String role;
         private final Long gymId;
         private final String firstName;
 
-        public SecurityUser(String username, String password, Collection<? extends GrantedAuthority> authorities,
+        public SecurityUser(Long userId, String username, String password, Collection<? extends GrantedAuthority> authorities,
                             String role, Long gymId, String firstName) {
             super(username, password, authorities);
+            this.userId = userId;
             this.role = role;
             this.gymId = gymId;
             this.firstName = firstName;
         }
-    }
-}
+        }
+        }

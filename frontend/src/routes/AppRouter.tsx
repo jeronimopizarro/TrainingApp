@@ -12,6 +12,10 @@ import { ExercisesListPage } from '@/features/exercises/pages/ExercisesListPage'
 import { ProductsPage } from '@/features/products/pages/ProductsPage';
 import { CashierPage } from '@/features/sales/pages/CashierPage';
 import { AccessLogsPage } from '@/features/access/pages/AccessLogsPage';
+import { MemberDashboardPage } from '@/features/dashboard/pages/MemberDashboardPage';
+import { MyRoutinePage } from '@/features/routines/pages/MyRoutinePage';
+import { MemberRoutineBuilderPage } from '@/features/routines/pages/MemberRoutineBuilderPage';
+import { WorkoutTrackingPage } from '@/features/tracker/pages/WorkoutTrackingPage';
 
 /**
  * PublicRoute: Evita que usuarios logueados vuelvan al Login.
@@ -22,29 +26,10 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   const role = authService.getUserRole();
 
   if (isAuth) {
-    return <Navigate to={role === 'GYM_ADMIN' ? '/admin/dashboard' : '/member/home'} replace />;
+    return <Navigate to={role === 'GYM_ADMIN' ? '/admin/dashboard' : '/member/dashboard'} replace />;
   }
   return <>{children}</>;
 };
-
-/**
- * COMPONENTES TEMPORALES (Se irán reemplazando por sus respectivas páginas)
- */
-const MemberHome = () => (
-  <div className="min-h-screen bg-background p-10 flex flex-col items-center justify-center text-center">
-    <div className="w-20 h-20 bg-secondary/20 rounded-full flex items-center justify-center mb-6">
-      <span className="text-4xl">👋</span>
-    </div>
-    <h1 className="text-4xl font-display font-black text-text-main">¡Hola, Socio!</h1>
-    <p className="text-text-secondary mt-4 max-w-md">Bienvenido a tu área personal. Muy pronto podrás ver tus rutinas y progresos aquí.</p>
-    <button 
-      onClick={() => { authService.logout(); window.location.href = '/login'; }}
-      className="mt-8 text-primary font-bold hover:underline"
-    >
-      Cerrar Sesión
-    </button>
-  </div>
-);
 
 export const AppRouter = () => {
   return (
@@ -83,7 +68,14 @@ export const AppRouter = () => {
 
         {/* ÁREA DE SOCIOS (MEMBER) */}
         <Route path="/member" element={<ProtectedRoute allowedRoles={['MEMBER']} />}>
-          <Route path="home" element={<MemberHome />} />
+           <Route element={<MainLayout />}>
+           <Route index element={<Navigate to="dashboard" replace />} />
+             <Route path="dashboard" element={<MemberDashboardPage />} />
+             <Route path="routine" element={<MyRoutinePage />} />
+             <Route path="routine/builder" element={<MemberRoutineBuilderPage />} />
+           </Route>
+           {/* El tracker de entrenamiento suele ser pantalla completa para mejor experiencia en el gym */}
+           <Route path="workout/:routineId/day/:dayId" element={<WorkoutTrackingPage />} />
         </Route>
 
         {/* REDIRECCIÓN INICIAL INTELIGENTE */}

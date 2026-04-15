@@ -19,7 +19,7 @@ public class StaffController {
         this.getStaffSummaryUseCase = getStaffSummaryUseCase;
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'MEMBER')")
     @GetMapping("/summary")
     public ResponseEntity<StaffSummaryResponse> getSummary(
             @RequestParam Long gymId,

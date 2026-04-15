@@ -36,9 +36,11 @@ export const useStaff = () => {
     setIsLoading(true);
     try {
       const user = authService.getUserData();
+      if (!user?.gymId) throw new Error('No se pudo identificar el gimnasio.');
+
       await staffService.registerStaff({
         ...data,
-        gymId: user?.gymId,
+        gymId: user.gymId,
         password: data.dni // Contraseña por defecto es el DNI
       });
       await fetchStaff(currentFilter);

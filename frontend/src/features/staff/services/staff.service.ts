@@ -24,7 +24,7 @@ export const staffService = {
   registerStaff: async (request: RegisterStaffRequest): Promise<StaffMember> => {
     const endpoint = request.role === 'TRAINER' ? '/trainers' : '/receptionists';
     const response = await api.post<StaffMember>(endpoint, request);
-    return { ...response.data, role: request.role };
+    return { ...response.data, role: request.role } as StaffMember;
   },
 
   /**
@@ -33,7 +33,7 @@ export const staffService = {
   updateStaff: async (id: number, role: 'TRAINER' | 'RECEPTIONIST', request: UpdateStaffRequest): Promise<StaffMember> => {
     const endpoint = role === 'TRAINER' ? `/trainers/${id}` : `/receptionists/${id}`;
     const response = await api.put<StaffMember>(endpoint, request);
-    return { ...response.data, role };
+    return { ...response.data, role } as StaffMember;
   },
 
   /**

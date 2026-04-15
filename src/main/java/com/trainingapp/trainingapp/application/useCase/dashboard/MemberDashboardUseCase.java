@@ -5,7 +5,9 @@ import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
 import com.trainingapp.trainingapp.domain.entity.subscription.Subscription;
 import com.trainingapp.trainingapp.domain.entity.tracker.TrainingSession;
 import com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus;
+import com.trainingapp.trainingapp.domain.enums.routine.RoutineRequestStatus;
 import com.trainingapp.trainingapp.domain.repository.routine.RoutineRepository;
+import com.trainingapp.trainingapp.domain.repository.routine.RoutineRequestRepository;
 import com.trainingapp.trainingapp.domain.repository.subscription.SubscriptionRepository;
 import com.trainingapp.trainingapp.domain.repository.tracker.TrainingSessionRepository;
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.config.security.SecurityUtils;
@@ -29,15 +31,18 @@ public class MemberDashboardUseCase {
     private final SubscriptionRepository subscriptionRepository;
     private final RoutineRepository routineRepository;
     private final TrainingSessionRepository trainingSessionRepository;
+    private final RoutineRequestRepository routineRequestRepository;
 
     public MemberDashboardUseCase(SecurityUtils securityUtils,
                                   SubscriptionRepository subscriptionRepository,
                                   RoutineRepository routineRepository,
-                                  TrainingSessionRepository trainingSessionRepository) {
+                                  TrainingSessionRepository trainingSessionRepository,
+                                  RoutineRequestRepository routineRequestRepository) {
         this.securityUtils = securityUtils;
         this.subscriptionRepository = subscriptionRepository;
         this.routineRepository = routineRepository;
         this.trainingSessionRepository = trainingSessionRepository;
+        this.routineRequestRepository = routineRequestRepository;
     }
 
     @Transactional(readOnly = true)
@@ -48,8 +53,9 @@ public class MemberDashboardUseCase {
         Integer daysUntilExpiration = getDaysUntilExpiration(memberId, today);
         ActiveRoutineDTO activeRoutine = getActiveRoutine(memberId);
         List<LocalDate> trainingDays = getTrainingDaysThisMonth(memberId, today);
+        boolean hasPendingRequest = routineRequestRepository.existsByMemberIdAndStatus(memberId, RoutineRequestStatus.PENDING);
 
-        return new MemberDashboardResponse(daysUntilExpiration, activeRoutine, trainingDays);
+        return new MemberDashboardResponse(daysUntilExpiration, activeRoutine, trainingDays, hasPendingRequest);
     }
 
     private Integer getDaysUntilExpiration(Long memberId, LocalDate today) {
