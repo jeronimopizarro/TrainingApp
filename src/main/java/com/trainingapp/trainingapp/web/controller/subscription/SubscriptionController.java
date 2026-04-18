@@ -41,7 +41,7 @@ public class SubscriptionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER', 'RECEPTIONIST')")
     @GetMapping("/active")
     public ResponseEntity<SubscriptionResponse> getActiveSubscriptionByMember(
             @RequestParam Long memberId) {
@@ -49,7 +49,7 @@ public class SubscriptionController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER', 'RECEPTIONIST')")
     @GetMapping()
     public ResponseEntity<List<SubscriptionResponse>> getAllSubscriptionsByMember(
             @RequestParam Long memberId) {

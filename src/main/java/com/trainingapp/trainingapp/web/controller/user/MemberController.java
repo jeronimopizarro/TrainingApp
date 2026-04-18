@@ -53,7 +53,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER', 'RECEPTIONIST')")
     @GetMapping("/{id}")
     public ResponseEntity<MemberResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(getMemberByIdUseCase.execute(id));

@@ -46,11 +46,20 @@ export const Sidebar = () => {
     { name: 'Mis Alumnos', icon: <Users size={20} />, path: '/trainer/routines/my-created' },
   ];
 
+  const receptionistMenuItems = [
+    { name: 'Validar Acceso', icon: <ShieldCheck size={20} />, path: '/receptionist/access' },
+    { name: 'Socios', icon: <Users size={20} />, path: '/receptionist/members' },
+    { name: 'Caja', icon: <CreditCard size={20} />, path: '/receptionist/sales' },
+    { name: 'Historial', icon: <History size={20} />, path: '/receptionist/logs' },
+  ];
+
   const menuItems = role === 'GYM_ADMIN' 
     ? adminMenuItems 
     : role === 'TRAINER' 
       ? trainerMenuItems 
-      : memberMenuItems;
+      : role === 'RECEPTIONIST'
+        ? receptionistMenuItems
+        : memberMenuItems;
 
   const handleLogout = () => {
     authService.logout();

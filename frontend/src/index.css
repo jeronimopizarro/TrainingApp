@@ -62,6 +62,18 @@ body {
   background: var(--color-surface-high);
 }
 
+/* Animación para la línea de escaneo láser en Recepción */
+@keyframes scanLine {
+  0% { top: 0%; opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.animate-scanLine {
+  animation: scanLine 2s linear infinite;
+}
+
 /* Utilidad para profundidad sin bordes */
 .surface-lift {
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45);

@@ -22,6 +22,8 @@ export const useLogin = () => {
         navigate('/member/dashboard');
       } else if (session.role === 'TRAINER') {
         navigate('/trainer/dashboard');
+      } else if (session.role === 'RECEPTIONIST') {
+        navigate('/receptionist/access');
       } else {
         // Para otros roles (RECEPTIONIST, etc.)
         navigate('/unauthorized');

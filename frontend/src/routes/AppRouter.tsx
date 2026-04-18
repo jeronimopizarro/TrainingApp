@@ -20,6 +20,7 @@ import { ProgressDashboardPage } from '@/features/tracker/pages/ProgressDashboar
 import { TrainerDashboardPage } from '@/features/dashboard/pages/TrainerDashboardPage';
 import { BaseRoutinesPage } from '@/features/trainer/pages/BaseRoutinesPage';
 import { MyCreatedRoutinesPage } from '@/features/trainer/pages/MyCreatedRoutinesPage';
+import { AccessValidationPage } from '@/features/access/pages/AccessValidationPage';
 
 /**
  * PublicRoute: Evita que usuarios logueados vuelvan al Login.
@@ -33,6 +34,7 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
     if (role === 'GYM_ADMIN') return <Navigate to="/admin/dashboard" replace />;
     if (role === 'MEMBER') return <Navigate to="/member/dashboard" replace />;
     if (role === 'TRAINER') return <Navigate to="/trainer/dashboard" replace />;
+    if (role === 'RECEPTIONIST') return <Navigate to="/receptionist/access" replace />;
   }
   return <>{children}</>;
 };
@@ -69,6 +71,17 @@ export const AppRouter = () => {
             <Route path="products" element={<ProductsPage />} />
             <Route path="sales" element={<CashierPage />} />
             <Route path="access" element={<AccessLogsPage />} />
+          </Route>
+        </Route>
+
+        {/* ÁREA DE RECEPCIÓN (RECEPTIONIST) */}
+        <Route path="/receptionist" element={<ProtectedRoute allowedRoles={['RECEPTIONIST']} />}>
+          <Route element={<MainLayout />}>
+            <Route index element={<Navigate to="access" replace />} />
+            <Route path="members" element={<MembersListPage />} />
+            <Route path="sales" element={<CashierPage />} />
+            <Route path="access" element={<AccessValidationPage />} />
+            <Route path="logs" element={<AccessLogsPage />} />
           </Route>
         </Route>
 

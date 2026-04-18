@@ -77,7 +77,7 @@ export const MemberDashboardPage = () => {
   );
 
   const qrUrl = qrData 
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData.qrToken)}&bgcolor=121417&color=89acff`
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData.qrToken)}&bgcolor=ffffff&color=000000&margin=4`
     : null;
 
   const handleOpenQr = () => {
@@ -285,16 +285,16 @@ export const MemberDashboardPage = () => {
         <div className="flex flex-col items-center justify-center py-10 text-center">
            <div className="relative mb-10 group">
              <div className="absolute -inset-4 bg-primary/20 rounded-[3rem] blur-2xl opacity-50 group-hover:opacity-100 transition-opacity" />
-             <div className="relative bg-surface-high p-6 rounded-[2.5rem] border border-white/5 shadow-2xl">
+             <div className="relative bg-white p-4 rounded-xl shadow-2xl overflow-hidden">
                 {qrLoading ? (
-                  <div className="w-64 h-64 flex flex-col items-center justify-center gap-4">
+                  <div className="w-64 h-64 flex flex-col items-center justify-center gap-4 bg-surface-high">
                     <Loader2 className="w-12 h-12 text-primary animate-spin" />
                     <p className="text-[10px] font-black uppercase tracking-widest text-text-secondary">Generando Código...</p>
                   </div>
                 ) : qrUrl ? (
-                  <img src={qrUrl} alt="QR Access" className="w-64 h-64 rounded-2xl" />
+                  <img src={qrUrl} alt="QR Access" className="w-64 h-64 block" />
                 ) : (
-                  <div className="w-64 h-64 flex items-center justify-center text-error">
+                  <div className="w-64 h-64 flex items-center justify-center text-error bg-surface-high">
                     <AlertCircle size={48} />
                   </div>
                 )}

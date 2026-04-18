@@ -52,7 +52,7 @@ public class MembershipPlanController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'TRAINER', 'MEMBER', 'RECEPTIONIST')")
     @GetMapping
     public ResponseEntity<List<MembershipPlanResponse>> getAllByGymId(@RequestParam Long gymId) {
         return ResponseEntity.ok(getAllUseCase.execute(gymId));
