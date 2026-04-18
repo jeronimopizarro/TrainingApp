@@ -3,6 +3,7 @@ package com.trainingapp.trainingapp.infrastructure.repository.jpa.config.securit
 import com.trainingapp.trainingapp.domain.entity.user.*;
 import com.trainingapp.trainingapp.domain.exception.auth.UnauthenticatedUserException;
 import com.trainingapp.trainingapp.domain.exception.gym.UnauthorizedGymAccessException;
+import com.trainingapp.trainingapp.domain.exception.user.member.MemberNotFoundException;
 import com.trainingapp.trainingapp.domain.repository.user.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,21 @@ public class SecurityUtils {
         if (targetGymId == null || !targetGymId.equals(currentUserGymId)) {
             throw new UnauthorizedGymAccessException();
         }
+    }
+
+    // Valida si el staff tiene acceso a un socio específico (mismo gym)
+    public void validateMemberAccess(Long targetMemberId) {
+        User currentUser = getCurrentUser();
+        if (currentUser.isSuperAdmin()) return;
+
+        User targetUser = userRepository.findById(targetMemberId)
+                .orElseThrow(() -> new MemberNotFoundException(targetMemberId));
+
+        if (!(targetUser instanceof Member targetMember)) {
+            throw new MemberNotFoundException(targetMemberId);
+        }
+
+        validateSameGym(targetMember.getGymId());
     }
 
     // Extrae el Gym ID del usuario autenticado

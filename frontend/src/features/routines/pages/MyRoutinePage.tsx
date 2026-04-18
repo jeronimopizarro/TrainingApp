@@ -11,39 +11,50 @@ import {
   Loader2,
   AlertCircle,
   Trash2,
-  Trophy
+  Trophy,
+  Edit3,
+  ChevronLeft
 } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useRoutine } from '@/features/routines/hooks/useRoutine';
 import { routineService } from '@/features/routines/services/routine.service';
 import { authService } from '@/features/auth/services/auth.service';
 import { Button } from '@/shared/components/Button';
 import { Modal } from '@/shared/components/Modal';
 import { VideoModal } from '@/shared/components/VideoModal';
-import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 
 export const MyRoutinePage = () => {
+  const { id } = useParams();
   const userData = authService.getUserData();
-  const { detail, loading, error, refresh } = useRoutine(userData?.userId);
+  const userRole = authService.getUserRole();
+  const navigate = useNavigate();
+
+  // Si hay ID en la URL, usamos ese. Si no, usamos el del socio logueado para ver "Mi Rutina".
+  const routineId = id ? Number(id) : undefined;
+  const { detail, loading, error } = useRoutine(routineId ? undefined : userData?.userId, routineId);
+  
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
   const [videoData, setVideoData] = useState<{url: string, title: string} | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const navigate = useNavigate();
+
+  const isStaff = userRole === 'TRAINER' || userRole === 'GYM_ADMIN';
+  const isBaseRoutine = detail?.isBase;
 
   if (loading) return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6">
       <Loader2 className="w-12 h-12 text-primary animate-spin" />
-      <p className="font-display font-black uppercase tracking-[0.3em] text-xs text-text-secondary">Cargando tu Plan...</p>
+      <p className="font-display font-black uppercase tracking-[0.3em] text-xs text-text-secondary">Consultando Planificación...</p>
     </div>
   );
 
   if (error || !detail) return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 p-10 text-center">
       <AlertCircle className="w-16 h-16 text-error opacity-50" />
-      <h2 className="text-2xl font-display font-black text-text-main">Sin Rutina Activa</h2>
-      <p className="text-text-secondary max-w-md">No tienes una rutina asignada actualmente. Por favor, contacta con tu entrenador.</p>
-      <Button onClick={() => navigate('/member/dashboard')} variant="ghost" className="mt-4">Volver al Inicio</Button>
+      <h2 className="text-2xl font-display font-black text-text-main">No se encontró la rutina</h2>
+      <p className="text-text-secondary max-w-md">La planificación solicitada no está disponible o ha sido eliminada.</p>
+      <Button onClick={() => navigate(-1)} variant="ghost" className="mt-4">Regresar</Button>
     </div>
   );
 
@@ -53,7 +64,7 @@ export const MyRoutinePage = () => {
     try {
       await routineService.delete(detail.id);
       setIsDeleteModalOpen(false);
-      navigate('/member/dashboard');
+      navigate(isStaff ? '/trainer/routines/bases' : '/member/dashboard');
     } catch (err) {
       alert("Error al eliminar la rutina");
     } finally {
@@ -62,42 +73,67 @@ export const MyRoutinePage = () => {
   };
 
   return (
-    <div className="pb-10">
+    <div className="pb-10 animate-in fade-in duration-700">
       {/* HEADER */}
-
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 px-6">
         <div>
-          <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3">Tu Plan de Entrenamiento</h2>
+          <div className="flex items-center gap-4 mb-3">
+             <button onClick={() => navigate(-1)} className="p-2 hover:bg-surface-low rounded-xl transition-colors text-text-secondary">
+               <ChevronLeft />
+             </button>
+             <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em]">
+               {isBaseRoutine ? 'Plantilla Técnica' : 'Plan de Entrenamiento'}
+             </h2>
+          </div>
+          
           <h1 className="text-5xl font-display font-black text-text-main tracking-tight italic uppercase">
-            Gestión de <span className="text-primary-dark">Rutina</span>.
+            {detail.name}
           </h1>
+
           <div className="flex flex-wrap items-center gap-6 mt-6">
-             <div className="flex items-center gap-2 text-text-secondary">
-               <Calendar size={16} className="text-primary" />
-               <span className="text-[10px] font-bold uppercase tracking-widest">
-                 Válida hasta: {detail.endDate ? new Date(detail.endDate).toLocaleDateString() : 'Indefinida'}
-               </span>
-             </div>
+             {!isBaseRoutine && (
+                <div className="flex items-center gap-2 text-text-secondary">
+                  <Calendar size={16} className="text-primary" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest">
+                    Válida hasta: {detail.endDate ? new Date(detail.endDate).toLocaleDateString() : 'Indefinida'}
+                  </span>
+                </div>
+             )}
              <div className="flex items-center gap-2 text-text-secondary">
                <Clock size={16} className="text-primary" />
                <span className="text-[10px] font-bold uppercase tracking-widest">{detail.days.length} Días / Semana</span>
              </div>
+             {isBaseRoutine && (
+                <span className="px-3 py-1 bg-primary/10 text-primary text-[8px] font-black rounded-full uppercase tracking-widest border border-primary/20">
+                    Estructura Base
+                </span>
+             )}
           </div>
         </div>
         
         <div className="flex flex-col md:flex-row items-center gap-4">
+          {isStaff && (
+             <Button 
+                onClick={() => navigate(`/trainer/routines/builder?editId=${detail.id}`)}
+                variant="secondary" 
+                icon={<Edit3 size={16} />}
+                className="rounded-2xl"
+             >
+               Editar Estructura
+             </Button>
+          )}
           <Button 
             onClick={() => setIsDeleteModalOpen(true)}
             variant="primary" 
             icon={<Trash2 size={16} />}
-            className="bg-error hover:bg-error-dark border-none"
+            className="bg-error hover:bg-error-dark border-none rounded-2xl"
           >
-            Eliminar Rutina
+            Eliminar
           </Button>
         </div>
       </header>
 
-      {/* DAYS LIST - Centered Card Container */}
+      {/* DAYS LIST */}
       <div className="flex flex-col gap-6 max-w-5xl mx-auto px-6">
         {detail.days.map((day, index) => (
           <div key={day.id} className="bg-surface-low rounded-[2rem] border border-white/[0.03] overflow-hidden transition-all duration-500 hover:border-white/10">
@@ -183,14 +219,17 @@ export const MyRoutinePage = () => {
                     </div>
                   ))}
 
-                  <div className="mt-8 flex justify-center">
-                    <Button 
-                      onClick={() => navigate(`/member/workout/${detail.id}/day/${day.id}`)}
-                      variant="primary" 
-                    >
-                      Entrenar este día
-                    </Button>
-                  </div>
+                  {/* SOLO EL SOCIO PUEDE VER EL BOTÓN DE ENTRENAR Y SOLO EN RUTINAS NO-BASE */}
+                  {!isStaff && !isBaseRoutine && (
+                    <div className="mt-8 flex justify-center">
+                        <Button 
+                        onClick={() => navigate(`/member/workout/${detail.id}/day/${day.id}`)}
+                        variant="primary" 
+                        >
+                        Entrenar este día
+                        </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -216,7 +255,7 @@ export const MyRoutinePage = () => {
            </div>
            <h4 className="text-xl font-display font-black text-text-main uppercase italic mb-3">¿Eliminar esta rutina?</h4>
            <p className="text-xs text-text-secondary font-medium leading-relaxed mb-8 max-w-[280px]">
-             Esta acción no se puede deshacer. Se perderá todo el progreso actual de esta planificación.
+             Esta acción no se puede deshacer. {isBaseRoutine ? 'Se eliminará la plantilla de la biblioteca.' : 'Se perderá todo el progreso actual de esta planificación.'}
            </p>
            
            <div className="flex gap-3 w-full">

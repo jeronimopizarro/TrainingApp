@@ -19,9 +19,11 @@ export const useLogin = () => {
       if (session.role === 'GYM_ADMIN') {
         navigate('/admin/dashboard');
       } else if (session.role === 'MEMBER') {
-        navigate('/member/home');
+        navigate('/member/dashboard');
+      } else if (session.role === 'TRAINER') {
+        navigate('/trainer/dashboard');
       } else {
-        // Para otros roles (TRAINER, RECEPTIONIST) aún no definidos
+        // Para otros roles (RECEPTIONIST, etc.)
         navigate('/unauthorized');
       }
     } catch (err: any) {

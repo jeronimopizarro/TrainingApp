@@ -5,6 +5,7 @@ import com.trainingapp.trainingapp.domain.entity.routine.Routine;
 import com.trainingapp.trainingapp.domain.entity.routine.RoutineDetail;
 import com.trainingapp.trainingapp.domain.entity.routine.RoutineSummary;
 import com.trainingapp.trainingapp.domain.entity.routine.TrainingDay;
+import com.trainingapp.trainingapp.domain.enums.routine.RoutineStatus;
 import com.trainingapp.trainingapp.web.dto.routine.RoutineDetailResponse;
 import com.trainingapp.trainingapp.web.dto.routine.RoutineDetailResponse.DayDetailResponse;
 import com.trainingapp.trainingapp.web.dto.routine.RoutineDetailResponse.ExerciseItemResponse;
@@ -13,6 +14,7 @@ import com.trainingapp.trainingapp.web.dto.routine.UpdateRoutineRequest.UpdateRo
 import com.trainingapp.trainingapp.web.dto.routine.*;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,10 +42,41 @@ public class RoutineDTOMapper {
         return routine;
     }
 
+    public Routine toDomain(CreateBaseRoutineRequest request, Long trainerId, Long gymId) {
+        if (request == null) return null;
+
+        Routine routine = Routine.createBase(request.name(), trainerId, trainerId, gymId);
+
+        if (request.days() != null) {
+            request.days().forEach(dayRequest -> {
+                TrainingDay createdDay = routine.addDay(dayRequest.dayName());
+                if (dayRequest.exercises() != null) {
+                    dayRequest.exercises().forEach(exerciseReq -> {
+                        createdDay.addDetails(
+                                exerciseReq.exerciseId(), exerciseReq.sets(), exerciseReq.repsMin(),
+                                exerciseReq.repsMax(), exerciseReq.targetRIR(), exerciseReq.suggestedWeight(), exerciseReq.notes()
+                        );
+                    });
+                }
+            });
+        }
+        return routine;
+    }
+
     public Routine toDomain(AssignRoutineRequest request, Long trainerId, Long gymId) {
         if (request == null) return null;
 
-        Routine routine = Routine.createNew(request.name(), request.memberId(), trainerId, trainerId, gymId);
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = (request.durationMonths() != null) 
+                ? startDate.plusMonths(request.durationMonths()) 
+                : null;
+
+        // Las rutinas asignadas por staff nacen como ACTIVE y con fecha calculada
+        Routine routine = Routine.restore(
+                null, request.name(), startDate, endDate, request.memberId(),
+                trainerId, trainerId, gymId, RoutineStatus.ACTIVE, true, false, new ArrayList<>()
+        );
+
 
         if (request.days() != null) {
             request.days().forEach(dayRequest -> {
@@ -109,7 +142,8 @@ public class RoutineDTOMapper {
                 summary.id(),
                 summary.name(),
                 summary.status(),
-                summary.memberId()
+                summary.memberId(),
+                summary.memberName()
         );
     }
 

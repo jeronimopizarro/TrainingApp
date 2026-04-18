@@ -55,7 +55,7 @@ public class CreatePersonalRoutineUseCaseTest {
         // Simulamos la request de creación (usamos List.of() para evitar NullPointerExceptions en validaciones)
         CreatePersonalRoutineRequest request = new CreatePersonalRoutineRequest("Mi Propia Rutina", List.of(), 3);
 
-        Routine mockRoutine = Routine.restore(50L, "Mi Propia Rutina", null, null, 100L, 100L, 100L, 10L, RoutineStatus.DRAFT, true, List.of());
+        Routine mockRoutine = Routine.restore(50L, "Mi Propia Rutina", null, null, 100L, 100L, 100L, 10L, RoutineStatus.DRAFT, true, false, List.of());
         CreateRoutineResponse mockResponse = new CreateRoutineResponse(50L, "Rutina personal creada con éxito.");
 
         when(mapper.toDomain(any(CreatePersonalRoutineRequest.class), eq(100L), eq(10L))).thenReturn(mockRoutine);

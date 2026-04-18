@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { trackerService } from '../services/tracker.service';
 import { MemberProgressSummaryResponse, ExerciseProgressResponse } from '../types/tracker.types';
 
-export const useProgress = (exerciseId?: number) => {
+export const useProgress = (exerciseId?: number, memberId?: number) => {
   const [summary, setSummary] = useState<MemberProgressSummaryResponse | null>(null);
   const [exerciseProgress, setExerciseProgress] = useState<ExerciseProgressResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -11,7 +11,7 @@ export const useProgress = (exerciseId?: number) => {
   const fetchSummary = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await trackerService.getProgressSummary();
+      const data = await trackerService.getProgressSummary(memberId);
       setSummary(data);
       setError(null);
     } catch (err) {
@@ -19,12 +19,12 @@ export const useProgress = (exerciseId?: number) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [memberId]);
 
   const fetchExerciseProgress = useCallback(async (id: number, months: number = 6) => {
     try {
       setLoading(true);
-      const data = await trackerService.getExerciseProgress(id, months);
+      const data = await trackerService.getExerciseProgress(id, memberId, months);
       setExerciseProgress(data);
       setError(null);
     } catch (err) {
@@ -32,7 +32,7 @@ export const useProgress = (exerciseId?: number) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [memberId]);
 
   useEffect(() => {
     if (exerciseId) {

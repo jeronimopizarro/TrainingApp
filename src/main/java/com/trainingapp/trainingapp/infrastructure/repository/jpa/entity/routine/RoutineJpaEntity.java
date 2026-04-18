@@ -31,7 +31,7 @@ public class RoutineJpaEntity extends BaseJpaEntity {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Column(name = "member_id", nullable = false)
+    @Column(name = "member_id", nullable = true, columnDefinition = "BIGINT NULL")
     private Long memberId;
 
     @Column(name = "trainer_id")
@@ -49,6 +49,9 @@ public class RoutineJpaEntity extends BaseJpaEntity {
 
     @Column(name = "active", nullable = false)
     private boolean active = true;
+
+    @Column(name = "is_base", nullable = false)
+    private boolean isBase = false;
 
     @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TrainingDayJpaEntity> days = new ArrayList<>();

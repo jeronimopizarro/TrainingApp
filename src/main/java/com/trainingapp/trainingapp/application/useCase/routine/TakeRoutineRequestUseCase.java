@@ -26,6 +26,9 @@ public class TakeRoutineRequestUseCase {
         RoutineRequest request = routineRequestRepository.findById(requestId)
                 .orElseThrow(() -> new RoutineRequestNotFoundException(requestId));
 
+        System.out.println("DEBUG - Taking Routine Request ID: " + requestId);
+        System.out.println("DEBUG - Request Details: Member=" + request.getMemberId() + ", Gym=" + request.getGymId() + ", Goal=" + request.getPrimaryGoal() + ", Status=" + request.getStatus());
+
         securityUtils.validateSameGym(request.getGymId());
 
         request.assignTrainer(currentTrainerId);

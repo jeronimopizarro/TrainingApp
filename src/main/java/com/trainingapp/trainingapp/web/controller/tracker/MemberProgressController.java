@@ -26,9 +26,10 @@ public class MemberProgressController {
      * Ideal para la pantalla general de "Progreso".
      */
     @GetMapping("/summary")
-    @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<MemberProgressSummaryResponse> getMemberProgressSummary() {
-        MemberProgressSummaryResponse response = getMemberProgressSummaryUseCase.execute();
+    @PreAuthorize("hasAnyRole('MEMBER', 'TRAINER', 'GYM_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<MemberProgressSummaryResponse> getMemberProgressSummary(
+            @RequestParam(required = false) Long memberId) {
+        MemberProgressSummaryResponse response = getMemberProgressSummaryUseCase.execute(memberId);
         return ResponseEntity.ok(response);
     }
 
@@ -38,13 +39,14 @@ public class MemberProgressController {
      * Permite filtrar cuántos meses hacia atrás se desea consultar.
      */
     @GetMapping("/exercise/{exerciseId}")
-    @PreAuthorize("hasRole('MEMBER')")
+    @PreAuthorize("hasAnyRole('MEMBER', 'TRAINER', 'GYM_ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ExerciseProgressResponse> getExerciseProgress(
             @PathVariable Long exerciseId,
+            @RequestParam(required = false) Long memberId,
             @RequestParam(defaultValue = "6") int monthsBack) {
 
         ExerciseProgressResponse
-                response = getExerciseProgressUseCase.execute(exerciseId, monthsBack);
+                response = getExerciseProgressUseCase.execute(exerciseId, memberId, monthsBack);
         return ResponseEntity.ok(response);
     }
 }

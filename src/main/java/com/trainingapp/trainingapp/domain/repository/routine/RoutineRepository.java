@@ -18,5 +18,7 @@ public interface RoutineRepository {
 
     List<RoutineSummary> findAllSummariesByTrainerId(Long trainerId);
 
+    List<RoutineSummary> findAllBaseRoutinesByGymId(Long gymId);
+
     boolean existsActiveByMemberId(Long memberId);
 }

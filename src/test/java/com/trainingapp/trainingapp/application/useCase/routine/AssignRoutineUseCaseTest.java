@@ -62,7 +62,7 @@ public class AssignRoutineUseCaseTest {
 
         // Simulamos que el repositorio devuelve una rutina guardada con ID 50
         Routine savedRoutine = Routine.restore(50L, "Rutina Fuerte", null, null, 100L, 2L, 2L, 10L,
-                RoutineStatus.DRAFT, true, List.of());
+                RoutineStatus.DRAFT, true, false, List.of());
         when(mapper.toDomain(any(AssignRoutineRequest.class), eq(2L), eq(10L))).thenReturn(savedRoutine);
         when(routineRepository.save(any())).thenReturn(savedRoutine);
 
@@ -77,7 +77,7 @@ public class AssignRoutineUseCaseTest {
 
         // Act
         // CREAMOS UN RECORD REAL EN LUGAR DE UN MOCK PARA QUE TENGA EL MEMBER_ID 100L
-        AssignRoutineRequest request = new AssignRoutineRequest( "Rutina", 100L , List.of());
+        AssignRoutineRequest request = new AssignRoutineRequest( "Rutina", 100L , 3, List.of());
         useCase.execute(request);
 
         assertEquals(RoutineRequestStatus.COMPLETED, inProgressRequest.getStatus(),

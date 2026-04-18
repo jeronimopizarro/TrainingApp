@@ -8,15 +8,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-public record AssignRoutineRequest(
-        @NotBlank(message = "El nombre de la rutina no puede estar vacío")
+public record CreateBaseRoutineRequest(
+        @NotBlank(message = "El nombre de la rutina base no puede estar vacío")
         String name,
-
-        @NotNull(message = "El ID del socio es obligatorio")
-        Long memberId,
-
-        @Min(value = 1, message = "La duración mínima es de 1 mes")
-        Integer durationMonths,
 
         @NotEmpty(message = "La rutina debe tener al menos un día de entrenamiento")
         @Valid

@@ -57,7 +57,7 @@ class GetMemberProgressSummaryUseCaseTest {
         // Simulamos la matemática de la Entidad
         when(mockSession.calculateAverageE1RMForExercise(5L)).thenReturn(new BigDecimal("100.5"));
 
-        MemberProgressSummaryResponse response = useCase.execute();
+        MemberProgressSummaryResponse response = useCase.execute(null);
 
         assertNotNull(response);
         assertEquals(1, response.exercises().size());

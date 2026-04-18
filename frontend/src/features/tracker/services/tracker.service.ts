@@ -36,17 +36,19 @@ export const trackerService = {
   /**
    * Obtiene el resumen de progreso del miembro
    */
-  getProgressSummary: async (): Promise<MemberProgressSummaryResponse> => {
-    const { data } = await api.get<MemberProgressSummaryResponse>('/progress/summary');
+  getProgressSummary: async (memberId?: number): Promise<MemberProgressSummaryResponse> => {
+    const { data } = await api.get<MemberProgressSummaryResponse>('/progress/summary', {
+      params: { memberId }
+    });
     return data;
   },
 
   /**
    * Obtiene el progreso detallado de un ejercicio
    */
-  getExerciseProgress: async (exerciseId: number, monthsBack: number = 6): Promise<ExerciseProgressResponse> => {
+  getExerciseProgress: async (exerciseId: number, memberId?: number, monthsBack: number = 6): Promise<ExerciseProgressResponse> => {
     const { data } = await api.get<ExerciseProgressResponse>(`/progress/exercise/${exerciseId}`, {
-      params: { monthsBack }
+      params: { memberId, monthsBack }
     });
     return data;
   }

@@ -30,6 +30,7 @@ public class RoutineMapper {
         entity.setGymId(domain.getGymId());
         entity.setStatus(domain.getStatus());
         entity.setActive(domain.isActive());
+        entity.setBase(domain.isBase());
 
         if (domain.getDays() != null) {
             entity.setDays(
@@ -127,6 +128,7 @@ public class RoutineMapper {
                 entity.getGymId(),
                 entity.getStatus(),
                 entity.isActive(),
+                entity.isBase(),
                 domainDays
         );
     }

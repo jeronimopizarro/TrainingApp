@@ -30,8 +30,13 @@ public class GetMemberProgressSummaryUseCase {
     }
 
     @Transactional(readOnly = true)
-    public MemberProgressSummaryResponse execute() {
-        Long memberId = securityUtils.getCurrentUser().getId();
+    public MemberProgressSummaryResponse execute(Long targetMemberId) {
+        Long memberId = (targetMemberId != null) ? targetMemberId : securityUtils.getCurrentUser().getId();
+
+        // Si un staff está consultando a un socio, validamos que sean del mismo gym
+        if (targetMemberId != null) {
+            securityUtils.validateMemberAccess(targetMemberId);
+        }
 
         // 1. Buscamos los IDs de todos los ejercicios que este alumno entrenó alguna vez
         List<Long> performedExerciseIds = trainingSessionRepository.findPerformedExerciseIdsByMemberId(memberId);

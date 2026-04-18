@@ -79,6 +79,15 @@ class RoutineControllerTest {
     private TakeRoutineRequestUseCase takeRoutineRequestUseCase;
 
     @MockitoBean
+    private GetPendingRoutineRequestsUseCase getPendingRoutineRequestsUseCase;
+
+    @MockitoBean
+    private GetBaseRoutinesUseCase getBaseRoutinesUseCase;
+
+    @MockitoBean
+    private CreateBaseRoutineUseCase createBaseRoutineUseCase;
+
+    @MockitoBean
     private JwtService jwtService;
     @MockitoBean
     private CustomUserDetailsService userDetailsService;
@@ -143,7 +152,7 @@ class RoutineControllerTest {
                     new AssignRoutineRequest.CreateTrainingDayRequest("Día 1", List.of(exercise));
 
             AssignRoutineRequest request =
-                    new AssignRoutineRequest("Rutina Base Adaptada", 100L, List.of(day));
+                    new AssignRoutineRequest("Rutina Base Adaptada", 100L, 3, List.of(day));
             CreateRoutineResponse fakeResponse =
                     new CreateRoutineResponse(51L, "Rutina Base Adaptada");
 

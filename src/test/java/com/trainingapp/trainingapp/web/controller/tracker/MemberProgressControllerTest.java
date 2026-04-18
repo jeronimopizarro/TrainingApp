@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -47,7 +48,7 @@ class MemberProgressControllerTest {
 
         MemberProgressSummaryResponse mockResponse = new MemberProgressSummaryResponse(List.of(dto));
 
-        when(getMemberProgressSummaryUseCase.execute()).thenReturn(mockResponse);
+        when(getMemberProgressSummaryUseCase.execute(any())).thenReturn(mockResponse);
 
         mockMvc.perform(get("/progress/summary"))
                 .andExpect(status().isOk())
@@ -61,7 +62,7 @@ class MemberProgressControllerTest {
     void shouldReturnExerciseProgress() throws Exception {
         ExerciseProgressResponse mockResponse = new ExerciseProgressResponse(5L, "Sentadilla", List.of());
 
-        when(getExerciseProgressUseCase.execute(eq(5L), anyInt())).thenReturn(mockResponse);
+        when(getExerciseProgressUseCase.execute(eq(5L), any(), anyInt())).thenReturn(mockResponse);
 
         mockMvc.perform(get("/progress/exercise/5").param("monthsBack", "6"))
                 .andExpect(status().isOk())

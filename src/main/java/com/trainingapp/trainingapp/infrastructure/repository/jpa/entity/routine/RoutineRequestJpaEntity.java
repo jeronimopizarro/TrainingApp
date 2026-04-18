@@ -32,7 +32,7 @@ public class RoutineRequestJpaEntity extends BaseJpaEntity {
     private LocalDateTime requestDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private RoutineRequestStatus status;
 
     @Column(name = "assigned_trainer_id")
@@ -48,7 +48,7 @@ public class RoutineRequestJpaEntity extends BaseJpaEntity {
     private Integer availableDays;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "experience_level", nullable = false)
+    @Column(name = "experience_level", nullable = false, length = 30)
     private ExperienceLevel experienceLevel;
 
     @Column(name = "injuries", length = 500)

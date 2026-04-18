@@ -40,7 +40,17 @@ export const Sidebar = () => {
     { name: 'Progresos', icon: <Trophy size={20} />, path: '/member/progress' },
   ];
 
-  const menuItems = role === 'GYM_ADMIN' ? adminMenuItems : memberMenuItems;
+  const trainerMenuItems = [
+    { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/trainer/dashboard' },
+    { name: 'Biblioteca Base', icon: <Dumbbell size={20} />, path: '/trainer/routines/bases' },
+    { name: 'Mis Alumnos', icon: <Users size={20} />, path: '/trainer/routines/my-created' },
+  ];
+
+  const menuItems = role === 'GYM_ADMIN' 
+    ? adminMenuItems 
+    : role === 'TRAINER' 
+      ? trainerMenuItems 
+      : memberMenuItems;
 
   const handleLogout = () => {
     authService.logout();

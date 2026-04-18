@@ -1,6 +1,7 @@
 package com.trainingapp.trainingapp.web.controller.routine;
 
 import com.trainingapp.trainingapp.application.useCase.routine.*;
+import com.trainingapp.trainingapp.domain.entity.routine.RoutineSummary;
 import com.trainingapp.trainingapp.web.dto.routine.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,9 @@ public class RoutineController {
     private final GetAllRoutinesByTrainerIdUseCase getAllRoutinesByTrainerIdUseCase;
     private final RequestRoutineUseCase requestRoutineUseCase;
     private final TakeRoutineRequestUseCase takeRoutineRequestUseCase;
+    private final GetPendingRoutineRequestsUseCase getPendingRoutineRequestsUseCase;
+    private final GetBaseRoutinesUseCase getBaseRoutinesUseCase;
+    private final CreateBaseRoutineUseCase createBaseRoutineUseCase;
 
     public RoutineController(
             CreatePersonalRoutineUseCase createPersonalRoutineUseCase,
@@ -42,7 +46,10 @@ public class RoutineController {
             CompleteRoutineUseCase completeRoutineUseCase,
             GetAllRoutinesByTrainerIdUseCase getAllRoutinesByTrainerIdUseCase,
             RequestRoutineUseCase requestRoutineUseCase,
-            TakeRoutineRequestUseCase takeRoutineRequestUseCase) {
+            TakeRoutineRequestUseCase takeRoutineRequestUseCase,
+            GetPendingRoutineRequestsUseCase getPendingRoutineRequestsUseCase,
+            GetBaseRoutinesUseCase getBaseRoutinesUseCase,
+            CreateBaseRoutineUseCase createBaseRoutineUseCase) {
         this.createPersonalRoutineUseCase = createPersonalRoutineUseCase;
         this.assignRoutineUseCase = assignRoutineUseCase;
         this.getRoutineByIdUseCase = getRoutineByIdUseCase;
@@ -57,6 +64,28 @@ public class RoutineController {
         this.getAllRoutinesByTrainerIdUseCase = getAllRoutinesByTrainerIdUseCase;
         this.requestRoutineUseCase = requestRoutineUseCase;
         this.takeRoutineRequestUseCase = takeRoutineRequestUseCase;
+        this.getPendingRoutineRequestsUseCase = getPendingRoutineRequestsUseCase;
+        this.getBaseRoutinesUseCase = getBaseRoutinesUseCase;
+        this.createBaseRoutineUseCase = createBaseRoutineUseCase;
+    }
+
+    @GetMapping("/bases")
+    @PreAuthorize("hasAnyRole('TRAINER', 'GYM_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<List<RoutineSummary>> getBaseRoutines() {
+        return ResponseEntity.ok(getBaseRoutinesUseCase.execute());
+    }
+
+    @PostMapping("/bases")
+    @PreAuthorize("hasAnyRole('TRAINER', 'GYM_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<CreateRoutineResponse> createBaseRoutine(@Valid @RequestBody CreateBaseRoutineRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(createBaseRoutineUseCase.execute(request));
+    }
+
+    @GetMapping("/requests/pending")
+    @PreAuthorize("hasAnyRole('TRAINER', 'GYM_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<List<GetPendingRoutineRequestsResponse>> getPendingRequests() {
+        List<GetPendingRoutineRequestsResponse> response = getPendingRoutineRequestsUseCase.execute();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/personal")

@@ -17,6 +17,9 @@ import { MyRoutinePage } from '@/features/routines/pages/MyRoutinePage';
 import { MemberRoutineBuilderPage } from '@/features/routines/pages/MemberRoutineBuilderPage';
 import { WorkoutTrackingPage } from '@/features/tracker/pages/WorkoutTrackingPage';
 import { ProgressDashboardPage } from '@/features/tracker/pages/ProgressDashboardPage';
+import { TrainerDashboardPage } from '@/features/dashboard/pages/TrainerDashboardPage';
+import { BaseRoutinesPage } from '@/features/trainer/pages/BaseRoutinesPage';
+import { MyCreatedRoutinesPage } from '@/features/trainer/pages/MyCreatedRoutinesPage';
 
 /**
  * PublicRoute: Evita que usuarios logueados vuelvan al Login.
@@ -27,7 +30,9 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   const role = authService.getUserRole();
 
   if (isAuth) {
-    return <Navigate to={role === 'GYM_ADMIN' ? '/admin/dashboard' : '/member/dashboard'} replace />;
+    if (role === 'GYM_ADMIN') return <Navigate to="/admin/dashboard" replace />;
+    if (role === 'MEMBER') return <Navigate to="/member/dashboard" replace />;
+    if (role === 'TRAINER') return <Navigate to="/trainer/dashboard" replace />;
   }
   return <>{children}</>;
 };
@@ -80,8 +85,27 @@ export const AppRouter = () => {
            <Route path="workout/:routineId/day/:dayId" element={<WorkoutTrackingPage />} />
         </Route>
 
+        {/* RUTA UNIFICADA DE DETALLES (Accesible por ambos roles) */}
+        <Route path="/routines/:id" element={<ProtectedRoute allowedRoles={['MEMBER', 'TRAINER', 'GYM_ADMIN']} />}>
+          <Route element={<MainLayout />}>
+            <Route index element={<MyRoutinePage />} />
+          </Route>
+        </Route>
+
+        {/* ÁREA DE ENTRENADORES (TRAINER) */}
+        <Route path="/trainer" element={<ProtectedRoute allowedRoles={['TRAINER']} />}>
+          <Route element={<MainLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<TrainerDashboardPage />} />
+            <Route path="routines/bases" element={<BaseRoutinesPage />} />
+            <Route path="routines/my-created" element={<MyCreatedRoutinesPage />} />
+            <Route path="routines/builder" element={<MemberRoutineBuilderPage />} />
+            <Route path="routines/new-base" element={<MemberRoutineBuilderPage />} />
+          </Route>
+        </Route>
+
         {/* REDIRECCIÓN INICIAL INTELIGENTE */}
-        <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

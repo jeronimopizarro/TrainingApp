@@ -18,7 +18,7 @@ class RoutineTest {
 
         return Routine.restore(
                 1L, "Rutina Test", null, null, 1L, 2L, 2L, 1L,
-                RoutineStatus.ACTIVE, true, List.of(day1, day2)
+                RoutineStatus.ACTIVE, true, false, List.of(day1, day2)
         );
     }
 
@@ -77,11 +77,11 @@ class RoutineTest {
     @DisplayName("Debería lanzar excepción si se intenta borrar una rutina COMPLETED o INACTIVE")
     void validateForDeletion_ShouldThrowIfCompletedOrInactive() {
         Routine completedRoutine = Routine.restore(1L, "Test", null, null, 1L, 2L, 2L, 1L,
-                RoutineStatus.COMPLETED, true, List.of());
+                RoutineStatus.COMPLETED, true, false, List.of());
         org.junit.jupiter.api.Assertions.assertThrows(InvalidRoutineStateException.class, completedRoutine::validateForDeletion);
 
         Routine inactiveRoutine = Routine.restore(2L, "Test", null, null, 1L, 2L, 2L, 1L,
-                RoutineStatus.INACTIVE, true, List.of());
+                RoutineStatus.INACTIVE, true, false, List.of());
         org.junit.jupiter.api.Assertions.assertThrows(InvalidRoutineStateException.class, inactiveRoutine::validateForDeletion);
     }
 }

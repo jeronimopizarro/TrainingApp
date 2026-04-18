@@ -54,6 +54,11 @@ public class RoutineRepositoryImpl implements RoutineRepository {
     }
 
     @Override
+    public List<RoutineSummary> findAllBaseRoutinesByGymId(Long gymId) {
+        return jpaRepository.findAllBaseRoutinesByGymId(gymId);
+    }
+
+    @Override
     public boolean existsActiveByMemberId(Long memberId) {
         return jpaRepository.existsByMemberIdAndStatusAndActiveTrue(memberId, RoutineStatus.ACTIVE);
     }

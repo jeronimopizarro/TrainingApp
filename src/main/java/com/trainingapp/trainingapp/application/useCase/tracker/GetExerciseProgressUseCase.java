@@ -32,8 +32,13 @@ public class GetExerciseProgressUseCase {
     }
 
     @Transactional(readOnly = true)
-    public ExerciseProgressResponse execute(Long exerciseId, int monthsBack) {
-        Long memberId = securityUtils.getCurrentUser().getId();
+    public ExerciseProgressResponse execute(Long exerciseId, Long targetMemberId, int monthsBack) {
+        Long memberId = (targetMemberId != null) ? targetMemberId : securityUtils.getCurrentUser().getId();
+
+        // Si un staff está consultando a un socio, validamos que sean del mismo gym
+        if (targetMemberId != null) {
+            securityUtils.validateMemberAccess(targetMemberId);
+        }
 
         Exercise exercise = findExerciseOrThrow(exerciseId);
 

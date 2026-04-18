@@ -56,7 +56,7 @@ class GetExerciseProgressUseCaseTest {
         when(mockSession.calculateAverageE1RMForExercise(5L)).thenReturn(new BigDecimal("120.0"));
         when(mockSession.getStartTime()).thenReturn(LocalDateTime.now());
 
-        ExerciseProgressResponse response = useCase.execute(5L, 6);
+        ExerciseProgressResponse response = useCase.execute(5L, null, 6);
 
         assertNotNull(response);
         assertEquals("Sentadilla", response.exerciseName());

@@ -27,11 +27,12 @@ public class Routine {
     private Long gymId;
     private RoutineStatus status;
     private boolean active;
+    private boolean isBase;
     private List<TrainingDay> days;
 
     private Routine(Long id, String name, LocalDate startDate, LocalDate endDate, Long memberId,
                     Long trainerId, Long createdByUserId, Long gymId, RoutineStatus status,
-                    boolean active, List<TrainingDay> days) {
+                    boolean active, boolean isBase, List<TrainingDay> days) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
@@ -42,28 +43,35 @@ public class Routine {
         this.gymId = gymId;
         this.status = status;
         this.active = active;
+        this.isBase = isBase;
         this.days = days != null ? new ArrayList<>(days) : new ArrayList<>();
         validate();
     }
 
     private void validate() {
         if (this.name == null || this.name.isBlank()) throw new RoutineNameRequiredException();
-        if (this.memberId == null) throw new RoutineMemberRequiredException();
+        if (!this.isBase && this.memberId == null) throw new RoutineMemberRequiredException();
     }
 
     public static Routine createNew(String name, Long memberId, Long trainerId,
                                     Long createdByUserId, Long gymId) {
         return new Routine(null, name, null, null, memberId, trainerId, createdByUserId, gymId,
-                RoutineStatus.DRAFT, true, new ArrayList<>());
+                RoutineStatus.DRAFT, true, false, new ArrayList<>());
+    }
+
+    public static Routine createBase(String name, Long trainerId,
+                                     Long createdByUserId, Long gymId) {
+        return new Routine(null, name, null, null, null, trainerId, createdByUserId, gymId,
+                RoutineStatus.DRAFT, true, true, new ArrayList<>());
     }
 
     public static Routine restore(Long id, String name, LocalDate startDate, LocalDate endDate,
                                   Long memberId,
                                   Long trainerId, Long createdByUserId, Long gymId,
                                   RoutineStatus status,
-                                  boolean active, List<TrainingDay> days) {
+                                  boolean active, boolean isBase, List<TrainingDay> days) {
         return new Routine(id, name, startDate, endDate, memberId, trainerId, createdByUserId,
-                gymId, status, active, days);
+                gymId, status, active, isBase, days);
     }
 
     public TrainingDay addDay(String name) {
