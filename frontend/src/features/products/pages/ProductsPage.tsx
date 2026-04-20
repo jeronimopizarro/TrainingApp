@@ -116,7 +116,7 @@ export const ProductsPage = () => {
   );
 
   return (
-    <div className={`pb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 ${isLoading ? 'opacity-40 grayscale-[50%] pointer-events-none' : 'opacity-100'}`}>
+    <div className={`pb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 ${isLoading ? 'grayscale-[50%] pointer-events-none' : 'opacity-100'}`}>
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
           <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3">Gestión de Tienda</h2>
@@ -202,7 +202,7 @@ export const ProductsPage = () => {
       {products.length === 0 && !isLoading && (
         <div className="p-20 text-center bg-surface-low rounded-[1.5rem] border border-white/[0.03]">
           <ShoppingBag size={48} className="mx-auto text-surface-high mb-4 opacity-20" />
-          <p className="text-text-secondary font-bold italic opacity-40 text-sm">Inventario vacío</p>
+          <p className="text-text-secondary font-bold italic text-sm">Inventario vacío</p>
         </div>
       )}
 

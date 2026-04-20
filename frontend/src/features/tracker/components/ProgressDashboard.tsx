@@ -86,7 +86,7 @@ export const ProgressDashboard = ({ memberId, showTitle = true }: ProgressDashbo
                 <div className="text-left">
                     <h5 className="text-xs font-black uppercase tracking-widest text-text-main mb-1 group-hover:text-primary transition-colors">{ex.exerciseName}</h5>
                     <div className="flex items-center gap-2">
-                    <span className="text-[8px] font-black text-text-secondary opacity-40 uppercase tracking-tighter">PR</span>
+                    <span className="text-[8px] font-black text-text-secondary uppercase tracking-tighter">PR</span>
                     <span className="text-[10px] font-black text-primary uppercase">{ex.currentPersonalRecord} kg</span>
                     </div>
                 </div>
@@ -123,13 +123,13 @@ export const ProgressDashboard = ({ memberId, showTitle = true }: ProgressDashbo
                 
                 <div className="mt-10 grid grid-cols-2 gap-4">
                    <div className="bg-surface-high/20 p-6 rounded-3xl border border-white/5">
-                      <p className="text-[9px] font-black text-text-secondary uppercase tracking-[0.2em] mb-2 opacity-50">Máximo Histórico</p>
+                      <p className="text-[9px] font-black text-text-secondary uppercase tracking-[0.2em] mb-2">Máximo Histórico</p>
                       <p className="text-2xl font-display font-black text-primary italic uppercase tracking-tighter">
                          {Math.max(...exerciseProgress.dataPoints.map(d => d.e1rm), 0).toFixed(1)} kg
                       </p>
                    </div>
                    <div className="bg-surface-high/20 p-6 rounded-3xl border border-white/5">
-                      <p className="text-[9px] font-black text-text-secondary uppercase tracking-[0.2em] mb-2 opacity-50">Registros</p>
+                      <p className="text-[9px] font-black text-text-secondary uppercase tracking-[0.2em] mb-2">Registros</p>
                       <p className="text-2xl font-display font-black text-text-main italic uppercase tracking-tighter">
                          {exerciseProgress.dataPoints.length}
                       </p>

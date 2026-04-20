@@ -47,7 +47,7 @@ export const StatCard: React.FC<StatCardProps> = ({
       <div className="relative z-10">
         {/* Etiqueta Superior */}
         <p className={clsx(
-          "uppercase tracking-[0.2em] text-text-secondary font-bold opacity-60",
+          "uppercase tracking-[0.2em] text-text-secondary font-bold",
           isCompact ? "text-[8px] mb-2" : isLarge ? "text-[12px] mb-6" : "text-[10px] mb-4"
         )}>
           {label}
@@ -73,7 +73,7 @@ export const StatCard: React.FC<StatCardProps> = ({
               {trendValue}
             </div>
             <span className={clsx(
-              "text-text-secondary font-medium opacity-40 uppercase tracking-widest italic leading-none",
+              "text-text-secondary font-medium uppercase tracking-widest italic leading-none",
               isCompact ? "text-[7px]" : isLarge ? "text-[11px]" : "text-[9px]"
             )}>
               {description}

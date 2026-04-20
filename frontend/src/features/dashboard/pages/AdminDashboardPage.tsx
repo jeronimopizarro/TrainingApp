@@ -99,7 +99,7 @@ export const AdminDashboardPage = () => {
                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                 Composición de Ingresos
               </h3>
-              <p className="text-[10px] text-text-secondary uppercase tracking-[0.2em] font-bold mt-2 opacity-40">Abril 2026</p>
+              <p className="text-[10px] text-text-secondary uppercase tracking-[0.2em] font-bold mt-2">Abril 2026</p>
             </div>
           </div>
           <div className="h-[350px] w-full">
@@ -132,7 +132,7 @@ export const AdminDashboardPage = () => {
             
             <div className={`space-y-4 pr-2 overflow-y-auto custom-scrollbar ${expiringCount > 3 ? 'max-h-[280px]' : ''}`}>
               {expiringCount === 0 ? (
-                <p className="text-xs text-text-secondary italic opacity-50 text-center py-4">Sin alertas próximas</p>
+                <p className="text-xs text-text-secondary italic text-center py-4">Sin alertas próximas</p>
               ) : (
                 data.expiringMemberships.map((m) => (
                   <div key={m.memberId} className="flex items-center justify-between p-4 bg-surface-low rounded-2xl border border-transparent hover:border-primary/20 transition-all group flex-shrink-0">

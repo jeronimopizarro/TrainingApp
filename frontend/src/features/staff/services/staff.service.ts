@@ -42,5 +42,13 @@ export const staffService = {
   deleteStaff: async (id: number, role: 'TRAINER' | 'RECEPTIONIST'): Promise<void> => {
     const endpoint = role === 'TRAINER' ? `/trainers/${id}` : `/receptionists/${id}`;
     await api.delete(endpoint);
+  },
+
+  /**
+   * Obtiene un recepcionista por ID.
+   */
+  getReceptionistById: async (id: number): Promise<StaffMember> => {
+    const response = await api.get<StaffMember>(`/receptionists/${id}`);
+    return { ...response.data, role: 'RECEPTIONIST' };
   }
 };

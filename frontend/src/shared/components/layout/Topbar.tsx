@@ -20,7 +20,7 @@ export const Topbar = () => {
             <p className="text-xs font-sans font-bold text-text-main tracking-tight leading-none mb-1.5 group-hover:text-primary transition-colors">
               {userName}
             </p>
-            <p className="text-[9px] font-sans font-black text-text-secondary uppercase tracking-[0.2em] opacity-40 italic">
+            <p className="text-[9px] font-sans font-black text-text-secondary uppercase tracking-[0.2em] italic">
               {roleLabel}
             </p>
           </div>

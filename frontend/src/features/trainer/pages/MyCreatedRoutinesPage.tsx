@@ -89,7 +89,7 @@ export const MyCreatedRoutinesPage = () => {
                     }`}>
                       {routine.status}
                     </span>
-                    <span className="text-[9px] font-bold text-text-secondary flex items-center gap-1 opacity-40 italic">
+                    <span className="text-[9px] font-bold text-text-secondary flex items-center gap-1 italic">
                       <Calendar size={10} /> {new Date(routine.startDate).toLocaleDateString()}
                     </span>
                   </div>

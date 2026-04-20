@@ -147,7 +147,7 @@ export const MyRoutinePage = () => {
                 </div>
                 <div>
                    <h3 className="text-2xl font-display font-black text-text-main italic uppercase tracking-tight">{day.name}</h3>
-                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary opacity-40 mt-1">
+                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary mt-1">
                      {day.exercises.length} Ejercicios Programados
                    </p>
                 </div>
@@ -190,19 +190,19 @@ export const MyRoutinePage = () => {
                         
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                            <div className="bg-surface-high/40 p-3 rounded-xl border border-white/[0.03]">
-                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary opacity-50 mb-1">Series</p>
+                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Series</p>
                              <p className="text-lg font-display font-black text-text-main italic">{exercise.sets}</p>
                            </div>
                            <div className="bg-surface-high/40 p-3 rounded-xl border border-white/[0.03]">
-                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary opacity-50 mb-1">Rango Reps</p>
+                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Rango Reps</p>
                              <p className="text-lg font-display font-black text-text-main italic">{exercise.repsMin}-{exercise.repsMax}</p>
                            </div>
                            <div className="bg-surface-high/40 p-3 rounded-xl border border-white/[0.03]">
-                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary opacity-50 mb-1">Peso Objetivo</p>
+                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Peso Objetivo</p>
                              <p className="text-lg font-display font-black text-primary italic">{exercise.suggestedWeight}kg</p>
                            </div>
                            <div className="bg-surface-high/40 p-3 rounded-xl border border-white/[0.03]">
-                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary opacity-50 mb-1">Esfuerzo (RIR)</p>
+                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Esfuerzo (RIR)</p>
                              <p className="text-lg font-display font-black text-primary italic">{exercise.targetRIR}</p>
                            </div>
                         </div>

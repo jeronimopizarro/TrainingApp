@@ -40,7 +40,7 @@ export const LoginPage = () => {
           <h1 className="text-4xl font-display font-black italic text-text-main tracking-tighter mb-2">
             TrainingApp<span className="text-primary text-5xl">.</span>
           </h1>
-          <p className="text-text-secondary text-xs tracking-[0.25em] uppercase font-bold opacity-50">
+          <p className="text-text-secondary text-xs tracking-[0.25em] uppercase font-bold">
             Control de Alto Rendimiento
           </p>
         </header>
@@ -88,7 +88,7 @@ export const LoginPage = () => {
         </form>
 
         <footer className="mt-12 text-center">
-          <p className="text-text-secondary text-[10px] uppercase tracking-widest font-bold opacity-30">
+          <p className="text-text-secondary text-[10px] uppercase tracking-widest font-bold">
             © 2026 TrainingApp Ecosystem
           </p>
         </footer>

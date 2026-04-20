@@ -21,7 +21,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({ da
   if (!data || data.length === 0) {
     return (
       <div className="h-64 flex items-center justify-center bg-surface-high/20 rounded-[2rem] border border-white/5">
-        <p className="text-text-secondary text-xs font-black uppercase tracking-widest opacity-40">
+        <p className="text-text-secondary text-xs font-black uppercase tracking-widest">
           No hay datos suficientes para graficar
         </p>
       </div>
@@ -85,7 +85,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({ da
         </AreaChart>
       </ResponsiveContainer>
       <div className="flex justify-between items-center px-4 mt-2">
-         <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] opacity-40">Evolución de Carga Estimada (e1RM)</p>
+         <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em]">Evolución de Carga Estimada (e1RM)</p>
          <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{exerciseName}</p>
       </div>
     </div>

@@ -42,7 +42,7 @@ const AccessLogRow = ({ log }: { log: any }) => {
         <h3 className="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1.5">
           {log.memberFirstName} {log.memberLastName}
         </h3>
-        <p className="text-xs text-text-secondary opacity-60 font-bold uppercase tracking-widest flex items-center gap-2">
+        <p className="text-xs text-text-secondary font-bold uppercase tracking-widest flex items-center gap-2">
           <Clock size={12} /> {formattedDate} • {formattedTime}
         </p>
       </div>
@@ -102,7 +102,7 @@ export const AccessLogsPage = () => {
             <ShieldCheck size={20} />
           </div>
           <div className="pr-4">
-            <p className="text-[10px] font-black uppercase tracking-widest text-text-secondary opacity-50">Estado del Sistema</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-text-secondary">Estado del Sistema</p>
             <p className="text-xs font-bold text-green-400 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
               Monitoreo Activo

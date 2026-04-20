@@ -58,7 +58,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit }) => 
             <Edit3 size={18} />
           </button>
         </div>
-        <p className="text-xs text-text-secondary font-medium opacity-60 line-clamp-2 mb-6">
+        <p className="text-xs text-text-secondary font-medium line-clamp-2 mb-6">
           {product.description}
         </p>
 
@@ -73,7 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit }) => 
         
         <div className="mt-auto flex items-center gap-2">
           <Package size={14} className="text-text-secondary opacity-40" />
-          <span className="text-[10px] font-bold text-text-secondary opacity-40 uppercase tracking-widest">
+          <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
             ID: {product.id}
           </span>
           <div className={`ml-auto w-2 h-2 rounded-full ${product.isActive ? 'bg-green-500' : 'bg-error'} shadow-[0_0_8px_rgba(34,197,94,0.3)]`} />

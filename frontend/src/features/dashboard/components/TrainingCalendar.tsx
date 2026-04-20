@@ -27,30 +27,30 @@ export const TrainingCalendar: React.FC<TrainingCalendarProps> = ({ trainingDays
     return { day, isTrainingDay, isToday };
   });
 
-  const weekDays = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
+  const weekDays = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
 
   return (
     <div className="bg-surface-low p-6 rounded-[2rem] border border-white/[0.03] shadow-lg h-full flex flex-col justify-between surface-lift group transition-all duration-700 hover:border-primary/20 w-full overflow-hidden">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-text-secondary opacity-60 mb-0.5">
+          <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-text-secondary mb-0.5">
             Progreso <span className="text-primary">{monthName}</span>
           </h3>
           <p className="text-xl font-display font-black text-text-main italic uppercase tracking-tighter leading-none">
             Actividad <span className="text-primary">Mensual</span>
           </p>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(137,172,255,0.6)]" />
           <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Entrenado</span>
         </div>
       </div>
-      
+
       <div className="flex-1 flex flex-col justify-center">
         <div className="grid grid-cols-7 gap-2 mb-2">
-          {weekDays.map(wd => (
-            <div key={wd} className="text-center text-[9px] font-black text-text-secondary opacity-20 uppercase py-1">
+          {weekDays.map((wd, idx) => (
+            <div key={`${wd}-${idx}`} className="text-center text-[9px] font-black text-text-secondary uppercase py-1">
               {wd}
             </div>
           ))}

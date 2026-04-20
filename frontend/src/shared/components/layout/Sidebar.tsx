@@ -73,7 +73,7 @@ export const Sidebar = () => {
         <h1 className="text-3xl font-display font-black tracking-tighter text-text-main italic">
           TrainingApp<span className="text-primary text-4xl">.</span>
         </h1>
-        <p className="text-[10px] uppercase tracking-[0.2em] text-text-secondary mt-[5px] font-semibold opacity-60">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-text-secondary mt-[5px] font-semibold">
           Sistema de Gestión Integral
         </p>
       </div>

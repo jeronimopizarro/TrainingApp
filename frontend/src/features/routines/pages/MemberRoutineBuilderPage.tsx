@@ -365,7 +365,7 @@ export const MemberRoutineBuilderPage = () => {
 
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                         <div className="flex flex-col gap-1">
-                            <label className="text-[9px] font-black uppercase tracking-widest text-text-secondary opacity-50 px-1">Sets</label>
+                            <label className="text-[9px] font-black uppercase tracking-widest text-text-secondary px-1">Sets</label>
                             <input 
                             type="number"
                             value={ex.sets}
@@ -374,7 +374,7 @@ export const MemberRoutineBuilderPage = () => {
                             />
                         </div>
                         <div className="flex flex-col gap-1">
-                            <label className="text-[9px] font-black uppercase tracking-widest text-text-secondary opacity-50 px-1">Min Reps</label>
+                            <label className="text-[9px] font-black uppercase tracking-widest text-text-secondary px-1">Min Reps</label>
                             <input 
                             type="number"
                             value={ex.repsMin}
@@ -383,7 +383,7 @@ export const MemberRoutineBuilderPage = () => {
                             />
                         </div>
                         <div className="flex flex-col gap-1">
-                            <label className="text-[9px] font-black uppercase tracking-widest text-text-secondary opacity-50 px-1">Max Reps</label>
+                            <label className="text-[9px] font-black uppercase tracking-widest text-text-secondary px-1">Max Reps</label>
                             <input 
                             type="number"
                             value={ex.repsMax}
@@ -392,7 +392,7 @@ export const MemberRoutineBuilderPage = () => {
                             />
                         </div>
                         <div className="flex flex-col gap-1">
-                            <label className="text-[9px] font-black uppercase tracking-widest text-text-secondary opacity-50 px-1">Peso (kg)</label>
+                            <label className="text-[9px] font-black uppercase tracking-widest text-text-secondary px-1">Peso (kg)</label>
                             <input 
                             type="number"
                             value={ex.suggestedWeight}
@@ -401,7 +401,7 @@ export const MemberRoutineBuilderPage = () => {
                             />
                         </div>
                         <div className="flex flex-col gap-1">
-                            <label className="text-[9px] font-black uppercase tracking-widest text-text-secondary opacity-50 px-1">RIR</label>
+                            <label className="text-[9px] font-black uppercase tracking-widest text-text-secondary px-1">RIR</label>
                             <input 
                             type="number"
                             value={ex.targetRIR}
@@ -440,7 +440,7 @@ export const MemberRoutineBuilderPage = () => {
                  </div>
                  <div className="flex-1">
                    <h5 className="text-sm font-bold text-text-main group-hover:text-primary transition-colors uppercase italic">{ex.name}</h5>
-                   <p className="text-[9px] text-text-secondary font-black uppercase tracking-tighter opacity-50">{ex.isBase ? 'Ejercicio Base' : 'Personalizado'}</p>
+                   <p className="text-[9px] text-text-secondary font-black uppercase tracking-tighter">{ex.isBase ? 'Ejercicio Base' : 'Personalizado'}</p>
                  </div>
                  <Plus size={18} className="text-primary opacity-0 group-hover:opacity-100 transition-all" />
                </button>

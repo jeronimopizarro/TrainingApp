@@ -43,7 +43,7 @@ const PlanCard = ({ plan, onEdit }: { plan: MembershipPlan, onEdit: (p: Membersh
       <h3 className="text-lg font-display font-black text-text-main uppercase italic mb-2 tracking-tight">
         {plan.name}
       </h3>
-      <p className="text-xs text-text-secondary font-medium mb-6 opacity-60 line-clamp-2 min-h-[32px]">
+      <p className="text-xs text-text-secondary font-medium mb-6 line-clamp-2 min-h-[32px]">
         {plan.description}
       </p>
 
@@ -162,7 +162,7 @@ export const MembershipsPage = () => {
       {plans.length === 0 && !isLoading && (
         <div className="p-20 text-center bg-surface-low rounded-[1.5rem] border border-white/[0.03]">
           <CreditCard size={48} className="mx-auto text-surface-high mb-4 opacity-20" />
-          <p className="text-text-secondary font-bold italic opacity-40 text-sm">No hay planes configurados</p>
+          <p className="text-text-secondary font-bold italic text-sm">No hay planes configurados</p>
         </div>
       )}
 

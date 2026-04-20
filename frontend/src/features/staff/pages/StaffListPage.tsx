@@ -63,19 +63,19 @@ const StaffRow = ({ member }: { member: StaffMember }) => {
         <h3 className="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1.5">
           {member.firstName} {member.lastName}
         </h3>
-        <p className="text-xs text-text-secondary opacity-60 font-medium truncate flex items-center gap-2">
+        <p className="text-xs text-text-secondary font-medium truncate flex items-center gap-2">
           <Mail size={12} /> {member.email}
         </p>
       </div>
       <div className="hidden lg:block w-32">
-        <p className="text-[11px] uppercase tracking-widest text-text-secondary font-bold opacity-40 mb-1">DNI</p>
+        <p className="text-[11px] uppercase tracking-widest text-text-secondary font-bold mb-1">DNI</p>
         <p className="text-sm font-mono font-bold text-text-main">{member.dni}</p>
       </div>
       <div className="w-48">
         <p className="text-sm font-bold text-text-main leading-none mb-1.5 truncate">
           {member.role === 'TRAINER' ? (member as any).specialization : 'Gestión Administrativa'}
         </p>
-        <p className="text-xs uppercase tracking-widest text-text-secondary font-black opacity-40">
+        <p className="text-xs uppercase tracking-widest text-text-secondary font-black">
           {member.role === 'TRAINER' ? 'Especialidad' : 'Responsabilidad'}
         </p>
       </div>

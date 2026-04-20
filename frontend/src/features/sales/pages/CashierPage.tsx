@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   DollarSign, 
   Plus, 
@@ -21,6 +21,8 @@ import { StatCard } from '@/shared/components/StatCard';
 import { Modal } from '@/shared/components/Modal';
 import { PaymentMethod, TransactionCategory, SaleResponse } from '../types/sale.types';
 import { SaleModal } from '../components/SaleModal';
+import { adminService } from '@/features/staff/services/admin.service';
+import { staffService } from '@/features/staff/services/staff.service';
 
 const PaymentMethodBadge = ({ method }: { method: PaymentMethod }) => {
   const configs: Record<PaymentMethod, { label: string; class: string; icon: any }> = {
@@ -73,7 +75,7 @@ const TransactionRow = ({ transaction, onClick }: { transaction: any; onClick: (
         <h3 className="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1.5">
           {transaction.category === TransactionCategory.MEMBERSHIP ? 'Cobro de Membresía' : 'Venta de Productos'}
         </h3>
-        <p className="text-xs text-text-secondary opacity-60 font-bold uppercase tracking-widest flex items-center gap-2">
+        <p className="text-xs text-text-secondary font-bold uppercase tracking-widest flex items-center gap-2">
           {formattedDate} • {formattedTime}
         </p>
       </div>
@@ -102,13 +104,13 @@ const SaleDetailModalContent = ({ sale }: { sale: SaleResponse }) => {
             <Clock size={24} />
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-1 opacity-50">Fecha de Venta</p>
+            <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-1">Fecha de Venta</p>
             <p className="text-xl font-display font-black text-text-main tracking-tight">{new Date(sale.saleDate).toLocaleString()}</p>
           </div>
         </div>
         <div className="flex items-center gap-4 md:text-right">
           <div className="p-4 bg-surface-low rounded-xl border border-white/5">
-             <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black opacity-50">Referencia</p>
+             <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black">Referencia</p>
              <p className="text-xs font-bold text-text-main">Venta #{sale.id}</p>
           </div>
         </div>
@@ -156,14 +158,14 @@ const SaleDetailModalContent = ({ sale }: { sale: SaleResponse }) => {
         <div className="p-4 bg-surface-low rounded-xl border border-white/5 flex items-center gap-3">
            <CheckCircle2 size={16} className="text-green-400" />
            <div>
-             <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black opacity-50">Medio de Pago</p>
+             <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black">Medio de Pago</p>
              <p className="text-xs font-bold text-text-main">{sale.paymentMethod}</p>
            </div>
         </div>
         <div className="p-4 bg-surface-low rounded-xl border border-white/5 flex items-center gap-3">
            <div className="w-2 h-2 rounded-full bg-primary" />
            <div>
-             <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black opacity-50">Referencia de Venta</p>
+             <p className="text-[9px] uppercase tracking-widest text-text-secondary font-black">Referencia de Venta</p>
              <p className="text-xs font-bold text-text-main">Venta #{sale.id}</p>
            </div>
         </div>
@@ -179,7 +181,45 @@ export const CashierPage = () => {
   const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
   const [selectedSale, setSelectedSale] = useState<SaleResponse | null>(null);
+  const [adminName, setAdminName] = useState<string>('');
+  const [adminCache] = useState<Record<number, string>>({});
   
+  // Efecto para cargar el nombre del administrador cuando se selecciona una transacción
+  useEffect(() => {
+    if (selectedTransaction?.registeredByAdminId) {
+      const adminId = selectedTransaction.registeredByAdminId;
+      
+      if (adminCache[adminId]) {
+        setAdminName(adminCache[adminId]);
+        return;
+      }
+
+      setAdminName(`Cargando...`);
+      
+      // Intentamos primero como Admin
+      adminService.getById(adminId)
+        .then(admin => {
+          const fullName = `${admin.firstName} ${admin.lastName}`;
+          adminCache[adminId] = fullName;
+          setAdminName(fullName);
+        })
+        .catch(() => {
+          // Si falla (probablemente no es Admin), intentamos como Recepcionista
+          staffService.getReceptionistById(adminId)
+            .then(receptionist => {
+              const fullName = `${receptionist.firstName} ${receptionist.lastName}`;
+              adminCache[adminId] = fullName;
+              setAdminName(fullName);
+            })
+            .catch(() => {
+              setAdminName(`Staff #${adminId}`);
+            });
+        });
+    } else {
+      setAdminName('');
+    }
+  }, [selectedTransaction, adminCache]);
+
   // Correction for toDateString
   const isToday = (dateString: string) => {
     const d = new Date(dateString);
@@ -277,7 +317,7 @@ export const CashierPage = () => {
         </div>
       </div>
 
-      <div className={`bg-surface-low/30 rounded-[1.5rem] border border-white/[0.03] shadow-2xl overflow-hidden transition-all duration-500 ${loading ? 'opacity-40 grayscale-[50%] pointer-events-none' : 'opacity-100'}`}>
+      <div className={`bg-surface-low/30 rounded-[1.5rem] border border-white/[0.03] shadow-2xl overflow-hidden transition-all duration-500 ${loading ? 'opacity-100 grayscale-[50%] pointer-events-none' : 'opacity-100'}`}>
         {transactions.length === 0 ? (
           <div className="p-20 text-center">
             <Receipt size={48} className="mx-auto text-surface-high mb-4" />
@@ -333,26 +373,26 @@ export const CashierPage = () => {
 
               <div className="grid grid-cols-2 gap-8">
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-2 opacity-50">Categoría</p>
+                  <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-2">Categoría</p>
                   <CategoryBadge category={selectedTransaction.category} />
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-2 opacity-50">Medio de Pago</p>
+                  <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-2">Medio de Pago</p>
                   <PaymentMethodBadge method={selectedTransaction.paymentMethod} />
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-2 opacity-50">Fecha</p>
+                  <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-2">Fecha</p>
                   <p className="text-sm font-bold text-text-main">{new Date(selectedTransaction.transactionDate).toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-2 opacity-50">Registrado por</p>
-                  <p className="text-sm font-bold text-text-main italic">Administrador #{selectedTransaction.registeredByAdminId}</p>
+                  <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-2">Registrado por</p>
+                  <p className="text-sm font-bold text-text-main italic">{adminName}</p>
                 </div>
               </div>
 
               {selectedTransaction.notes && (
                 <div className="bg-surface-high/50 p-4 rounded-2xl border border-white/5">
-                  <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-2 opacity-50">Notas</p>
+                  <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-2">Notas</p>
                   <p className="text-xs text-text-main leading-relaxed">{selectedTransaction.notes}</p>
                 </div>
               )}

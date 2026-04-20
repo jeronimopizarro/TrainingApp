@@ -182,7 +182,7 @@ export const AccessValidationPage = () => {
             <Camera size={20} />
           </div>
           <div className="pr-4 text-left">
-            <p className="text-[10px] font-black uppercase tracking-widest text-text-secondary opacity-50 leading-none mb-1">Cámara</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-text-secondary leading-none mb-1">Cámara</p>
             <p className="text-xs font-bold text-green-400 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
               Lista para Escanear

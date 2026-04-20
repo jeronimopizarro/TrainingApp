@@ -248,7 +248,7 @@ export const WorkoutTrackingPage = () => {
                     </span>
                   </div>
                   {activeExercise.notes && (
-                    <p className="mt-4 text-xs font-medium text-text-secondary italic opacity-60">
+                    <p className="mt-4 text-xs font-medium text-text-secondary italic">
                       💡 {activeExercise.notes}
                     </p>
                   )}
@@ -274,7 +274,7 @@ export const WorkoutTrackingPage = () => {
                       )}
                     >
                       <div className="col-span-1 flex justify-center">
-                        <span className="font-display font-black text-text-secondary opacity-40">{idx + 1}</span>
+                        <span className="font-display font-black text-text-secondary">{idx + 1}</span>
                       </div>
                       
                       <div className="col-span-4 px-2">

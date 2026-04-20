@@ -63,7 +63,7 @@ export const RenewMembershipModal = ({ memberId, memberName, onSuccess }: RenewM
             <Zap size={20} />
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-text-secondary font-black opacity-50">Planes Disponibles</p>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-text-secondary font-black">Planes Disponibles</p>
             <h3 className="text-xl font-display font-black text-text-main tracking-tight">Selecciona una Membresía</h3>
           </div>
         </div>
@@ -105,7 +105,7 @@ export const RenewMembershipModal = ({ memberId, memberName, onSuccess }: RenewM
                     <span className="text-[10px] font-black uppercase tracking-tighter bg-surface-high px-2 py-0.5 rounded border border-white/5 text-text-secondary">
                       {plan.durationMonths} {plan.durationMonths === 1 ? 'Mes' : 'Meses'}
                     </span>
-                    <p className="text-xs text-text-secondary line-clamp-1 opacity-50">{plan.description}</p>
+                    <p className="text-xs text-text-secondary line-clamp-1">{plan.description}</p>
                   </div>
                 </div>
                 <div className="text-right ml-4">
@@ -121,12 +121,12 @@ export const RenewMembershipModal = ({ memberId, memberName, onSuccess }: RenewM
       <div className="w-full md:w-[380px] bg-surface-high/20 p-8 flex flex-col">
         <div className="flex-1 space-y-8">
           <div className="space-y-1.5">
-            <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black opacity-50">Resumen para:</p>
+            <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black">Resumen para:</p>
             <p className="text-2xl font-display font-black text-text-main tracking-tight leading-none">{memberName}</p>
           </div>
 
           <div className="space-y-4">
-            <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black opacity-50">Método de Pago</p>
+            <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black">Método de Pago</p>
             <div className="grid grid-cols-2 gap-2">
               {[
                 { id: PaymentMethod.CASH, icon: Banknote, label: 'Efectivo' },
@@ -154,7 +154,7 @@ export const RenewMembershipModal = ({ memberId, memberName, onSuccess }: RenewM
         <div className="mt-8 space-y-6 pt-8 border-t border-white/5">
           <div className="flex justify-between items-end">
             <div>
-              <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black opacity-50 mb-1">Total a cobrar</p>
+              <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-1">Total a cobrar</p>
               <p className="text-4xl font-display font-black text-text-main">${selectedPlan?.price.toLocaleString() || '0'}</p>
             </div>
             {selectedPlan && (

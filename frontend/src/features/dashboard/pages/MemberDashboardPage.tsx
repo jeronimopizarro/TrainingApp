@@ -123,7 +123,7 @@ export const MemberDashboardPage = () => {
             value={
               <div className="flex items-baseline gap-2">
                 <span>{data?.daysUntilExpiration || 0} Días</span>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 italic">restantes</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] italic">restantes</span>
               </div>
             } 
             icon={CalendarIcon} 
@@ -143,7 +143,7 @@ export const MemberDashboardPage = () => {
                    <Dumbbell size={18} />
                  </div>
                  <h3 className="text-xl font-display font-black text-text-main uppercase italic mb-0.5 tracking-tighter">Mi <span className="text-primary">Rutina</span></h3>
-                 <p className="text-[10px] text-text-secondary font-bold uppercase tracking-[0.2em] opacity-40">Plan y pesos</p>
+                 <p className="text-[10px] text-text-secondary font-bold uppercase tracking-[0.2em]">Plan y pesos</p>
                </div>
                <div className="flex justify-end relative z-10">
                   <div className="w-7 h-7 rounded-full bg-surface-high border border-white/5 flex items-center justify-center text-text-secondary group-hover:text-primary transition-all duration-500">
@@ -164,7 +164,7 @@ export const MemberDashboardPage = () => {
                    <Trophy size={18} />
                  </div>
                  <h3 className="text-xl font-display font-black text-text-main uppercase italic mb-0.5 tracking-tighter">Mis <span className="text-primary">Progresos</span></h3>
-                 <p className="text-[10px] text-text-secondary font-bold uppercase tracking-[0.2em] opacity-40">Evolución fuerza</p>
+                 <p className="text-[10px] text-text-secondary font-bold uppercase tracking-[0.2em]">Evolución fuerza</p>
                </div>
                <div className="flex justify-end relative z-10">
                   <div className="w-7 h-7 rounded-full bg-surface-high border border-white/5 flex items-center justify-center text-text-secondary group-hover:text-primary transition-all duration-500">
@@ -187,7 +187,7 @@ export const MemberDashboardPage = () => {
                  <QrCode size={18} />
                </div>
                <h3 className="text-xl font-display font-black text-text-main uppercase italic mb-0.5 tracking-tighter">Entrada <span className="text-primary">QR</span></h3>
-               <p className="text-[10px] text-text-secondary font-bold uppercase tracking-[0.2em] opacity-40">Acceso rápido</p>
+               <p className="text-[10px] text-text-secondary font-bold uppercase tracking-[0.2em]">Acceso rápido</p>
              </div>
              <div className="flex justify-end relative z-10">
                 <div className="w-7 h-7 rounded-full bg-surface-high border border-white/5 flex items-center justify-center text-text-secondary group-hover:text-primary transition-all duration-500">

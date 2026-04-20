@@ -57,7 +57,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, muscleGrou
             <Edit3 size={18} />
           </button>
         </div>
-        <p className="text-xs text-text-secondary font-medium opacity-60 line-clamp-2 mb-6">
+        <p className="text-xs text-text-secondary font-medium line-clamp-2 mb-6">
           {exercise.description}
         </p>
         
@@ -73,7 +73,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, muscleGrou
               </div>
             ))}
           </div>
-          <span className="text-[10px] font-bold text-text-secondary opacity-40 uppercase tracking-widest">
+          <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
             {exercise.muscleGroups.length} Grupos
           </span>
         </div>

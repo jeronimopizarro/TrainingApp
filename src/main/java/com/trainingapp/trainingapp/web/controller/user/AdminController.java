@@ -40,7 +40,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
     @GetMapping("/{id}")
     public ResponseEntity<AdminResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(getAdminByIdUseCase.execute(id));

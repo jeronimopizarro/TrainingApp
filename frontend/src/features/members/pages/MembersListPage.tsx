@@ -58,12 +58,12 @@ const MemberRow = ({ member, onRenew }: { member: any; onRenew: () => void }) =>
         <h3 className="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1.5">
           {member.firstName} {member.lastName}
         </h3>
-        <p className="text-xs text-text-secondary opacity-60 font-medium truncate flex items-center gap-2">
+        <p className="text-xs text-text-secondary font-medium truncate flex items-center gap-2">
           <Mail size={12} /> {member.email}
         </p>
       </div>
       <div className="hidden lg:block w-32">
-        <p className="text-[11px] uppercase tracking-widest text-text-secondary font-bold opacity-40 mb-1">DNI</p>
+        <p className="text-[11px] uppercase tracking-widest text-text-secondary font-bold mb-1">DNI</p>
         <p className="text-sm font-mono font-bold text-text-main">{member.dni}</p>
       </div>
       <div className="w-48">
@@ -71,7 +71,7 @@ const MemberRow = ({ member, onRenew }: { member: any; onRenew: () => void }) =>
           {member.planName}
         </p>
         {member.endDate && (
-          <p className="text-xs uppercase tracking-widest text-text-secondary font-black opacity-40">
+          <p className="text-xs uppercase tracking-widest text-text-secondary font-black">
             Vence: {member.endDate}
           </p>
         )}
@@ -222,7 +222,7 @@ export const MembersListPage = () => {
       </div>
 
       {/* LISTADO - Solo se aplica opacidad durante las recargas de filtros */}
-      <div className={`bg-surface-low/30 rounded-[1.5rem] border border-white/[0.03] shadow-2xl overflow-hidden transition-all duration-500 ${isLoading ? 'opacity-40 grayscale-[50%] pointer-events-none' : 'opacity-100'}`}>
+      <div className={`bg-surface-low/30 rounded-[1.5rem] border border-white/[0.03] shadow-2xl overflow-hidden transition-all duration-500 ${isLoading ? 'grayscale-[50%] pointer-events-none' : 'opacity-100'}`}>
         {!isLoading && filteredMembers.length === 0 ? (
           <div className="p-20 text-center">
             <Users size={48} className="mx-auto text-surface-high mb-4" />

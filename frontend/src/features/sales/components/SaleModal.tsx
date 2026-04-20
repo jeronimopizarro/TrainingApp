@@ -191,7 +191,7 @@ export const SaleModal = ({ onSuccess, onClose }: SaleModalProps) => {
 
                        <div className="flex-1 min-w-0">
                          <p className="text-sm font-bold text-text-main truncate">{item.name}</p>
-                         <p className="text-xs text-text-secondary font-black opacity-50">${item.price.toLocaleString()} c/u</p>
+                         <p className="text-xs text-text-secondary font-black">${item.price.toLocaleString()} c/u</p>
                        </div>
                        <div className="flex items-center bg-surface-high rounded-lg p-1 border border-white/10 scale-90">
                           <button 
@@ -248,7 +248,7 @@ export const SaleModal = ({ onSuccess, onClose }: SaleModalProps) => {
 
             <div className="flex items-center justify-between border-t border-white/[0.03] pt-3">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-text-secondary font-black mb-0.5 opacity-50">Total</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-text-secondary font-black mb-0.5">Total</p>
                 <p className="text-3xl font-display font-black text-text-main tracking-tight leading-none">${total.toLocaleString()}</p>
               </div>
               <Button 

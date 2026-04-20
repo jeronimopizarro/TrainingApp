@@ -115,7 +115,7 @@ export const ExerciseForm: React.FC<ExerciseFormProps> = ({
             <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
               {muscleGroups.length === 0 ? (
                 <div className="col-span-2 p-8 text-center border border-dashed border-white/10 rounded-2xl">
-                  <p className="text-[11px] text-text-secondary uppercase font-bold opacity-40">No hay grupos musculares definidos en el sistema</p>
+                  <p className="text-[11px] text-text-secondary uppercase font-bold">No hay grupos musculares definidos en el sistema</p>
                 </div>
               ) : (
                 muscleGroups.map(mg => {
@@ -124,7 +124,7 @@ export const ExerciseForm: React.FC<ExerciseFormProps> = ({
                     <div
                       key={mg.id}
                       onClick={() => handleMuscleSelection(mg.id)}
-                      className={`flex flex-col items-start p-4 rounded-xl border transition-all text-left cursor-pointer ${isSelected ? 'bg-primary/10 border-primary/30' : 'bg-surface-high border-white/5 opacity-50 hover:opacity-100'}`}
+                      className={`flex flex-col items-start p-4 rounded-xl border transition-all text-left cursor-pointer ${isSelected ? 'bg-primary/10 border-primary/30' : 'bg-surface-high border-white/5 hover:opacity-100'}`}
                     >
                       <span className={`text-sm font-bold ${isSelected ? 'text-primary' : 'text-text-secondary'}`}>{mg.name}</span>
                       {isSelected && (
