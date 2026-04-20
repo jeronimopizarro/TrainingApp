@@ -47,7 +47,7 @@ public class UpdateRoutineUseCase {
         Routine routine = validateRoutine(routineId);
         accessValidator.validateModificationPermission(routine);
 
-        validateRoutineIsDraft(routine);
+        validateRoutineStatusForUpdate(routine);
 
         Long currentUserGymId = securityUtils.getCurrentUserGymId();
         User currentUser = securityUtils.getCurrentUser();
@@ -65,8 +65,8 @@ public class UpdateRoutineUseCase {
                 () -> new RoutineNotFoundException(id));
     }
 
-    private void validateRoutineIsDraft(Routine routine) {
-        if (routine.getStatus() != RoutineStatus.DRAFT) {
+    private void validateRoutineStatusForUpdate(Routine routine) {
+        if (routine.getStatus() != RoutineStatus.DRAFT && routine.getStatus() != RoutineStatus.ACTIVE) {
             throw new InvalidRoutineStateException();
         }
     }

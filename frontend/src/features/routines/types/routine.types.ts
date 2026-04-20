@@ -2,6 +2,7 @@ export type RoutineStatus = 'ACTIVE' | 'INACTIVE' | 'COMPLETED' | 'REQUESTED';
 export type ExperienceLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
 export interface ExerciseItem {
+  id?: number;
   orderNumber: number;
   sets: number;
   repsMin: number;

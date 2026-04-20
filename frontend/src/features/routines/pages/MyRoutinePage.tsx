@@ -112,14 +112,14 @@ export const MyRoutinePage = () => {
         </div>
         
         <div className="flex flex-col md:flex-row items-center gap-4">
-          {isStaff && (
+          {(isStaff || detail.createdByUserId === userData?.userId) && (
              <Button 
-                onClick={() => navigate(`/trainer/routines/builder?editId=${detail.id}`)}
+                onClick={() => navigate(isStaff ? `/trainer/routines/builder?editId=${detail.id}` : `/member/routine/builder?editId=${detail.id}`)}
                 variant="secondary" 
                 icon={<Edit3 size={16} />}
                 className="rounded-2xl"
              >
-               Editar Estructura
+               Editar {isBaseRoutine ? 'Estructura' : 'Rutina'}
              </Button>
           )}
           <Button 

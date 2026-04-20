@@ -180,7 +180,7 @@ public class RoutineDTOMapper {
         String video = (catalogData != null) ? catalogData.getVideoUrl() : null;
 
         return new ExerciseItemResponse(
-                detail.getOrderNumber(), detail.getSets(), detail.getRepsMin(), detail.getRepsMax(),
+                detail.getId(), detail.getOrderNumber(), detail.getSets(), detail.getRepsMin(), detail.getRepsMax(),
                 detail.getTargetRIR(), detail.getSuggestedWeight(), detail.getNotes(),
                 detail.getExerciseId(), name, img, video
         );
