@@ -102,20 +102,20 @@ export const TrainerDashboardPage = () => {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
         <div>
-          <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3">Panel del Entrenador</h2>
-          <h1 className="text-5xl font-display font-black text-text-main tracking-tight italic">
+          <h2 className="text-[10px] sm:text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-2 sm:mb-3">Panel del Entrenador</h2>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-text-main tracking-tight italic">
             Gestión de <span className="text-primary-dark">Rutinas</span>.
           </h1>
         </div>
       </header>
 
       {/* FILTROS / TABS */}
-      <div className="flex gap-2 p-1.5 bg-surface-low rounded-[1.5rem] border border-white/5 w-fit mb-10">
+      <div className="flex flex-col sm:flex-row gap-2 p-1.5 bg-surface-low rounded-[1.5rem] sm:rounded-[2rem] border border-white/5 w-full sm:w-fit mb-8 sm:mb-10">
         <button
           onClick={() => setActiveTab('mine')}
-          className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-3 ${
+          className={`px-6 sm:px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center sm:justify-start gap-3 ${
             activeTab === 'mine' 
               ? 'bg-primary text-background shadow-lg shadow-primary/20' 
               : 'text-text-secondary hover:text-text-main hover:bg-surface-high'
@@ -130,7 +130,7 @@ export const TrainerDashboardPage = () => {
         </button>
         <button
           onClick={() => setActiveTab('global')}
-          className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-3 ${
+          className={`px-6 sm:px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center sm:justify-start gap-3 ${
             activeTab === 'global' 
               ? 'bg-primary text-background shadow-lg shadow-primary/20' 
               : 'text-text-secondary hover:text-text-main hover:bg-surface-high'

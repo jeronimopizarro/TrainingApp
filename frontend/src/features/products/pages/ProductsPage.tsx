@@ -117,22 +117,23 @@ export const ProductsPage = () => {
 
   return (
     <div className={`pb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 ${isLoading ? 'grayscale-[50%] pointer-events-none' : 'opacity-100'}`}>
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
         <div>
-          <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3">Gestión de Tienda</h2>
-          <h1 className="text-5xl font-display font-black text-text-main tracking-tight italic">
+          <h2 className="text-[10px] sm:text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-2 sm:mb-3">Gestión de Tienda</h2>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-text-main tracking-tight italic">
             Control de <span className="text-primary-dark">Inventario</span>.
           </h1>
         </div>
         <Button 
           icon={<Plus size={18} />} 
           onClick={() => { handleReset(); setIsModalOpen(true); }}
+          className="w-full sm:w-auto"
         >
           Nuevo Producto
         </Button>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
         <StatCard 
           label="Valor Total" 
           value={`$${totalStockValue.toLocaleString()}`} 

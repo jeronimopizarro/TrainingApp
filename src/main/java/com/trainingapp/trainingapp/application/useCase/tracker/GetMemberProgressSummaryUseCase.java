@@ -47,7 +47,7 @@ public class GetMemberProgressSummaryUseCase {
         for (Long exerciseId : performedExerciseIds) {
             exerciseRepository.findById(exerciseId).ifPresent(exercise -> {
                 BigDecimal latestPR = calculateLatestPR(memberId, exerciseId);
-                summaryList.add(new ExerciseSummaryDTO(exerciseId, exercise.getName(), latestPR));
+                summaryList.add(new ExerciseSummaryDTO(exerciseId, exercise.getName(), latestPR, exercise.getImageUrl()));
             });
         }
 

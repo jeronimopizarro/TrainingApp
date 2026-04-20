@@ -30,17 +30,17 @@ export const LoginPage = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6 selection:bg-primary/30">
 
-      <div className="max-w-[450px] w-full bg-surface-low p-12 rounded-[2.5rem] shadow-2xl border border-surface-med/10 relative z-10 animate-in fade-in zoom-in-95 duration-500">
+      <div className="max-w-[450px] w-full bg-surface-low p-8 sm:p-12 rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-surface-med/10 relative z-10 animate-in fade-in zoom-in-95 duration-500">
         
         {/* LOGO & CABECERA */}
-        <header className="text-center mb-12">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-dark rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary/20 rotate-3">
-            <Dumbbell className="text-white" size={32} strokeWidth={2.5} />
+        <header className="text-center mb-10 sm:mb-12">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-primary to-primary-dark rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary/20 rotate-3">
+            <Dumbbell className="text-white" size={28} strokeWidth={2.5} className="sm:size-[32px]" />
           </div>
-          <h1 className="text-4xl font-display font-black italic text-text-main tracking-tighter mb-2">
-            TrainingApp<span className="text-primary text-5xl">.</span>
+          <h1 className="text-3xl sm:text-4xl font-display font-black italic text-text-main tracking-tighter mb-2">
+            TrainingApp<span className="text-primary text-4xl sm:text-5xl">.</span>
           </h1>
-          <p className="text-text-secondary text-xs tracking-[0.25em] uppercase font-bold">
+          <p className="text-text-secondary text-[10px] sm:text-xs tracking-[0.25em] uppercase font-bold">
             Control de Alto Rendimiento
           </p>
         </header>

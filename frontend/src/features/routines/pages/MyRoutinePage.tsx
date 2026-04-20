@@ -75,58 +75,60 @@ export const MyRoutinePage = () => {
   return (
     <div className="pb-10 animate-in fade-in duration-700">
       {/* HEADER */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 px-6">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 mb-8 sm:mb-12 px-4 sm:px-6">
         <div>
-          <div className="flex items-center gap-4 mb-3">
-             <button onClick={() => navigate(-1)} className="p-2 hover:bg-surface-low rounded-xl transition-colors text-text-secondary">
-               <ChevronLeft />
+          <div className="flex items-center gap-2 sm:gap-4 mb-2 sm:mb-3">
+             <button onClick={() => navigate(-1)} className="p-1.5 sm:p-2 hover:bg-surface-low rounded-xl transition-colors text-text-secondary">
+               <ChevronLeft size={20} />
              </button>
-             <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em]">
+             <h2 className="text-[10px] sm:text-xs font-sans font-bold text-primary uppercase tracking-[0.4em]">
                {isBaseRoutine ? 'Plantilla Técnica' : 'Plan de Entrenamiento'}
              </h2>
           </div>
           
-          <h1 className="text-5xl font-display font-black text-text-main tracking-tight italic uppercase">
-            {detail.name}
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-text-main tracking-tight italic uppercase">
+            {detail.name.toLowerCase().endsWith('personal') 
+              ? <>
+                  {detail.name.substring(0, detail.name.toLowerCase().lastIndexOf('personal'))}
+                  <span className="text-primary-dark">Personal</span>
+                </>
+              : detail.name
+            }.
           </h1>
 
-          <div className="flex flex-wrap items-center gap-6 mt-6">
+
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-4 sm:mt-6">
              {!isBaseRoutine && (
                 <div className="flex items-center gap-2 text-text-secondary">
-                  <Calendar size={16} className="text-primary" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">
-                    Válida hasta: {detail.endDate ? new Date(detail.endDate).toLocaleDateString() : 'Indefinida'}
+                  <Calendar size={14} className="text-primary sm:size-[16px]" />
+                  <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest">
+                    Vence: {detail.endDate ? new Date(detail.endDate).toLocaleDateString() : 'Indefinida'}
                   </span>
                 </div>
              )}
              <div className="flex items-center gap-2 text-text-secondary">
-               <Clock size={16} className="text-primary" />
-               <span className="text-[10px] font-bold uppercase tracking-widest">{detail.days.length} Días / Semana</span>
+               <Clock size={14} className="text-primary sm:size-[16px]" />
+               <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest">{detail.days.length} Días / Semana</span>
              </div>
-             {isBaseRoutine && (
-                <span className="px-3 py-1 bg-primary/10 text-primary text-[8px] font-black rounded-full uppercase tracking-widest border border-primary/20">
-                    Estructura Base
-                </span>
-             )}
           </div>
         </div>
         
-        <div className="flex flex-col md:flex-row items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
           {(isStaff || detail.createdByUserId === userData?.userId) && (
              <Button 
                 onClick={() => navigate(isStaff ? `/trainer/routines/builder?editId=${detail.id}` : `/member/routine/builder?editId=${detail.id}`)}
                 variant="secondary" 
                 icon={<Edit3 size={16} />}
-                className="rounded-2xl"
+                className="rounded-2xl w-full sm:w-auto text-xs"
              >
-               Editar {isBaseRoutine ? 'Estructura' : 'Rutina'}
+               Editar
              </Button>
           )}
           <Button 
             onClick={() => setIsDeleteModalOpen(true)}
             variant="primary" 
             icon={<Trash2 size={16} />}
-            className="bg-error hover:bg-error-dark border-none rounded-2xl"
+            className="bg-error hover:bg-error-dark border-none rounded-2xl w-full sm:w-auto text-xs"
           >
             Eliminar
           </Button>
@@ -134,26 +136,26 @@ export const MyRoutinePage = () => {
       </header>
 
       {/* DAYS LIST */}
-      <div className="flex flex-col gap-6 max-w-5xl mx-auto px-6">
+      <div className="flex flex-col gap-4 sm:gap-6 max-w-5xl mx-auto px-4 sm:px-6">
         {detail.days.map((day, index) => (
-          <div key={day.id} className="bg-surface-low rounded-[2rem] border border-white/[0.03] overflow-hidden transition-all duration-500 hover:border-white/10">
+          <div key={day.id} className="bg-surface-low rounded-[1.5rem] sm:rounded-[2rem] border border-white/[0.03] overflow-hidden transition-all duration-500">
             <button 
               onClick={() => setExpandedDay(expandedDay === index ? null : index)}
-              className="w-full flex items-center justify-between p-8 text-left hover:bg-white/[0.01] transition-colors"
+              className="w-full flex items-center justify-between p-5 sm:p-8 text-left hover:bg-white/[0.01] transition-colors"
             >
-              <div className="flex items-center gap-6">
-                <div className="w-14 h-14 bg-surface-high rounded-2xl flex items-center justify-center font-display font-black text-2xl text-primary border border-white/5 shadow-xl">
+              <div className="flex items-center gap-4 sm:gap-6">
+                <div className="w-10 h-10 sm:w-14 sm:h-14 bg-surface-high rounded-xl sm:rounded-2xl flex items-center justify-center font-display font-black text-xl sm:text-2xl text-primary border border-white/5 shadow-xl">
                    {index + 1}
                 </div>
                 <div>
-                   <h3 className="text-2xl font-display font-black text-text-main italic uppercase tracking-tight">{day.name}</h3>
-                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary mt-1">
-                     {day.exercises.length} Ejercicios Programados
+                   <h3 className="text-xl sm:text-2xl font-display font-black text-text-main italic uppercase tracking-tight">{day.name}</h3>
+                   <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary mt-1">
+                     {day.exercises.length} Ejercicios
                    </p>
                 </div>
               </div>
               <div className={clsx("transition-transform duration-500", expandedDay === index ? "rotate-180" : "rotate-0")}>
-                <ChevronDown className="text-text-secondary" />
+                <ChevronDown className="text-text-secondary" size={20} />
               </div>
             </button>
 
@@ -162,48 +164,55 @@ export const MyRoutinePage = () => {
               expandedDay === index ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
             )}>
               <div className="overflow-hidden">
-                <div className="p-8 pt-0 flex flex-col gap-4 border-t border-white/[0.02]">
+                <div className="p-4 sm:p-8 pt-0 flex flex-col gap-3 sm:gap-4 border-t border-white/[0.02]">
                   {day.exercises.map((exercise) => (
-                    <div key={exercise.exerciseId} className="group flex items-center gap-6 p-6 rounded-2xl bg-surface-high/20 hover:bg-surface-high/40 transition-all border border-white/[0.02] hover:border-primary/20">
-                      <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/5 bg-background flex-shrink-0 relative group">
-                        {exercise.exerciseImageUrl ? (
-                          <img src={exercise.exerciseImageUrl} alt={exercise.exerciseName} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-primary/20">
-                            <Dumbbell size={24} />
-                          </div>
-                        )}
-                        {exercise.exerciseVideoUrl && (
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); setVideoData({ url: exercise.exerciseVideoUrl, title: exercise.exerciseName }); }}
-                            className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <Play size={20} className="text-primary fill-primary" />
-                          </button>
-                        )}
+                    <div key={exercise.exerciseId} className="group flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-4 sm:p-6 rounded-2xl bg-surface-high/20 hover:bg-surface-high/40 transition-all border border-white/[0.02] hover:border-primary/20 shadow-inner">
+                      <div className="flex items-center gap-4 sm:gap-0 sm:block">
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border border-white/5 bg-background flex-shrink-0 relative group/img">
+                          {exercise.exerciseImageUrl ? (
+                            <img src={exercise.exerciseImageUrl} alt={exercise.exerciseName} className="w-full h-full object-cover opacity-80 group-hover/img:opacity-100 transition-opacity" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-primary/20">
+                              <Dumbbell size={24} />
+                            </div>
+                          )}
+                          {exercise.exerciseVideoUrl && (
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); setVideoData({ url: exercise.exerciseVideoUrl, title: exercise.exerciseName }); }}
+                              className="absolute inset-0 flex items-center justify-center bg-black/50 sm:bg-black/40 opacity-100 sm:opacity-0 sm:group-hover/img:opacity-100 transition-opacity"
+                            >
+                              <Play size={20} className="text-primary fill-primary sm:size-[24px]" />
+                            </button>
+                          )}
+                        </div>
+                        <div className="sm:hidden">
+                          <h4 className="text-sm font-display font-black text-text-main group-hover:text-primary transition-colors leading-tight uppercase italic tracking-tight">
+                            {exercise.exerciseName}
+                          </h4>
+                        </div>
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-xl font-display font-black text-text-main group-hover:text-primary transition-colors leading-none mb-6 uppercase italic tracking-tight">
+                        <h4 className="hidden sm:block text-xl font-display font-black text-text-main group-hover:text-primary transition-colors leading-none mb-6 uppercase italic tracking-tight">
                           {exercise.exerciseName}
                         </h4>
                         
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                           <div className="bg-surface-high/40 p-3 rounded-xl border border-white/[0.03]">
-                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Series</p>
-                             <p className="text-lg font-display font-black text-text-main italic">{exercise.sets}</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+                           <div className="bg-surface-high/40 p-2 sm:p-3 rounded-xl border border-white/[0.03]">
+                             <p className="text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Series</p>
+                             <p className="text-base sm:text-lg font-display font-black text-text-main italic">{exercise.sets}</p>
                            </div>
-                           <div className="bg-surface-high/40 p-3 rounded-xl border border-white/[0.03]">
-                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Rango Reps</p>
-                             <p className="text-lg font-display font-black text-text-main italic">{exercise.repsMin}-{exercise.repsMax}</p>
+                           <div className="bg-surface-high/40 p-2 sm:p-3 rounded-xl border border-white/[0.03]">
+                             <p className="text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Reps</p>
+                             <p className="text-base sm:text-lg font-display font-black text-text-main italic">{exercise.repsMin}-{exercise.repsMax}</p>
                            </div>
-                           <div className="bg-surface-high/40 p-3 rounded-xl border border-white/[0.03]">
-                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Peso Objetivo</p>
-                             <p className="text-lg font-display font-black text-primary italic">{exercise.suggestedWeight}kg</p>
+                           <div className="bg-surface-high/40 p-2 sm:p-3 rounded-xl border border-white/[0.03]">
+                             <p className="text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Peso</p>
+                             <p className="text-base sm:text-lg font-display font-black text-primary italic">{exercise.suggestedWeight}kg</p>
                            </div>
-                           <div className="bg-surface-high/40 p-3 rounded-xl border border-white/[0.03]">
-                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Esfuerzo (RIR)</p>
-                             <p className="text-lg font-display font-black text-primary italic">{exercise.targetRIR}</p>
+                           <div className="bg-surface-high/40 p-2 sm:p-3 rounded-xl border border-white/[0.03]">
+                             <p className="text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-text-secondary mb-1">Esfuerzo</p>
+                             <p className="text-base sm:text-lg font-display font-black text-primary italic">{exercise.targetRIR} RIR</p>
                            </div>
                         </div>
                       </div>

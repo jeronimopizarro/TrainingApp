@@ -9,6 +9,7 @@ public record MemberProgressSummaryResponse(
     public record ExerciseSummaryDTO(
             Long exerciseId,
             String exerciseName,
-            BigDecimal currentPersonalRecord // Mejor promedio reciente
+            BigDecimal currentPersonalRecord,
+            String exerciseImageUrl
     ) {}
 }

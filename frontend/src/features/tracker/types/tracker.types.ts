@@ -48,6 +48,7 @@ export interface ExerciseSummaryDTO {
   exerciseId: number;
   exerciseName: string;
   currentPersonalRecord: number;
+  exerciseImageUrl: string;
 }
 
 export interface MemberProgressSummaryResponse {

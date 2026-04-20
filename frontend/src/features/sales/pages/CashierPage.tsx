@@ -66,29 +66,38 @@ const TransactionRow = ({ transaction, onClick }: { transaction: any; onClick: (
   return (
     <div 
       onClick={onClick}
-      className="group flex items-center gap-6 p-6 bg-surface-low hover:bg-surface-med/50 transition-all cursor-pointer border-b border-white/[0.02] last:border-0 first:rounded-t-[1.5rem] last:rounded-b-[1.5rem]"
+      className="group flex flex-col sm:flex-row items-center gap-4 sm:gap-6 p-5 sm:p-6 bg-surface-low hover:bg-surface-med/50 transition-all cursor-pointer border-b border-white/[0.02] last:border-0 first:rounded-t-[1.5rem] last:rounded-b-[1.5rem]"
     >
-      <div className="w-12 h-12 rounded-2xl bg-surface-high flex items-center justify-center group-hover:scale-105 transition-all duration-300 shadow-xl border border-white/5">
-        <Receipt size={20} className={transaction.category === TransactionCategory.MEMBERSHIP ? 'text-primary' : 'text-secondary'} />
+      <div className="flex items-center w-full sm:w-auto gap-4 sm:gap-6 flex-1 min-w-0">
+        <div className="w-12 h-12 rounded-2xl bg-surface-high flex items-center justify-center group-hover:scale-105 transition-all duration-300 shadow-xl border border-white/5 shrink-0">
+          <Receipt size={20} className={transaction.category === TransactionCategory.MEMBERSHIP ? 'text-primary' : 'text-secondary'} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1.5 truncate">
+            {transaction.category === TransactionCategory.MEMBERSHIP ? 'Cobro de Membresía' : 'Venta de Productos'}
+          </h3>
+          <p className="text-[10px] sm:text-xs text-text-secondary font-bold uppercase tracking-widest flex items-center gap-2">
+            {formattedDate} • {formattedTime}
+          </p>
+        </div>
       </div>
-      <div className="flex-1 min-w-0">
-        <h3 className="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1.5">
-          {transaction.category === TransactionCategory.MEMBERSHIP ? 'Cobro de Membresía' : 'Venta de Productos'}
-        </h3>
-        <p className="text-xs text-text-secondary font-bold uppercase tracking-widest flex items-center gap-2">
-          {formattedDate} • {formattedTime}
-        </p>
-      </div>
-      <div className="hidden lg:block w-32">
-        <CategoryBadge category={transaction.category} />
-      </div>
-      <div className="w-48 flex justify-center">
-        <PaymentMethodBadge method={transaction.paymentMethod} />
-      </div>
-      <div className="w-32 text-right">
-        <p className="text-lg font-display font-black text-text-main group-hover:text-primary transition-all tracking-tight">
-          ${transaction.amount.toLocaleString()}
-        </p>
+
+      <div className="flex flex-wrap items-center justify-between w-full sm:w-auto gap-4 sm:gap-8">
+        <div className="flex flex-col sm:w-28 flex-1 sm:flex-none">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-widest text-text-secondary font-bold mb-0.5 sm:mb-1">Categoría</p>
+          <CategoryBadge category={transaction.category} />
+        </div>
+        
+        <div className="flex flex-col sm:w-40 items-center sm:items-center">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-widest text-text-secondary font-bold mb-0.5 sm:mb-1">Pago</p>
+          <PaymentMethodBadge method={transaction.paymentMethod} />
+        </div>
+
+        <div className="w-24 sm:w-32 text-right shrink-0">
+          <p className="text-lg sm:text-xl font-display font-black text-text-main group-hover:text-primary transition-all tracking-tight">
+            ${transaction.amount.toLocaleString()}
+          </p>
+        </div>
       </div>
     </div>
   );

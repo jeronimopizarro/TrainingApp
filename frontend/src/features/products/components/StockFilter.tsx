@@ -16,14 +16,14 @@ export const StockFilter: React.FC<StockFilterProps> = ({ activeFilter, onFilter
   ];
 
   return (
-    <div className="flex items-center gap-2 bg-surface-low p-1.5 rounded-2xl w-fit border border-white/[0.03] mb-8">
+    <div className="flex items-center gap-2 bg-surface-low p-1.5 rounded-2xl w-full sm:w-fit border border-white/[0.03] mb-8 overflow-x-auto no-scrollbar">
       {filters.map((filter) => (
         <Button
           key={filter.id}
           variant={activeFilter === filter.id ? 'primary' : 'ghost'}
           onClick={() => onFilterChange(filter.id)}
           className={`
-            px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all
+            flex-1 sm:flex-none px-4 sm:px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap
             ${activeFilter !== filter.id ? 'text-text-secondary hover:text-text-main' : ''}
           `}
         >

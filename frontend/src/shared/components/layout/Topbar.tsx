@@ -1,11 +1,15 @@
 import React from 'react';
-import { UserCircle } from 'lucide-react';
+import { UserCircle, Menu } from 'lucide-react';
 import { authService } from '@/features/auth/services/auth.service';
+
+interface TopbarProps {
+  onMenuClick: () => void;
+}
 
 /**
  * Topbar: Cabecera superior de TrainingApp
  */
-export const Topbar = () => {
+export const Topbar = ({ onMenuClick }: TopbarProps) => {
   const userData = authService.getUserData();
   const userName = userData?.userName || 'Usuario';
   
@@ -20,12 +24,19 @@ export const Topbar = () => {
   const roleLabel = userData?.role ? (roleLabels[userData.role] || 'Usuario') : 'Usuario';
 
   return (
-    <header className="h-[80px] w-full sticky top-0 z-40 bg-surface-med/50 backdrop-blur-xl px-10 flex items-center justify-end">
-      {/* Sección Perfil Usuario (Alineada a la derecha mediante justify-end) */}
-      <div className="flex items-center gap-6">
-        
+    <header className="h-[80px] w-full sticky top-0 z-40 bg-surface-med/50 backdrop-blur-xl px-6 lg:px-10 flex items-center justify-between lg:justify-end">
+      {/* Botón de Menú (Solo visible en Mobile) */}
+      <button 
+        onClick={onMenuClick}
+        className="lg:hidden p-3 text-text-secondary hover:text-primary hover:bg-primary/10 rounded-2xl transition-all duration-300"
+      >
+        <Menu size={24} />
+      </button>
+
+      {/* Sección Perfil Usuario (Oculta en Mobile según requerimiento) */}
+      <div className="hidden sm:flex items-center gap-6">
         <div className="flex items-center gap-4 cursor-pointer group p-1 pl-4 rounded-2xl hover:bg-surface-high/50 transition-all duration-500">
-          <div className="text-right hidden sm:block">
+          <div className="text-right">
             <p className="text-xs font-sans font-bold text-text-main tracking-tight leading-none mb-1.5 group-hover:text-primary transition-colors">
               {userName}
             </p>

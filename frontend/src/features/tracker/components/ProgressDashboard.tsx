@@ -5,12 +5,14 @@ import {
   ChevronRight,
   Loader2,
   AlertCircle,
-  TrendingUp
+  TrendingUp,
+  ChevronLeft
 } from 'lucide-react';
 import { useProgress } from '../hooks/useProgress';
 import { ExerciseProgressChart } from '../components/ExerciseProgressChart';
 import { Button } from '@/shared/components/Button';
 import { Modal } from '@/shared/components/Modal';
+import { useNavigate } from 'react-router-dom';
 
 interface ProgressDashboardProps {
   memberId?: number;
@@ -18,6 +20,7 @@ interface ProgressDashboardProps {
 }
 
 export const ProgressDashboard = ({ memberId, showTitle = true }: ProgressDashboardProps) => {
+  const navigate = useNavigate();
   const { summary, loading, error } = useProgress(undefined, memberId);
   const [selectedExercise, setSelectedExercise] = useState<{id: number, name: string} | null>(null);
   const { exerciseProgress, loading: progressLoading } = useProgress(selectedExercise?.id, memberId);
@@ -50,23 +53,32 @@ export const ProgressDashboard = ({ memberId, showTitle = true }: ProgressDashbo
     <div className="w-full">
       {/* HEADER OPCIONAL */}
       {showTitle && (
-        <header className="mb-12">
-            <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3">Performance Hub</h2>
-            <h1 className="text-4xl font-display font-black text-text-main tracking-tight italic">
-            Estadísticas de <span className="text-primary-dark">Fuerza</span>.
+        <header className="mb-10">
+            <div className="flex items-center gap-2 sm:gap-4 mb-2 sm:mb-3">
+              <button 
+                onClick={() => navigate(-1)} 
+                className="p-1.5 sm:p-2 hover:bg-surface-low rounded-xl transition-colors text-text-secondary"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <h2 className="text-[10px] sm:text-xs font-sans font-bold text-primary uppercase tracking-[0.4em]">
+                DESEMPEÑO
+              </h2>
+            </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-text-main tracking-tight italic uppercase">
+              Estadísticas de <span className="text-primary-dark">Fuerza</span>.
             </h1>
         </header>
       )}
 
       {/* SEARCH */}
       <div className="relative mb-10">
-        <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-text-secondary opacity-30" size={18} />
         <input 
             type="text" 
             placeholder="BUSCAR EJERCICIO..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-surface-high/30 border border-white/5 rounded-2xl py-4 pl-16 pr-6 text-[10px] font-black uppercase tracking-widest text-text-main focus:outline-none focus:border-primary/30 transition-all placeholder:text-text-secondary/20 shadow-inner"
+            className="w-full bg-surface-high/30 border border-white/5 rounded-2xl py-5 px-8 text-[10px] font-black uppercase tracking-widest text-text-main focus:outline-none focus:border-primary/30 transition-all placeholder:text-text-secondary/20 shadow-inner"
         />
       </div>
 
@@ -80,11 +92,15 @@ export const ProgressDashboard = ({ memberId, showTitle = true }: ProgressDashbo
                 className="flex items-center justify-between p-5 bg-surface-high/20 hover:bg-surface-high/40 rounded-3xl border border-white/[0.03] hover:border-primary/20 transition-all group"
             >
                 <div className="flex items-center gap-5">
-                <div className="w-12 h-12 bg-background rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform border border-white/5 shadow-inner">
-                    <Dumbbell size={20} />
+                <div className="w-14 h-14 bg-background rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform border border-white/5 shadow-inner overflow-hidden">
+                    {ex.exerciseImageUrl ? (
+                      <img src={ex.exerciseImageUrl} alt={ex.exerciseName} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                    ) : (
+                      <Dumbbell size={24} className="opacity-20" />
+                    )}
                 </div>
                 <div className="text-left">
-                    <h5 className="text-xs font-black uppercase tracking-widest text-text-main mb-1 group-hover:text-primary transition-colors">{ex.exerciseName}</h5>
+                    <h5 className="text-xs font-black uppercase italic text-text-main mb-1 group-hover:text-primary transition-colors tracking-tight">{ex.exerciseName}</h5>
                     <div className="flex items-center gap-2">
                     <span className="text-[8px] font-black text-text-secondary uppercase tracking-tighter">PR</span>
                     <span className="text-[10px] font-black text-primary uppercase">{ex.currentPersonalRecord} kg</span>
@@ -121,16 +137,16 @@ export const ProgressDashboard = ({ memberId, showTitle = true }: ProgressDashbo
                   exerciseName={exerciseProgress.exerciseName} 
                 />
                 
-                <div className="mt-10 grid grid-cols-2 gap-4">
-                   <div className="bg-surface-high/20 p-6 rounded-3xl border border-white/5">
-                      <p className="text-[9px] font-black text-text-secondary uppercase tracking-[0.2em] mb-2">Máximo Histórico</p>
-                      <p className="text-2xl font-display font-black text-primary italic uppercase tracking-tighter">
+                <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                   <div className="bg-surface-high/20 p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/5 shadow-inner">
+                      <p className="text-[8px] sm:text-[9px] font-black text-text-secondary uppercase tracking-[0.2em] mb-2">Máximo Histórico</p>
+                      <p className="text-xl sm:text-2xl font-display font-black text-primary italic uppercase tracking-tighter">
                          {Math.max(...exerciseProgress.dataPoints.map(d => d.e1rm), 0).toFixed(1)} kg
                       </p>
                    </div>
-                   <div className="bg-surface-high/20 p-6 rounded-3xl border border-white/5">
-                      <p className="text-[9px] font-black text-text-secondary uppercase tracking-[0.2em] mb-2">Registros</p>
-                      <p className="text-2xl font-display font-black text-text-main italic uppercase tracking-tighter">
+                   <div className="bg-surface-high/20 p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/5 shadow-inner">
+                      <p className="text-[8px] sm:text-[9px] font-black text-text-secondary uppercase tracking-[0.2em] mb-2">Registros Totales</p>
+                      <p className="text-xl sm:text-2xl font-display font-black text-text-main italic uppercase tracking-tighter">
                          {exerciseProgress.dataPoints.length}
                       </p>
                    </div>

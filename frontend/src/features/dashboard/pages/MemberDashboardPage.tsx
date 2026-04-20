@@ -106,18 +106,18 @@ export const MemberDashboardPage = () => {
   return (
     <div className="pb-10">
       {/* HEADER - ULTRA COMPACT */}
-      <header className="mb-12">
-        <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3">Operaciones</h2>
-        <h1 className="text-5xl font-display font-black text-text-main tracking-tight italic leading-none">
-          Focus <span className="text-primary-dark">Daily</span>.
+      <header className="mb-8 sm:mb-10">
+        <h2 className="text-[10px] sm:text-xs font-black uppercase tracking-[0.4em] text-primary mb-2 sm:mb-3">Centro de Mando</h2>
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-text-main tracking-tight italic leading-tight sm:leading-none uppercase">
+          Tu <span className="text-primary-dark">Rendimiento</span>.
         </h1>
       </header>
 
-      {/* BENTO GRID - ROW 1: Identity & Access (3/3/3/3) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 mb-3">
+      {/* MAIN RESPONSIVE GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
         
-        {/* 1. MEMBERSHIP */}
-        <div className="lg:col-span-3">
+        {/* A. MEMBERSHIP STATUS - Mobile: 1 | Desktop: Row 1, Col 1-3 */}
+        <div className="order-1 lg:col-span-3">
           <StatCard 
             label="Estado de Membresía" 
             value={
@@ -133,17 +133,17 @@ export const MemberDashboardPage = () => {
           />
         </div>
 
-        {/* 2. MY PLAN */}
-        <div className="lg:col-span-3">
+        {/* B. MY ROUTINE CARD - Mobile: 4 | Desktop: Row 1, Col 4-6 */}
+        <div className="order-4 lg:order-2 lg:col-span-3">
           <Link to="/member/routine" className="block h-full">
-            <div className="bg-surface-low border border-white/[0.02] p-4 rounded-[1.5rem] h-full flex flex-col justify-between group hover:border-primary/30 transition-all duration-700 shadow-md relative overflow-hidden surface-lift min-h-[120px]">
+            <div className="bg-surface-low border border-white/[0.02] p-5 rounded-[1.5rem] h-full flex flex-col justify-between group hover:border-primary/30 transition-all duration-700 shadow-md relative overflow-hidden surface-lift min-h-[130px]">
                <div className="absolute -bottom-10 -left-10 w-28 h-28 bg-primary/5 rounded-full blur-[40px] group-hover:bg-primary/10 transition-all duration-1000" />
                <div className="relative z-10">
-                 <div className="w-8 h-8 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center text-primary mb-2 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-700">
+                 <div className="w-9 h-9 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center text-primary mb-3 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-700">
                    <Dumbbell size={18} />
                  </div>
                  <h3 className="text-xl font-display font-black text-text-main uppercase italic mb-0.5 tracking-tighter">Mi <span className="text-primary">Rutina</span></h3>
-                 <p className="text-[10px] text-text-secondary font-bold uppercase tracking-[0.2em]">Plan y pesos</p>
+                 <p className="text-[9px] text-text-secondary font-bold uppercase tracking-[0.2em]">Plan y Pesos</p>
                </div>
                <div className="flex justify-end relative z-10">
                   <div className="w-7 h-7 rounded-full bg-surface-high border border-white/5 flex items-center justify-center text-text-secondary group-hover:text-primary transition-all duration-500">
@@ -154,17 +154,17 @@ export const MemberDashboardPage = () => {
           </Link>
         </div>
 
-        {/* 3. PROGRESS */}
-        <div className="lg:col-span-3">
+        {/* C. PROGRESS CARD - Mobile: 5 | Desktop: Row 1, Col 7-9 */}
+        <div className="order-5 lg:order-3 lg:col-span-3">
           <Link to="/member/progress" className="block h-full">
-            <div className="bg-surface-low border border-white/[0.02] p-4 rounded-[1.5rem] h-full flex flex-col justify-between group hover:border-primary/30 transition-all duration-700 shadow-md relative overflow-hidden surface-lift min-h-[120px]">
+            <div className="bg-surface-low border border-white/[0.02] p-5 rounded-[1.5rem] h-full flex flex-col justify-between group hover:border-primary/30 transition-all duration-700 shadow-md relative overflow-hidden surface-lift min-h-[130px]">
                <div className="absolute -bottom-10 -left-10 w-28 h-28 bg-primary/5 rounded-full blur-[40px] group-hover:bg-primary/10 transition-all duration-1000" />
                <div className="relative z-10">
-                 <div className="w-8 h-8 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center text-primary mb-2 group-hover:scale-110 group-hover:rotate-12 transition-all duration-700">
+                 <div className="w-9 h-9 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center text-primary mb-3 group-hover:scale-110 group-hover:rotate-12 transition-all duration-700">
                    <Trophy size={18} />
                  </div>
                  <h3 className="text-xl font-display font-black text-text-main uppercase italic mb-0.5 tracking-tighter">Mis <span className="text-primary">Progresos</span></h3>
-                 <p className="text-[10px] text-text-secondary font-bold uppercase tracking-[0.2em]">Evolución fuerza</p>
+                 <p className="text-[9px] text-text-secondary font-bold uppercase tracking-[0.2em]">Evolución</p>
                </div>
                <div className="flex justify-end relative z-10">
                   <div className="w-7 h-7 rounded-full bg-surface-high border border-white/5 flex items-center justify-center text-text-secondary group-hover:text-primary transition-all duration-500">
@@ -175,19 +175,19 @@ export const MemberDashboardPage = () => {
           </Link>
         </div>
 
-        {/* 4. QR ACCESS CARD */}
-        <div className="lg:col-span-3">
+        {/* D. QR ACCESS CARD - Mobile: 6 | Desktop: Row 1, Col 10-12 */}
+        <div className="order-6 lg:order-4 lg:col-span-3">
           <button 
             onClick={handleOpenQr}
-            className="w-full h-full bg-surface-low border border-white/[0.02] p-4 rounded-[1.5rem] flex flex-col justify-between group hover:border-primary/40 transition-all duration-700 shadow-md relative overflow-hidden surface-lift min-h-[120px] text-left"
+            className="w-full h-full bg-surface-low border border-white/[0.02] p-5 rounded-[1.5rem] flex flex-col justify-between group hover:border-primary/40 transition-all duration-700 shadow-md relative overflow-hidden surface-lift min-h-[130px] text-left"
           >
              <div className="absolute -bottom-10 -right-10 w-28 h-28 bg-primary/5 rounded-full blur-[40px] group-hover:bg-primary/10 transition-all duration-1000" />
              <div className="relative z-10">
-               <div className="w-8 h-8 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center text-primary mb-2 group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">
+               <div className="w-9 h-9 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center text-primary mb-3 group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">
                  <QrCode size={18} />
                </div>
-               <h3 className="text-xl font-display font-black text-text-main uppercase italic mb-0.5 tracking-tighter">Entrada <span className="text-primary">QR</span></h3>
-               <p className="text-[10px] text-text-secondary font-bold uppercase tracking-[0.2em]">Acceso rápido</p>
+               <h3 className="text-xl font-display font-black text-text-main uppercase italic mb-0.5 tracking-tighter">Acceso <span className="text-primary">QR</span></h3>
+               <p className="text-[9px] text-text-secondary font-bold uppercase tracking-[0.2em]">Gimnasio</p>
              </div>
              <div className="flex justify-end relative z-10">
                 <div className="w-7 h-7 rounded-full bg-surface-high border border-white/5 flex items-center justify-center text-text-secondary group-hover:text-primary transition-all duration-500">
@@ -196,30 +196,26 @@ export const MemberDashboardPage = () => {
              </div>
           </button>
         </div>
-      </div>
 
-      {/* BENTO GRID - ROW 2: Training Focus (8/4) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch overflow-hidden">
-        
-        {/* 4. CALENDAR (LEFT) */}
-        <div className="lg:col-span-8">
+        {/* E. TRAINING CALENDAR - Mobile: 3 | Desktop: Row 2, Col 1-8 */}
+        <div className="order-3 lg:order-5 lg:col-span-8 overflow-hidden">
           <TrainingCalendar trainingDays={data?.trainingDaysThisMonth || []} />
         </div>
 
-        {/* 5. NEXT SESSION (RIGHT) */}
-        <div className="lg:col-span-4">
-          <div className="bg-surface-low rounded-[2rem] border border-white/[0.02] p-6 flex flex-col items-center justify-center shadow-lg relative group overflow-hidden surface-lift h-full min-h-[220px] text-center">
-            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/[0.01] rounded-full blur-[40px] group-hover:bg-white/[0.03] transition-all duration-1000" />
+        {/* F. NEXT SESSION - Mobile: 2 | Desktop: Row 2, Col 9-12 */}
+        <div className="order-2 lg:order-6 lg:col-span-4">
+          <div className="bg-surface-low rounded-[1.5rem] sm:rounded-[2rem] border border-white/[0.02] p-6 sm:p-8 flex flex-col items-center justify-center shadow-lg relative group overflow-hidden surface-lift h-full min-h-[180px] text-center">
+            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-[40px] group-hover:bg-primary/10 transition-all duration-1000" />
             
             <div className="relative z-10 w-full flex flex-col items-center">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-high border border-white/5 mb-4">
                 <Zap size={10} className="fill-text-secondary text-text-secondary opacity-50" />
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-text-secondary">Próximo Entrenamiento</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.4em] text-text-secondary">Próxima Sesión</span>
               </div>
               
               {data?.activeRoutine ? (
                 <>
-                  <h4 className="text-2xl font-display font-black text-text-main italic mb-6 uppercase tracking-tighter leading-tight px-2">
+                  <h4 className="text-2xl sm:text-2xl font-display font-black text-text-main italic mb-6 uppercase tracking-tighter leading-tight px-2">
                     {data.activeRoutine.suggestedDay?.name || 'Continuar Entrenamiento'}
                   </h4>
                   <Button 
@@ -232,48 +228,39 @@ export const MemberDashboardPage = () => {
                     }}
                     variant="primary" 
                     className="w-full py-4 rounded-xl text-xs font-black uppercase tracking-[0.2em] shadow-lg hover:scale-105 active:scale-95 transition-all group"
-                    disabled={!data?.activeRoutine}
                   >
                     <span className="flex items-center justify-center gap-3">
                       <Dumbbell size={16} />
-                      ¡Entrenar Ahora!
+                      ¡Entrenar!
                     </span>
                   </Button>
                 </>
               ) : data?.hasPendingRequest ? (
-                <div className="flex flex-col items-center gap-4 py-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-2 border border-primary/20">
-                    <Loader2 size={24} className="animate-spin" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-black text-text-main uppercase tracking-widest italic leading-none mb-2">Solicitud en Proceso</h4>
-                    <p className="text-[10px] text-text-secondary font-medium max-w-[200px] mx-auto">Tu entrenador está diseñando tu nuevo plan. Te notificaremos pronto.</p>
-                  </div>
+                <div className="px-4 py-3 bg-primary/5 border border-primary/20 rounded-xl text-center">
+                   <p className="text-[10px] text-primary font-black uppercase tracking-widest">Solicitud Pendiente</p>
                 </div>
               ) : (
-                <div className="flex flex-col gap-3 w-full">
-                  <h4 className="text-sm font-bold text-text-secondary uppercase mb-2">No tienes una rutina activa</h4>
+                <div className="flex flex-col gap-2 w-full">
                   <Button 
                     onClick={() => navigate('/member/routine/builder')}
                     variant="primary" 
-                    className="w-full py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2"
                   >
-                    <PlusCircle size={14} />
-                    Crear Rutina Propia
+                    <PlusCircle size={14} /> Crear Rutina
                   </Button>
                   <Button 
                     onClick={() => setIsRequestModalOpen(true)}
                     variant="ghost" 
-                    className="w-full py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/5 hover:border-primary/30 flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-xl text-[9px] font-black uppercase tracking-widest border border-white/5 flex items-center justify-center gap-2"
                   >
-                    <MessageSquare size={14} />
-                    Solicitar al Staff
+                    <MessageSquare size={14} /> Pedir al Staff
                   </Button>
                 </div>
               )}
             </div>
           </div>
         </div>
+
       </div>
 
       {/* QR MODAL */}

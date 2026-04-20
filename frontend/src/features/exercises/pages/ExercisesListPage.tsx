@@ -123,22 +123,23 @@ export const ExercisesListPage = () => {
 
   return (
     <div className={`pb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 ${isLoading ? 'opacity-40 grayscale-[50%] pointer-events-none' : 'opacity-100'}`}>
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
         <div>
-          <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3">Biblioteca</h2>
-          <h1 className="text-5xl font-display font-black text-text-main tracking-tight italic">
+          <h2 className="text-[10px] sm:text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-2 sm:mb-3">Biblioteca</h2>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-text-main tracking-tight italic">
             Catálogo de <span className="text-primary-dark">Ejercicios</span>.
           </h1>
         </div>
         <Button 
           icon={<Plus size={18} />} 
           onClick={() => { handleReset(); setIsModalOpen(true); }}
+          className="w-full md:w-auto"
         >
           Nuevo Ejercicio
         </Button>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
         <StatCard 
           label="Total Biblioteca" 
           value={exercises.length} 
@@ -163,13 +164,10 @@ export const ExercisesListPage = () => {
         />
 
         <div className="relative flex-1 group w-full">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors">
-            <Search size={18} />
-          </div>
           <input 
             type="text"
-            placeholder="Buscar ejercicio por nombre..."
-            className="w-full bg-surface-low border border-white/[0.05] rounded-2xl py-4 pl-12 pr-4 text-sm text-text-main focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all"
+            placeholder="BUSCAR EJERCICIO..."
+            className="w-full bg-surface-low border border-white/[0.05] rounded-2xl py-5 px-8 text-[10px] font-black uppercase tracking-widest text-text-main focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all shadow-inner"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

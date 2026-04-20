@@ -189,8 +189,8 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
 
   return (
     <div className="animate-in fade-in duration-700">
-      <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-white/[0.05] p-6 flex items-center justify-between">
-         <div className="flex items-center gap-4">
+      <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-white/[0.05] p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+         <div className="flex items-center gap-4 w-full sm:w-auto">
            <Button onClick={onCancel} variant="ghost" className="p-2 rounded-xl">
              <ChevronLeft />
            </Button>
@@ -204,11 +204,11 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
            </div>
          </div>
 
-         <div className="flex gap-3">
+         <div className="flex gap-3 w-full sm:w-auto">
             {isTrainerMode && !isEditMode && (
                 <Button 
                     variant="secondary" 
-                    className="px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest gap-2"
+                    className="flex-1 sm:flex-none px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest gap-2"
                     onClick={() => setIsBaseModalOpen(true)}
                 >
                     <Layout size={14} /> Usar Plantilla
@@ -217,7 +217,7 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
             <Button 
                 onClick={handlePreSave} 
                 variant="primary" 
-                className="px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-primary/20"
+                className="flex-1 sm:flex-none px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
                 disabled={externalLoading}
             >
                 {externalLoading ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
@@ -281,8 +281,8 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
         </div>
 
         {days[activeDayIndex] && (
-            <div className="bg-surface-low rounded-[2.5rem] border border-white/[0.03] p-8 shadow-2xl animate-in slide-in-from-right-4 duration-500">
-            <div className="flex items-center justify-between mb-8">
+            <div className="bg-surface-low rounded-[2.5rem] border border-white/[0.03] p-6 sm:p-8 shadow-2xl animate-in slide-in-from-right-4 duration-500">
+            <div className="flex items-center justify-between mb-8 gap-4">
                 <input 
                 type="text"
                 value={days[activeDayIndex].dayName}
@@ -291,12 +291,12 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
                     newDays[activeDayIndex].dayName = e.target.value;
                     setDays(newDays);
                 }}
-                className="bg-transparent text-2xl font-display font-black text-text-main italic uppercase tracking-tight focus:outline-none border-b border-white/5 focus:border-primary/50"
+                className="bg-transparent text-xl sm:text-2xl font-display font-black text-text-main italic uppercase tracking-tight focus:outline-none border-b border-white/5 focus:border-primary/50 w-full max-w-[200px] sm:max-w-xs"
                 />
                 {days.length > 1 && (
                 <button 
                     onClick={() => handleRemoveDay(activeDayIndex)}
-                    className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors"
+                    className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors shrink-0"
                 >
                     <Trash2 size={18} />
                 </button>
@@ -306,39 +306,56 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
             <div className="flex flex-col gap-4">
                 {days[activeDayIndex].exercises.map((ex: any, exIdx: number) => {
                 const exerciseData = exercises.find(e => e.id === ex.exerciseId);
+                const currentImg = exerciseData?.imageUrl || ex.exerciseImageUrl;
+                const currentName = exerciseData?.name || ex.exerciseName;
+                const currentVideo = exerciseData?.videoUrl || ex.exerciseVideoUrl;
+
                 return (
-                    <div key={exIdx} className="bg-surface-high/20 border border-white/[0.02] rounded-2xl p-6 group hover:border-white/10 transition-all">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-background overflow-hidden flex items-center justify-center text-primary border border-white/5 shadow-inner">
-                            {exerciseData?.imageUrl ? (
-                                <img src={exerciseData.imageUrl} alt="" className="w-full h-full object-cover" />
-                            ) : (
-                                <Dumbbell size={18} />
-                            )}
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <h4 className="font-bold text-text-main uppercase italic">{exerciseData?.name || 'Cargando...'}</h4>
-                          {exerciseData?.videoUrl && (
-                            <button 
-                              onClick={() => setVideoPlayer({ isOpen: true, url: exerciseData.videoUrl, title: exerciseData.name })}
-                              className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-primary hover:text-primary-dark transition-colors"
-                            >
-                              <Play size={10} className="fill-primary" /> Ver video guía
-                            </button>
-                          )}
-                        </div>
-                        </div>
-                        <button 
+                    <div key={exIdx} className="bg-surface-high/20 border border-white/[0.02] rounded-2xl p-6 group hover:border-white/10 transition-all relative">
+                    <button 
                         onClick={() => {
                             const newDays = [...days];
                             newDays[activeDayIndex].exercises = newDays[activeDayIndex].exercises.filter((_: any, i: number) => i !== exIdx);
                             setDays(newDays);
                         }}
-                        className="text-text-secondary opacity-30 hover:opacity-100 hover:text-error transition-all"
+                        className="absolute top-4 right-4 text-text-secondary opacity-30 hover:opacity-100 hover:text-error transition-all p-2 z-10 hidden sm:block"
+                    >
+                        <Trash2 size={18} />
+                    </button>
+
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8 relative">
+                        {/* Botón eliminar sobre imagen (Solo móvil, en el div flex) */}
+                        <button 
+                            onClick={() => {
+                                const newDays = [...days];
+                                newDays[activeDayIndex].exercises = newDays[activeDayIndex].exercises.filter((_: any, i: number) => i !== exIdx);
+                                setDays(newDays);
+                            }}
+                            className="absolute top-2 right-2 z-30 p-3 bg-black/60 backdrop-blur-md text-white rounded-2xl sm:hidden border border-white/10 active:scale-95 transition-transform"
                         >
-                        <Trash2 size={16} />
+                            <Trash2 size={20} />
                         </button>
+
+                        <div className="relative w-full sm:w-32 h-48 sm:h-32 rounded-2xl bg-background overflow-hidden flex items-center justify-center text-primary border border-white/5 shadow-2xl group/img shrink-0">
+                            {currentImg ? (
+                                <img src={currentImg} alt="" className="w-full h-full object-cover opacity-80 group-hover/img:opacity-100 transition-opacity" />
+                            ) : (
+                                <Dumbbell size={32} className="opacity-20" />
+                            )}
+
+                            {currentVideo && (
+                              <button 
+                                onClick={() => setVideoPlayer({ isOpen: true, url: currentVideo, title: currentName || '' })}
+                                className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-100 sm:opacity-0 sm:group-hover/img:opacity-100 transition-opacity"
+                              >
+                                <Play size={32} className="text-primary fill-primary" />
+                              </button>
+                            )}
+                        </div>
+                        <div className="flex flex-col gap-1.5 min-w-0 text-center sm:text-left w-full">
+                          <h4 className="font-black text-text-main uppercase italic text-xl sm:text-2xl tracking-tighter leading-tight break-words">{currentName || 'Cargando...'}</h4>
+                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary italic">Técnica de Ejecución</p>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -407,8 +424,12 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
       <Modal isOpen={isExerciseModalOpen} onClose={() => setIsExerciseModalOpen(false)} title="Biblioteca Técnica">
         <div className="flex flex-col gap-6 py-4">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
-            <Input placeholder="Buscar ejercicio..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12" />
+            <Input 
+              placeholder="BUSCAR EJERCICIO..." 
+              value={searchQuery} 
+              onChange={(e) => setSearchQuery(e.target.value)} 
+              className="py-5 text-[10px] font-black uppercase tracking-widest border-x-0 border-t-0 rounded-none bg-transparent" 
+            />
           </div>
           <div className="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
              {filteredExercises.map(ex => (
@@ -423,7 +444,7 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
                  <div className="flex items-center gap-2">
                     {ex.videoUrl && (
                       <button 
-                        onClick={() => setVideoPlayer({ isOpen: true, url: ex.videoUrl, title: ex.name })}
+                        onClick={() => setVideoPlayer({ isOpen: true, url: ex.videoUrl || '', title: ex.name })}
                         className="p-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-all"
                         title="Ver Video"
                       >

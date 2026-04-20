@@ -188,6 +188,18 @@ export const WorkoutTrackingPage = () => {
     }
   };
 
+  const handleNextExercise = () => {
+    if (activeExerciseIndex < currentDay.exercises.length - 1) {
+      setActiveExerciseIndex(prev => prev + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handlePrevExercise = () => {
+    setActiveExerciseIndex(prev => Math.max(0, prev - 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -216,15 +228,17 @@ export const WorkoutTrackingPage = () => {
 
   if (isFinishing) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-10 text-center">
-        <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mb-8 shadow-[0_0_50px_rgba(255,182,0,0.2)]">
-          <Trophy size={48} className="text-primary" />
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 sm:p-10 text-center">
+        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-primary/20 rounded-full flex items-center justify-center mb-6 sm:mb-8 shadow-[0_0_50px_rgba(255,182,0,0.2)]">
+          <Trophy size={40} className="text-primary sm:size-[48px]" />
         </div>
-        <h2 className="text-5xl font-display font-black text-text-main italic mb-4 uppercase">¡Entrenamiento Finalizado!</h2>
-        <p className="text-text-secondary text-lg font-medium mb-12 max-w-md">
+        <h2 className="text-3xl sm:text-5xl font-display font-black text-text-main italic mb-4 uppercase tracking-tight leading-tight">
+          ¡Entrenamiento <span className="text-primary">Finalizado</span>!
+        </h2>
+        <p className="text-text-secondary text-sm sm:text-lg font-medium mb-8 sm:mb-12 max-w-md">
           Has completado todos los objetivos de hoy. Tus progresos han sido guardados exitosamente.
         </p>
-        <Button onClick={() => navigate('/member/dashboard')} variant="primary" className="px-12 py-5 rounded-2xl font-black uppercase tracking-widest">
+        <Button onClick={() => navigate('/member/dashboard')} variant="primary" className="w-full sm:w-auto px-12 py-5 rounded-2xl font-black uppercase tracking-widest text-xs">
           Volver al Dashboard
         </Button>
       </div>
@@ -233,38 +247,38 @@ export const WorkoutTrackingPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-white/[0.05] p-6 flex items-center justify-between">
-         <div className="flex items-center gap-4">
-           <Button onClick={() => navigate(-1)} variant="ghost" className="p-2 rounded-xl">
-             <ChevronLeft />
+      <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-white/[0.05] p-4 sm:p-6 flex items-center justify-between gap-2">
+         <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+           <Button onClick={() => navigate(-1)} variant="ghost" className="p-1.5 sm:p-2 rounded-xl shrink-0">
+             <ChevronLeft size={20} />
            </Button>
-           <div>
-             <h1 className="text-base font-black uppercase tracking-widest text-text-main leading-none mb-1">{currentDay.name}</h1>
-             <p className="text-[10px] font-bold text-primary uppercase tracking-tight">{detail?.name}</p>
+           <div className="min-w-0">
+             <h1 className="text-sm sm:text-base font-black uppercase tracking-widest text-text-main leading-none mb-1 truncate">{currentDay.name}</h1>
+             <p className="text-[9px] sm:text-[10px] font-bold text-primary uppercase tracking-tight truncate">{detail?.name}</p>
            </div>
          </div>
 
-         <div className="flex items-center gap-3">
+         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
            {isResting && (
-             <div className="flex items-center gap-2 bg-primary/10 px-3 py-2 rounded-2xl border border-primary/20 animate-in fade-in zoom-in duration-300">
-               <History size={14} className="text-primary animate-spin-slow" />
+             <div className="flex items-center gap-1.5 sm:gap-2 bg-primary/10 px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl sm:rounded-2xl border border-primary/20 animate-in fade-in zoom-in duration-300">
+               <History size={12} className="text-primary animate-spin-slow shrink-0" />
                <div className="flex flex-col">
-                 <span className="text-[8px] font-black uppercase tracking-tighter text-primary/60 leading-none">Descanso</span>
-                 <span className="text-xs font-mono font-black text-primary leading-none mt-0.5">{formatTime(restTimer)}</span>
+                 <span className="text-[7px] font-black uppercase tracking-tighter text-primary/60 leading-none">Rest</span>
+                 <span className="text-[10px] sm:text-xs font-mono font-black text-primary leading-none mt-0.5">{formatTime(restTimer)}</span>
                </div>
              </div>
            )}
-           <div className="flex items-center gap-4 bg-surface-low px-4 py-2 rounded-2xl border border-white/5 shadow-inner">
-             <Timer size={14} className={clsx("text-primary", isTimerActive && "animate-pulse")} />
-             <span className="text-sm font-mono font-black text-text-main tracking-widest">{formatTime(timer)}</span>
+           <div className="flex items-center gap-2 sm:gap-3 bg-surface-low px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl border border-white/5 shadow-inner">
+             <Timer size={12} className={clsx("text-primary shrink-0", isTimerActive && "animate-pulse")} />
+             <span className="text-[10px] sm:text-sm font-mono font-black text-text-main tracking-widest">{formatTime(timer)}</span>
            </div>
            
            {session && (
              <button 
                 onClick={() => setShowOptionsModal(true)}
-                className="p-3 bg-surface-high hover:bg-surface-med rounded-2xl border border-white/5 text-text-secondary hover:text-text-main transition-all"
+                className="p-2 sm:p-3 bg-surface-high hover:bg-surface-med rounded-xl sm:rounded-2xl border border-white/5 text-text-secondary hover:text-text-main transition-all shrink-0"
              >
-                <MoreVertical size={18} />
+                <MoreVertical size={16} />
              </button>
            )}
          </div>
@@ -305,109 +319,110 @@ export const WorkoutTrackingPage = () => {
              })}
            </div>
 
-           <div className="bg-surface-low rounded-[2.5rem] border border-white/[0.03] p-8 shadow-2xl mb-8">
-              <div className="flex flex-col md:flex-row gap-8 items-start mb-10">
-                <div className="w-32 h-32 rounded-[2rem] overflow-hidden border border-white/10 bg-background flex-shrink-0 shadow-xl">
+           <div className="bg-surface-low rounded-[1.5rem] sm:rounded-[2.5rem] border border-white/[0.03] p-5 sm:p-8 shadow-2xl mb-8">
+              <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start mb-8 sm:mb-10">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden border border-white/10 bg-background flex-shrink-0 shadow-xl mx-auto sm:mx-0">
                   {activeExercise.exerciseImageUrl ? (
                     <img src={activeExercise.exerciseImageUrl} alt={activeExercise.exerciseName} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-primary/10">
-                       <Dumbbell size={40} />
+                       <Dumbbell size={32} className="sm:size-[40px]" />
                     </div>
                   )}
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-4xl font-display font-black text-text-main italic uppercase tracking-tight mb-2 leading-none">
+                <div className="flex-1 text-center sm:text-left w-full">
+                  <h3 className="text-2xl sm:text-4xl font-display font-black text-text-main italic uppercase tracking-tight mb-2 leading-tight">
                     {activeExercise.exerciseName}
                   </h3>
-                  <div className="flex flex-wrap gap-4 mt-4">
+                  <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 mt-4">
                     {activeExercise.exerciseVideoUrl && (
                       <button 
                         onClick={() => setVideoPlayer({ isOpen: true, url: activeExercise.exerciseVideoUrl, title: activeExercise.exerciseName })}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary text-[10px] font-black rounded-lg uppercase tracking-widest border border-primary/20 transition-all group"
+                        className="flex items-center gap-2 px-3 py-2 bg-primary/10 hover:bg-primary/20 text-primary text-[9px] sm:text-[10px] font-black rounded-lg uppercase tracking-widest border border-primary/20 transition-all"
                       >
                         <Play size={12} className="fill-primary" />
-                        Ver descripción
+                        Ver técnica
                       </button>
                     )}
                     </div>
                     {activeExercise.exerciseDescription && (
-                    <p className="mt-4 text-sm text-text-secondary leading-relaxed max-w-2xl border-l-2 border-primary/20 pl-4">
+                    <p className="mt-4 text-xs sm:text-sm text-text-secondary leading-relaxed max-w-2xl border-l-2 border-primary/20 pl-4 text-left">
                       {activeExercise.exerciseDescription}
                     </p>
                     )}
                     {activeExercise.notes && (
-                    <p className="mt-4 text-xs font-medium text-text-secondary italic">
+                    <p className="mt-4 text-[10px] sm:text-xs font-medium text-text-secondary italic text-left">
                       💡 {activeExercise.notes}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="flex flex-col gap-4">
-                 <div className="grid grid-cols-12 gap-4 px-4 mb-2">
-                    <div className="col-span-1 text-xs font-black uppercase tracking-widest text-text-secondary opacity-30 text-center">#</div>
-                    <div className="col-span-4 text-xs font-black uppercase tracking-widest text-text-secondary opacity-30 text-center">Kg</div>
-                    <div className="col-span-4 text-xs font-black uppercase tracking-widest text-text-secondary opacity-30 text-center">Reps</div>
-                    <div className="col-span-2 text-xs font-black uppercase tracking-widest text-text-secondary opacity-30 text-center">RIR</div>
-                    <div className="col-span-1"></div>
+              <div className="flex flex-col gap-3 sm:gap-4">
+                 {/* HEADER DE SERIES - OCULTO EN MOBILE SI ES MUY PEQUEÑO, PERO AQUÍ LO ADAPTAMOS */}
+                 <div className="grid grid-cols-12 gap-2 sm:gap-4 px-2 sm:px-4 mb-1">
+                    <div className="col-span-1 text-[8px] sm:text-xs font-black uppercase tracking-widest text-text-secondary opacity-30 text-center">#</div>
+                    <div className="col-span-3 sm:col-span-4 text-[8px] sm:text-xs font-black uppercase tracking-widest text-text-secondary opacity-30 text-center">Kg</div>
+                    <div className="col-span-3 sm:col-span-4 text-[8px] sm:text-xs font-black uppercase tracking-widest text-text-secondary opacity-30 text-center">Reps</div>
+                    <div className="col-span-2 text-[8px] sm:text-xs font-black uppercase tracking-widest text-text-secondary opacity-30 text-center">RIR</div>
+                    <div className="col-span-3 sm:col-span-1"></div>
                  </div>
 
                  {setsRecords[activeExercise.exerciseId]?.map((record, idx) => (
                     <div 
                       key={idx} 
                       className={clsx(
-                        "grid grid-cols-12 gap-4 items-center p-3 rounded-2xl transition-all duration-500",
+                        "grid grid-cols-12 gap-2 sm:gap-4 items-center p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-500",
                         record.isLogged ? "bg-primary/5 opacity-60 grayscale-[50%]" : "bg-surface-high/20 border border-white/[0.02]"
                       )}
                     >
                       <div className="col-span-1 flex justify-center">
-                        <span className="font-display font-black text-text-secondary">{idx + 1}</span>
+                        <span className="font-display font-black text-text-secondary text-sm sm:text-base">{idx + 1}</span>
                       </div>
                       
-                      <div className="col-span-4 px-2">
+                      <div className="col-span-3 sm:col-span-4">
                         <input 
                           type="number"
                           value={record.weight}
                           onChange={(e) => handleUpdateRecord(activeExercise.exerciseId, idx, 'weight', Number(e.target.value))}
                           disabled={record.isLogged}
-                          className="w-full bg-background/50 border border-white/5 rounded-xl py-3 px-2 text-center text-sm font-black text-primary focus:outline-none focus:border-primary/50 transition-colors"
+                          className="w-full bg-background/50 border border-white/5 rounded-lg sm:rounded-xl py-2.5 sm:py-3 px-1 text-center text-xs sm:text-sm font-black text-primary focus:outline-none focus:border-primary/50 transition-colors"
                         />
                       </div>
 
-                      <div className="col-span-4 px-2">
+                      <div className="col-span-3 sm:col-span-4">
                         <input 
                           type="number"
                           value={record.reps}
                           onChange={(e) => handleUpdateRecord(activeExercise.exerciseId, idx, 'reps', Number(e.target.value))}
                           disabled={record.isLogged}
-                          className="w-full bg-background/50 border border-white/5 rounded-xl py-3 px-2 text-center text-sm font-black text-text-main focus:outline-none focus:border-white/20 transition-colors"
+                          className="w-full bg-background/50 border border-white/5 rounded-lg sm:rounded-xl py-2.5 sm:py-3 px-1 text-center text-xs sm:text-sm font-black text-text-main focus:outline-none focus:border-white/20 transition-colors"
                         />
                       </div>
 
-                      <div className="col-span-2 px-1">
+                      <div className="col-span-2">
                         <select 
                           value={record.rir}
                           onChange={(e) => handleUpdateRecord(activeExercise.exerciseId, idx, 'rir', Number(e.target.value))}
                           disabled={record.isLogged}
-                          className="w-full bg-background/50 border border-white/5 rounded-xl py-3 px-1 text-center text-xs font-black text-primary focus:outline-none focus:border-primary/50 appearance-none"
+                          className="w-full bg-background/50 border border-white/5 rounded-lg sm:rounded-xl py-2.5 sm:py-3 px-1 text-center text-[10px] sm:text-xs font-black text-primary focus:outline-none focus:border-primary/50 appearance-none"
                         >
                           {[0,1,2,3,4,5].map(v => <option key={v} value={v}>{v}</option>)}
                         </select>
                       </div>
 
-                      <div className="col-span-1 flex justify-end">
+                      <div className="col-span-3 sm:col-span-1 flex justify-end">
                         <button 
                           onClick={() => handleLogSet(activeExercise.exerciseId, idx)}
                           disabled={record.isLogged}
                           className={clsx(
-                            "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300",
+                            "w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center transition-all duration-300 shadow-lg",
                             record.isLogged 
                               ? "bg-green-500 text-background" 
-                              : "bg-surface-high hover:bg-primary/20 text-text-secondary hover:text-primary"
+                              : "bg-surface-high hover:bg-primary/20 text-text-secondary hover:text-primary border border-white/5"
                           )}
                         >
-                          {record.isLogged ? <CheckCircle2 size={18} /> : <Save size={18} />}
+                          {record.isLogged ? <CheckCircle2 size={20} className="sm:size-[24px]" /> : <Save size={20} className="sm:size-[24px]" />}
                         </button>
                       </div>
                     </div>
@@ -415,20 +430,20 @@ export const WorkoutTrackingPage = () => {
               </div>
            </div>
 
-           <div className="flex items-center justify-between gap-6">
+           <div className="flex items-center justify-between gap-4 sm:gap-6">
               <Button 
-                onClick={() => setActiveExerciseIndex(prev => Math.max(0, prev - 1))}
+                onClick={handlePrevExercise}
                 variant="ghost" 
-                className="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-text-secondary"
+                className="flex-1 py-4 sm:py-5 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-text-secondary"
                 disabled={activeExerciseIndex === 0}
               >
                 Anterior
               </Button>
               {activeExerciseIndex < currentDay.exercises.length - 1 ? (
                 <Button 
-                  onClick={() => setActiveExerciseIndex(prev => prev + 1)}
+                  onClick={handleNextExercise}
                   variant="primary" 
-                  className="flex-[2] py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl"
+                  className="flex-[2] py-4 sm:py-5 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-xl"
                 >
                   Siguiente Ejercicio
                 </Button>
@@ -436,10 +451,10 @@ export const WorkoutTrackingPage = () => {
                 <Button 
                   onClick={handleFinish}
                   variant="primary" 
-                  className="flex-[2] py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-[0_15px_30px_rgba(255,182,0,0.2)]"
+                  className="flex-[2] py-4 sm:py-5 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-[0_15px_30px_rgba(255,182,0,0.2)]"
                   disabled={!allExercisesCompleted || trackerLoading}
                 >
-                  {trackerLoading ? <Loader2 className="animate-spin" /> : "Finalizar Entrenamiento"}
+                  {trackerLoading ? <Loader2 size={14} className="animate-spin" /> : "Finalizar Entrenamiento"}
                 </Button>
               )}
            </div>
@@ -490,39 +505,39 @@ export const WorkoutTrackingPage = () => {
       <Modal 
         isOpen={showOptionsModal} 
         onClose={() => setShowOptionsModal(false)} 
-        title="Opciones de Sesión"
+        title="Gestión de Sesión"
       >
         <div className="p-8 flex flex-col gap-4">
-          <div className="mb-4">
-            <p className="text-text-secondary text-sm font-medium text-center">
+          <div className="mb-4 text-center">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">
               ¿Qué deseas hacer con tu sesión actual?
             </p>
           </div>
 
           <Button 
             onClick={handleFinish} 
-            variant="primary" 
-            className="w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20"
-            icon={<StopCircle size={16} />}
+            variant="ghost" 
+            className="w-full sm:max-w-[320px] sm:mx-auto py-6 text-[11px] font-black uppercase tracking-widest text-primary bg-primary/5 border border-primary/10 hover:bg-primary/10 hover:border-primary/20 shadow-[0_0_30px_rgba(137,172,255,0.05)]"
+            icon={<StopCircle size={18} className="text-primary" />}
             disabled={trackerLoading}
           >
-            Finalizar Entrenamiento (Guardar)
+            Finalizar y Guardar
           </Button>
 
           <Button 
             onClick={handleCancelSession} 
             variant="ghost" 
-            className="w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-error hover:bg-error/10 border-none"
-            icon={<Trash2 size={16} />}
+            className="w-full sm:max-w-[320px] sm:mx-auto py-6 text-[11px] font-black uppercase tracking-widest text-error bg-error/5 border border-error/10 hover:bg-error/10 hover:border-error/20 shadow-[0_0_30px_rgba(255,113,108,0.05)]"
+            icon={<Trash2 size={18} className="text-error" />}
             disabled={trackerLoading}
           >
-            Cancelar Entrenamiento (Borrar)
+            Cancelar Entrenamiento
           </Button>
 
           <Button 
             onClick={() => setShowOptionsModal(false)} 
-            variant="ghost" 
-            className="w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-text-secondary"
+            variant="primary"
+            className="w-full sm:max-w-[320px] sm:mx-auto py-6 text-[11px] font-black uppercase tracking-widest mt-2"
           >
             Volver
           </Button>

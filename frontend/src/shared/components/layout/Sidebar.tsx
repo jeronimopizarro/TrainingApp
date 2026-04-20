@@ -9,18 +9,22 @@ import {
   ShoppingBag, 
   History, 
   ShieldCheck, 
-  Settings,
   LogOut,
-  QrCode,
-  Trophy
+  Trophy,
+  X
 } from 'lucide-react';
 import { authService } from '@/features/auth/services/auth.service';
+
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
 /**
  * Sidebar: Barra de navegación fija a la izquierda.
  * Sigue el diseño KINETIC: Superficie baja (#111417) y sin bordes visibles.
  */
-export const Sidebar = () => {
+export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const role = authService.getUserRole();
 
   const adminMenuItems = [
@@ -67,57 +71,81 @@ export const Sidebar = () => {
   };
 
   return (
-    <aside className="w-[260px] h-screen bg-surface-low flex flex-col fixed left-0 top-0 z-50">
-      {/* LOGO AREA */}
-      <div className="p-8">
-        <h1 className="text-3xl font-display font-black tracking-tighter text-text-main italic">
-          TrainingApp<span className="text-primary text-4xl">.</span>
-        </h1>
-        <p className="text-[10px] uppercase tracking-[0.2em] text-text-secondary mt-[5px] font-semibold">
-          Sistema de Gestión Integral
-        </p>
-      </div>
+    <>
+      {/* BACKDROP PARA MOBILE */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-background/60 backdrop-blur-md z-[60] lg:hidden animate-in fade-in duration-300"
+          onClick={onClose}
+        />
+      )}
 
-      {/* NAVIGATION */}
-      <nav className="flex-1 px-4 py-2 overflow-y-auto">
-        <ul className="space-y-1">
-          {menuItems.map((item) => (
-            <li key={item.name}>
-              <NavLink
-                to={item.path}
-                className={({ isActive }) => `
-                  flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
-                  ${isActive 
-                    ? 'bg-gradient-to-br from-surface-med to-surface-high text-primary shadow-lg' 
-                    : 'text-text-secondary hover:bg-surface-med hover:text-text-main'}
-                `}
-              >
-                <span className="opacity-80 group-hover:scale-110 transition-transform">
-                  {item.icon}
-                </span>
-                <span className="font-sans font-medium text-sm tracking-wide">
-                  {item.name}
-                </span>
-                {/* Indicador activo (Pequeño punto primario) */}
-                <div className="ml-auto w-1 h-1 rounded-full bg-primary opacity-0 group-[.active]:opacity-100 transition-opacity" />
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      {/* ASIDE CONTAINER */}
+      <aside className={`
+        w-[240px] h-screen bg-surface-low flex flex-col fixed left-0 top-0 z-[70]
+        transition-transform duration-300 ease-in-out lg:translate-x-0
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        {/* LOGO AREA */}
+        <div className="p-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-display font-black tracking-tighter text-text-main italic">
+              TrainingApp<span className="text-primary text-3xl">.</span>
+            </h1>
+            <p className="text-[8px] uppercase tracking-[0.2em] text-text-secondary mt-[2px] font-semibold">
+              Control de Alto Rendimiento
+            </p>
+          </div>
+          
+          <button 
+            onClick={onClose}
+            className="p-2 lg:hidden text-text-secondary hover:text-primary transition-colors"
+          >
+            <X size={24} />
+          </button>
+        </div>
 
-      {/* BOTTOM ACTIONS */}
-      <div className="p-6 border-t border-surface-med/30 mt-auto">
-        
-        
-        <button 
-          onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-3 text-error/80 hover:text-error hover:bg-error/5 rounded-xl transition-all"
-        >
-          <LogOut size={20} />
-          <span className="text-sm font-medium">Cerrar Sesión</span>
-        </button>
-      </div>
-    </aside>
+        {/* NAVIGATION */}
+        <nav className="flex-1 px-4 py-2 overflow-y-auto custom-scrollbar">
+          <ul className="space-y-1">
+            {menuItems.map((item) => (
+              <li key={item.name}>
+                <NavLink
+                  to={item.path}
+                  onClick={() => {
+                    if (window.innerWidth < 1024) onClose();
+                  }}
+                  className={({ isActive }) => `
+                    flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
+                    ${isActive 
+                      ? 'bg-gradient-to-br from-surface-med to-surface-high text-primary shadow-lg' 
+                      : 'text-text-secondary hover:bg-surface-med hover:text-text-main'}
+                  `}
+                >
+                  <span className="opacity-80 group-hover:scale-110 transition-transform">
+                    {item.icon}
+                  </span>
+                  <span className="font-sans font-medium text-sm tracking-wide">
+                    {item.name}
+                  </span>
+                  <div className="ml-auto w-1 h-1 rounded-full bg-primary opacity-0 group-[.active]:opacity-100 transition-opacity" />
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* BOTTOM ACTIONS */}
+        <div className="p-6 border-t border-surface-med/30 mt-auto">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-4 py-3 text-error/80 hover:text-error hover:bg-error/5 rounded-xl transition-all"
+          >
+            <LogOut size={20} />
+            <span className="text-sm font-medium">Cerrar Sesión</span>
+          </button>
+        </div>
+      </aside>
+    </>
   );
 };

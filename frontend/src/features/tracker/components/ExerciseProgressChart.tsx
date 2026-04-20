@@ -35,9 +35,9 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({ da
   }));
 
   return (
-    <div className="w-full h-80 mt-6 animate-in fade-in duration-700">
+    <div className="w-full h-72 sm:h-80 mt-4 sm:mt-6 animate-in fade-in duration-700 relative">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={formattedData}>
+        <AreaChart data={formattedData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
           <defs>
             <linearGradient id="colorE1rm" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#89acff" stopOpacity={0.3}/>
@@ -85,8 +85,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({ da
         </AreaChart>
       </ResponsiveContainer>
       <div className="flex justify-between items-center px-4 mt-2">
-         <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em]">Evolución de Carga Estimada (e1RM)</p>
-         <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{exerciseName}</p>
+         <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em]">Evolución de Carga:</p>
       </div>
     </div>
   );

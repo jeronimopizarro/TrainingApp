@@ -14,10 +14,14 @@ import { Button } from '@/shared/components/Button';
 import { ProgressDashboard } from '../../tracker/components/ProgressDashboard';
 import { useNavigate } from 'react-router-dom';
 
+import { Modal } from '@/shared/components/Modal';
+
 export const MyCreatedRoutinesPage = () => {
   const { routines, isLoading, error } = useTrainerRoutines();
   const [searchTerm, setSearchTerm] = useState('');
+
   const [selectedRoutine, setSelectedRoutine] = useState<any>(null);
+  const [showMobileDetail, setShowMobileDetail] = useState(false);
   const navigate = useNavigate();
 
   if (isLoading) return <div className="p-10 text-text-secondary animate-pulse font-display font-bold uppercase tracking-widest text-center">Cargando tus rutinas...</div>;
@@ -26,6 +30,14 @@ export const MyCreatedRoutinesPage = () => {
     r.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     r.memberName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleSelectRoutine = (routine: any) => {
+    setSelectedRoutine(routine);
+    // Solo abrimos el modal si estamos en versión móvil/tablet (menor a xl: 1280px)
+    if (window.innerWidth < 1280) {
+      setShowMobileDetail(true);
+    }
+  };
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10">
@@ -61,7 +73,7 @@ export const MyCreatedRoutinesPage = () => {
               filteredRoutines.map(routine => (
                 <button
                   key={routine.id}
-                  onClick={() => setSelectedRoutine(routine)}
+                  onClick={() => handleSelectRoutine(routine)}
                   className={`w-full p-6 rounded-[2rem] border transition-all text-left flex flex-col gap-4 group ${
                     selectedRoutine?.id === routine.id 
                       ? 'bg-primary/10 border-primary shadow-lg shadow-primary/10' 
@@ -89,9 +101,6 @@ export const MyCreatedRoutinesPage = () => {
                     }`}>
                       {routine.status}
                     </span>
-                    <span className="text-[9px] font-bold text-text-secondary flex items-center gap-1 italic">
-                      <Calendar size={10} /> {new Date(routine.startDate).toLocaleDateString()}
-                    </span>
                   </div>
                 </button>
               ))
@@ -99,7 +108,7 @@ export const MyCreatedRoutinesPage = () => {
           </div>
         </div>
 
-        <div className="xl:col-span-2">
+        <div className="hidden xl:block xl:col-span-2">
           {selectedRoutine ? (
             <div className="bg-surface-low p-10 rounded-[3rem] border border-white/5 shadow-2xl animate-in fade-in zoom-in duration-500 surface-lift h-full overflow-hidden">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
@@ -139,6 +148,44 @@ export const MyCreatedRoutinesPage = () => {
           )}
         </div>
       </div>
+
+      {/* MODAL PARA MÓVIL (Bajo xl) */}
+      <Modal
+        isOpen={showMobileDetail && !!selectedRoutine}
+        onClose={() => setShowMobileDetail(false)}
+        title="Progreso del Alumno"
+        size="xl"
+      >
+        {selectedRoutine && (
+          <div className="flex flex-col gap-8">
+            <div className="flex items-center gap-4 border-b border-white/5 pb-6">
+              <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
+                <TrendingUp size={24} />
+              </div>
+              <div>
+                <h2 className="text-xl font-display font-black text-text-main uppercase italic leading-none mb-1">{selectedRoutine.name}</h2>
+                <p className="text-[10px] text-text-secondary font-bold uppercase tracking-widest flex items-center gap-2">
+                  <User size={12} className="text-primary" /> Alumno: {selectedRoutine.memberName}
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex justify-start">
+               <Button 
+                variant="secondary" 
+                className="gap-2 text-[10px] font-black uppercase tracking-widest py-3 px-6"
+                onClick={() => navigate(`/routines/${selectedRoutine.id}`)}
+               >
+                 <Eye size={16} /> Ver Plan
+               </Button>
+            </div>
+
+            <div className="mt-4">
+              <ProgressDashboard memberId={selectedRoutine.memberId} showTitle={false} />
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };

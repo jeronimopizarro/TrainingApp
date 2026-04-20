@@ -169,10 +169,10 @@ export const AccessValidationPage = () => {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10 max-w-5xl mx-auto">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
         <div>
-          <h2 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-3 text-center md:text-left">Recepción</h2>
-          <h1 className="text-5xl font-display font-black text-text-main tracking-tight italic text-center md:text-left">
+          <h2 className="text-[10px] sm:text-sm font-sans font-bold text-primary uppercase tracking-[0.4em] mb-2 sm:mb-3 text-center md:text-left">Recepción</h2>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-text-main tracking-tight italic text-center md:text-left">
             Control de <span className="text-primary-dark">Accesos</span>.
           </h1>
         </div>
@@ -239,17 +239,13 @@ export const AccessValidationPage = () => {
               </div>
             )}
 
-            {/* SCANNING INDICATOR & SCAN LINE */}
+            {/* SCANNING INDICATOR (NO ANIMATION) */}
             {!result && isScannerActive && (
-              <>
-                <div className="absolute top-6 left-1/2 -translate-x-1/2 pointer-events-none z-10 flex flex-col items-center gap-2">
-                   <div className="px-4 py-1.5 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 text-primary text-[10px] font-black uppercase tracking-[0.2em] animate-pulse">
-                      Escaneando QR...
-                   </div>
-                </div>
-                {/* LÍNEA DE ESCANEO LÁSER */}
-                <div className="absolute top-0 left-0 w-full h-[2px] bg-primary shadow-[0_0_15px_rgba(137,172,255,1)] animate-scanLine z-10 pointer-events-none" />
-              </>
+              <div className="absolute top-6 left-1/2 -translate-x-1/2 pointer-events-none z-10 flex flex-col items-center gap-2">
+                 <div className="px-4 py-1.5 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
+                    Escaneando QR...
+                 </div>
+              </div>
             )}
           </div>
           

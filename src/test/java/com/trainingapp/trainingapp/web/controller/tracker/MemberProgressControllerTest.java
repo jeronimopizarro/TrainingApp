@@ -44,7 +44,7 @@ class MemberProgressControllerTest {
     @DisplayName("GET /tracker/progress/summary - Debería retornar 200 y el resumen")
     void shouldReturnSummary() throws Exception {
         MemberProgressSummaryResponse.ExerciseSummaryDTO dto =
-                new MemberProgressSummaryResponse.ExerciseSummaryDTO(1L, "Press Banca", new BigDecimal("100.5"));
+                new MemberProgressSummaryResponse.ExerciseSummaryDTO(1L, "Press Banca", new BigDecimal("100.5"), "http://image.com");
 
         MemberProgressSummaryResponse mockResponse = new MemberProgressSummaryResponse(List.of(dto));
 
