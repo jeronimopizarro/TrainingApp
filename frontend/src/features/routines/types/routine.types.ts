@@ -12,6 +12,7 @@ export interface ExerciseItem {
   notes: string;
   exerciseId: number;
   exerciseName: string;
+  exerciseDescription?: string;
   exerciseImageUrl: string;
   exerciseVideoUrl: string;
 }

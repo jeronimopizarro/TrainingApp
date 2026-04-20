@@ -18,6 +18,7 @@ public record RoutineDetailResponse(Long id, String name, LocalDate startDate, L
                                        Integer targetRIR,
                                        Double suggestedWeight, String notes,
                                        Long exerciseId, String exerciseName,
+                                       String exerciseDescription,
                                        String exerciseImageUrl,
                                        String exerciseVideoUrl
     ) {

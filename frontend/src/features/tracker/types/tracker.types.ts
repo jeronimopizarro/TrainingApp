@@ -3,12 +3,25 @@ export interface StartSessionRequest {
   trainingDayId: number;
 }
 
+export interface SetLogResponse {
+  id: number;
+  exerciseId: number;
+  setNumber: number;
+  repsPerformed: number;
+  weightLifted: number;
+  rir: number;
+  notes?: string;
+}
+
 export interface SessionResponse {
   id: number;
-  routineDayId: number;
+  memberId: number;
+  routineId: number;
+  trainingDayId: number;
   startTime: string;
   endTime: string | null;
-  status: 'IN_PROGRESS' | 'FINISHED';
+  status: 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  loggedSets: SetLogResponse[];
 }
 
 export interface LogSetRequest {
@@ -18,15 +31,6 @@ export interface LogSetRequest {
   weightLifted: number;
   rir: number;
   notes?: string;
-}
-
-export interface SetLogResponse {
-  id: number;
-  exerciseId: number;
-  reps: number;
-  weight: number;
-  rir: number;
-  timestamp: string;
 }
 
 export interface ProgressDataPoint {

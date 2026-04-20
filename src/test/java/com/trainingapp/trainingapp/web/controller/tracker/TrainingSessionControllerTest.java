@@ -1,7 +1,9 @@
 package com.trainingapp.trainingapp.web.controller.tracker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trainingapp.trainingapp.application.useCase.tracker.CancelTrainingSessionUseCase;
 import com.trainingapp.trainingapp.application.useCase.tracker.FinishTrainingSessionUseCase;
+import com.trainingapp.trainingapp.application.useCase.tracker.GetActiveTrainingSessionUseCase;
 import com.trainingapp.trainingapp.application.useCase.tracker.LogTrainingSetUseCase;
 import com.trainingapp.trainingapp.application.useCase.tracker.StartTrainingSessionUseCase;
 import com.trainingapp.trainingapp.config.TestSecurityConfig;
@@ -25,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -61,13 +64,19 @@ class TrainingSessionControllerTest {
     @MockitoBean
     private FinishTrainingSessionUseCase finishTrainignSessionUseCase;
 
+    @MockitoBean
+    private GetActiveTrainingSessionUseCase getActiveTrainingSessionUseCase;
+
+    @MockitoBean
+    private CancelTrainingSessionUseCase cancelSessionUseCase;
+
     @Test
     @WithMockUser(roles = "MEMBER")
     @DisplayName("Debería retornar 201 CREATED al iniciar sesión correctamente")
     void shouldStartSessionSuccessfully() throws Exception {
         StartSessionRequest request = new StartSessionRequest(100L, 5L);
         SessionResponse fakeResponse = new SessionResponse(
-                1L, 10L, 100L, LocalDateTime.now(), null, SessionStatus.IN_PROGRESS
+                1L, 10L, 100L, 5L, LocalDateTime.now(), null, SessionStatus.IN_PROGRESS, new ArrayList<>()
         );
 
         when(startTrainingSessionUseCase.execute(any(StartSessionRequest.class))).thenReturn(fakeResponse);
@@ -106,10 +115,8 @@ class TrainingSessionControllerTest {
                 1L, 5L, 1, 10, new BigDecimal("50.0"), 2, "Nota"
         );
 
-        // Usamos logSetUseCase que es el nombre correcto del MockitoBean
         when(logTrainingSetUseCase.execute(eq(1L), any(LogSetRequest.class))).thenReturn(mockResponse);
 
-        // CORRECCIÓN: La URL real es /sessions/1/sets
         mockMvc.perform(post("/sessions/1/sets")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -122,12 +129,12 @@ class TrainingSessionControllerTest {
     @WithMockUser(roles = "MEMBER")
     @DisplayName("PATCH /sessions/{sessionId}/finish - Debería retornar 200 al finalizar")
     void shouldFinishSession() throws Exception {
-        SessionResponse mockResponse = mock(SessionResponse.class);
+        SessionResponse mockResponse = new SessionResponse(
+                1L, 10L, 100L, 5L, LocalDateTime.now(), LocalDateTime.now(), SessionStatus.COMPLETED, new ArrayList<>()
+        );
 
-        // Usamos finishSessionUseCase que es el nombre correcto del MockitoBean
         when(finishTrainignSessionUseCase.execute(1L)).thenReturn(mockResponse);
 
-        // CORRECCIÓN: La URL real es /sessions/1/finish
         mockMvc.perform(patch("/sessions/1/finish"))
                 .andExpect(status().isOk());
     }

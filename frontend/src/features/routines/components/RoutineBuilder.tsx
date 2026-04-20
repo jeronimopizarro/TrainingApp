@@ -8,14 +8,17 @@ import {
   Save, 
   Loader2,
   Layout,
-  Copy
+  Copy,
+  Play
 } from 'lucide-react';
 import { Button } from '@/shared/components/Button';
 import { Input } from '@/shared/components/Input';
 import { Modal } from '@/shared/components/Modal';
+import { VideoModal } from '@/shared/components/VideoModal';
 import { Exercise } from '@/features/exercises/types/exercise.types';
 import { RoutineSummary, RoutineDetail } from '../types/routine.types';
 import { clsx } from 'clsx';
+import { routineService } from '../services/routine.service';
 
 interface RoutineBuilderProps {
   initialData?: RoutineDetail | null;
@@ -42,11 +45,17 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
   onSave,
   onCancel
 }) => {
-  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isExerciseModalOpen, setIsExerciseModalOpen] = useState(false);
   const [isBaseModalOpen, setIsBaseModalOpen] = useState(false);
   const [activeDayIndex, setActiveDayIndex] = useState(0);
+
+  // Video Player State
+  const [videoPlayer, setVideoPlayer] = useState<{ isOpen: boolean, url: string, title: string }>({
+    isOpen: false,
+    url: '',
+    title: ''
+  });
 
   // Form State
   const [routineName, setRoutineName] = useState('');
@@ -308,7 +317,17 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
                                 <Dumbbell size={18} />
                             )}
                         </div>
-                        <h4 className="font-bold text-text-main uppercase italic">{exerciseData?.name || 'Cargando...'}</h4>
+                        <div className="flex flex-col gap-1">
+                          <h4 className="font-bold text-text-main uppercase italic">{exerciseData?.name || 'Cargando...'}</h4>
+                          {exerciseData?.videoUrl && (
+                            <button 
+                              onClick={() => setVideoPlayer({ isOpen: true, url: exerciseData.videoUrl, title: exerciseData.name })}
+                              className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-primary hover:text-primary-dark transition-colors"
+                            >
+                              <Play size={10} className="fill-primary" /> Ver video guía
+                            </button>
+                          )}
+                        </div>
                         </div>
                         <button 
                         onClick={() => {
@@ -393,16 +412,32 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
           </div>
           <div className="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
              {filteredExercises.map(ex => (
-               <button key={ex.id} onClick={() => handleAddExerciseToDay(ex)} className="flex items-center gap-4 p-4 rounded-2xl bg-surface-high border border-white/5 hover:border-primary/40 transition-all text-left group">
+               <div key={ex.id} className="flex items-center gap-4 p-4 rounded-2xl bg-surface-high border border-white/5 hover:border-primary/40 transition-all text-left group relative">
                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-background border border-white/5 flex-shrink-0">
                    {ex.imageUrl ? <img src={ex.imageUrl} alt={ex.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform" /> : <div className="w-full h-full flex items-center justify-center text-primary/20"><Dumbbell size={20} /></div>}
                  </div>
-                 <div className="flex-1">
+                 <div className="flex-1 cursor-pointer" onClick={() => handleAddExerciseToDay(ex)}>
                    <h5 className="text-sm font-bold text-text-main group-hover:text-primary transition-colors uppercase italic">{ex.name}</h5>
                    <p className="text-[9px] text-text-secondary font-black uppercase tracking-tighter">{ex.isBase ? 'Ejercicio Base' : 'Personalizado'}</p>
                  </div>
-                 <Plus size={18} className="text-primary opacity-0 group-hover:opacity-100 transition-all" />
-               </button>
+                 <div className="flex items-center gap-2">
+                    {ex.videoUrl && (
+                      <button 
+                        onClick={() => setVideoPlayer({ isOpen: true, url: ex.videoUrl, title: ex.name })}
+                        className="p-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-all"
+                        title="Ver Video"
+                      >
+                        <Play size={16} className="fill-primary" />
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => handleAddExerciseToDay(ex)}
+                      className="p-2 hover:bg-primary/10 text-primary opacity-0 group-hover:opacity-100 transition-all"
+                    >
+                      <Plus size={18} />
+                    </button>
+                 </div>
+               </div>
              ))}
           </div>
         </div>
@@ -436,6 +471,13 @@ export const RoutineBuilder: React.FC<RoutineBuilderProps> = ({
             )}
         </div>
       </Modal>
+
+      <VideoModal 
+        isOpen={videoPlayer.isOpen}
+        videoUrl={videoPlayer.url}
+        title={videoPlayer.title}
+        onClose={() => setVideoPlayer({ ...videoPlayer, isOpen: false })}
+      />
     </div>
   );
 };

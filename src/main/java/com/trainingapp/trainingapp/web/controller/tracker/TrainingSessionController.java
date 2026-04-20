@@ -1,6 +1,8 @@
 package com.trainingapp.trainingapp.web.controller.tracker;
 
+import com.trainingapp.trainingapp.application.useCase.tracker.CancelTrainingSessionUseCase;
 import com.trainingapp.trainingapp.application.useCase.tracker.FinishTrainingSessionUseCase;
+import com.trainingapp.trainingapp.application.useCase.tracker.GetActiveTrainingSessionUseCase;
 import com.trainingapp.trainingapp.application.useCase.tracker.LogTrainingSetUseCase;
 import com.trainingapp.trainingapp.application.useCase.tracker.StartTrainingSessionUseCase;
 import com.trainingapp.trainingapp.web.dto.tracker.LogSetRequest;
@@ -21,13 +23,26 @@ public class TrainingSessionController {
     private final StartTrainingSessionUseCase startSessionUseCase;
     private final LogTrainingSetUseCase logSetUseCase;
     private final FinishTrainingSessionUseCase finishSessionUseCase;
+    private final GetActiveTrainingSessionUseCase getActiveSessionUseCase;
+    private final CancelTrainingSessionUseCase cancelSessionUseCase;
 
     public TrainingSessionController(StartTrainingSessionUseCase startSessionUseCase,
                                      LogTrainingSetUseCase logSetUseCase,
-                                     FinishTrainingSessionUseCase finishSessionUseCase) {
+                                     FinishTrainingSessionUseCase finishSessionUseCase,
+                                     GetActiveTrainingSessionUseCase getActiveSessionUseCase,
+                                     CancelTrainingSessionUseCase cancelSessionUseCase) {
         this.startSessionUseCase = startSessionUseCase;
         this.logSetUseCase = logSetUseCase;
         this.finishSessionUseCase = finishSessionUseCase;
+        this.getActiveSessionUseCase = getActiveSessionUseCase;
+        this.cancelSessionUseCase = cancelSessionUseCase;
+    }
+
+    @GetMapping("/active")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<SessionResponse> getActiveSession() {
+        SessionResponse response = getActiveSessionUseCase.execute();
+        return response != null ? ResponseEntity.ok(response) : ResponseEntity.noContent().build();
     }
 
     @PostMapping("/start")
@@ -49,6 +64,13 @@ public class TrainingSessionController {
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<SessionResponse> finishSession(@PathVariable Long sessionId) {
         SessionResponse response = finishSessionUseCase.execute(sessionId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{sessionId}/cancel")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<SessionResponse> cancelSession(@PathVariable Long sessionId) {
+        SessionResponse response = cancelSessionUseCase.execute(sessionId);
         return ResponseEntity.ok(response);
     }
 

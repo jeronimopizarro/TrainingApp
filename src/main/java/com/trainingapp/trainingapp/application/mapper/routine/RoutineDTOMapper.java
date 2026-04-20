@@ -176,13 +176,14 @@ public class RoutineDTOMapper {
                 .orElse(null);
 
         String name = (catalogData != null) ? catalogData.getName() : "Ejercicio Borrado";
+        String description = (catalogData != null) ? catalogData.getDescription() : null;
         String img = (catalogData != null) ? catalogData.getImageUrl() : null;
         String video = (catalogData != null) ? catalogData.getVideoUrl() : null;
 
         return new ExerciseItemResponse(
                 detail.getId(), detail.getOrderNumber(), detail.getSets(), detail.getRepsMin(), detail.getRepsMax(),
                 detail.getTargetRIR(), detail.getSuggestedWeight(), detail.getNotes(),
-                detail.getExerciseId(), name, img, video
+                detail.getExerciseId(), name, description, img, video
         );
     }
 

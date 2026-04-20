@@ -8,18 +8,18 @@ import {
   Play, 
   Save, 
   Timer,
-  Info,
-  ChevronRight,
   AlertCircle,
   Loader2,
   Trash2,
-  Trophy
+  Trophy,
+  StopCircle,
+  MoreVertical
 } from 'lucide-react';
 import { useRoutine } from '@/features/routines/hooks/useRoutine';
 import { useWorkoutTracker } from '@/features/tracker/hooks/useWorkoutTracker';
 import { Button } from '@/shared/components/Button';
-import { Input } from '@/shared/components/Input';
 import { Modal } from '@/shared/components/Modal';
+import { VideoModal } from '@/shared/components/VideoModal';
 import { clsx } from 'clsx';
 
 interface SetRecord {
@@ -32,8 +32,13 @@ interface SetRecord {
 export const WorkoutTrackingPage = () => {
   const { routineId, dayId } = useParams();
   const navigate = useNavigate();
-  const { detail, loading: routineLoading } = useRoutine(undefined, Number(routineId));
-  const { session, startWorkout, logSet, finishWorkout, loading: trackerLoading } = useWorkoutTracker();
+  
+  const { session, startWorkout, logSet, finishWorkout, cancelWorkout, loading: trackerLoading } = useWorkoutTracker();
+  
+  const effectiveRoutineId = session?.routineId || Number(routineId);
+  const effectiveDayId = session?.trainingDayId || Number(dayId);
+
+  const { detail, loading: routineLoading } = useRoutine(undefined, effectiveRoutineId);
 
   const [currentDay, setCurrentDay] = useState<any>(null);
   const [activeExerciseIndex, setActiveExerciseIndex] = useState(0);
@@ -43,27 +48,70 @@ export const WorkoutTrackingPage = () => {
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isResting, setIsResting] = useState(false);
   const [isFinishing, setIsFinishing] = useState(false);
+  
+  // Modal states
+  const [showResumeModal, setShowResumeModal] = useState(false);
+  const [showOptionsModal, setShowOptionsModal] = useState(false);
+  const [isUserInteracting, setIsUserInteracting] = useState(false);
 
+  // Video Player State
+  const [videoPlayer, setVideoPlayer] = useState<{ isOpen: boolean, url: string, title: string }>({
+    isOpen: false,
+    url: '',
+    title: ''
+  });
+
+  // Efecto para detectar si hay una sesión pendiente al entrar
   useEffect(() => {
-    if (detail && dayId) {
-      const day = detail.days.find(d => d.id === Number(dayId));
+    if (session && !isUserInteracting) {
+       setShowResumeModal(true);
+    }
+  }, [session, isUserInteracting]);
+
+  // Efecto para sincronizar el día y las series
+  useEffect(() => {
+    if (detail && effectiveDayId) {
+      const day = detail.days.find(d => d.id === effectiveDayId);
       setCurrentDay(day);
       
-      // Initialize sets records
       if (day) {
         const initialRecords: Record<number, SetRecord[]> = {};
+        
         day.exercises.forEach(ex => {
-          initialRecords[ex.exerciseId] = Array.from({ length: ex.sets }, () => ({
-            reps: ex.repsMax,
-            weight: ex.suggestedWeight,
-            rir: ex.targetRIR,
-            isLogged: false
-          }));
+          const loggedForThisEx = session?.loggedSets.filter(s => s.exerciseId === ex.exerciseId) || [];
+          
+          initialRecords[ex.exerciseId] = Array.from({ length: ex.sets }, (_, i) => {
+            const loggedSet = loggedForThisEx.find(s => s.setNumber === i + 1);
+            
+            if (loggedSet) {
+              return {
+                reps: loggedSet.repsPerformed,
+                weight: Number(loggedSet.weightLifted),
+                rir: loggedSet.rir,
+                isLogged: true
+              };
+            }
+
+            return {
+              reps: ex.repsMax,
+              weight: ex.suggestedWeight,
+              rir: ex.targetRIR,
+              isLogged: false
+            };
+          });
         });
+        
         setSetsRecords(initialRecords);
+
+        if (session) {
+           setIsTimerActive(true);
+           const start = new Date(session.startTime).getTime();
+           const now = new Date().getTime();
+           setTimer(Math.floor((now - start) / 1000));
+        }
       }
     }
-  }, [detail, dayId]);
+  }, [detail, effectiveDayId, session]);
 
   useEffect(() => {
     let interval: any;
@@ -81,12 +129,30 @@ export const WorkoutTrackingPage = () => {
   const handleStartSession = async () => {
     if (!dayId || !routineId) return;
     try {
+      setIsUserInteracting(true);
       await startWorkout(Number(routineId), Number(dayId));
-      setIsTimerActive(true);
     } catch (err: any) {
-      // Error handled by hook and displayed in UI if needed, 
-      // but we show alert for immediate feedback
-      alert(err.response?.data?.message || "No puedes iniciar el entrenamiento. Verifica tu suscripción.");
+      if (!err.response?.data?.message?.includes('Ya tienes un entrenamiento en progreso')) {
+          alert(err.response?.data?.message || "No puedes iniciar el entrenamiento.");
+      }
+    }
+  };
+
+  const handleResumeSession = () => {
+    setShowResumeModal(false);
+    setIsUserInteracting(true);
+  };
+
+  const handleCancelSession = async () => {
+    if (window.confirm("¿Estás seguro de cancelar el entrenamiento actual? Se perderán los datos no guardados.")) {
+      try {
+        await cancelWorkout();
+        setShowResumeModal(false);
+        setShowOptionsModal(false);
+        setIsUserInteracting(false);
+      } catch (err) {
+        alert("Error al cancelar la sesión");
+      }
     }
   };
 
@@ -99,7 +165,6 @@ export const WorkoutTrackingPage = () => {
       newRecords[exerciseId][setIndex].isLogged = true;
       setSetsRecords(newRecords);
       
-      // Start rest timer
       setRestTimer(0);
       setIsResting(true);
     } catch (err) {
@@ -116,6 +181,7 @@ export const WorkoutTrackingPage = () => {
   const handleFinish = async () => {
     try {
       await finishWorkout();
+      setShowOptionsModal(false);
       setIsFinishing(true);
     } catch (err) {
       alert("Error al finalizar entrenamiento");
@@ -128,14 +194,20 @@ export const WorkoutTrackingPage = () => {
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
-  if (routineLoading) return (
+  if (routineLoading || trackerLoading) return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6">
       <Loader2 className="w-12 h-12 text-primary animate-spin" />
-      <p className="font-display font-black uppercase tracking-[0.3em] text-xs text-text-secondary">Preparando Estación...</p>
+      <p className="font-display font-black uppercase tracking-[0.3em] text-xs text-text-secondary">Sincronizando Estación...</p>
     </div>
   );
 
-  if (!currentDay) return null;
+  if (!currentDay) return (
+     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-10 text-center">
+        <AlertCircle size={48} className="text-error mb-4" />
+        <h2 className="text-xl font-bold text-text-main">No se pudo cargar el día de entrenamiento</h2>
+        <Button onClick={() => navigate('/member/dashboard')} variant="ghost" className="mt-6">Volver al inicio</Button>
+     </div>
+  );
 
   const activeExercise = currentDay.exercises[activeExerciseIndex];
   const allExercisesCompleted = currentDay.exercises.every((ex: any) => 
@@ -161,7 +233,6 @@ export const WorkoutTrackingPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      {/* STICKY HEADER */}
       <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-white/[0.05] p-6 flex items-center justify-between">
          <div className="flex items-center gap-4">
            <Button onClick={() => navigate(-1)} variant="ghost" className="p-2 rounded-xl">
@@ -187,6 +258,15 @@ export const WorkoutTrackingPage = () => {
              <Timer size={14} className={clsx("text-primary", isTimerActive && "animate-pulse")} />
              <span className="text-sm font-mono font-black text-text-main tracking-widest">{formatTime(timer)}</span>
            </div>
+           
+           {session && (
+             <button 
+                onClick={() => setShowOptionsModal(true)}
+                className="p-3 bg-surface-high hover:bg-surface-med rounded-2xl border border-white/5 text-text-secondary hover:text-text-main transition-all"
+             >
+                <MoreVertical size={18} />
+             </button>
+           )}
          </div>
       </header>
 
@@ -203,7 +283,6 @@ export const WorkoutTrackingPage = () => {
         </div>
       ) : (
         <div className="max-w-4xl mx-auto p-6 animate-in slide-in-from-right-4 duration-500">
-           {/* EXERCISE SELECTOR (TABS) */}
            <div className="flex items-center gap-3 overflow-x-auto pb-6 scrollbar-hide">
              {currentDay.exercises.map((ex: any, index: number) => {
                const isCompleted = setsRecords[ex.exerciseId]?.every(s => s.isLogged);
@@ -226,7 +305,6 @@ export const WorkoutTrackingPage = () => {
              })}
            </div>
 
-           {/* ACTIVE EXERCISE DETAIL */}
            <div className="bg-surface-low rounded-[2.5rem] border border-white/[0.03] p-8 shadow-2xl mb-8">
               <div className="flex flex-col md:flex-row gap-8 items-start mb-10">
                 <div className="w-32 h-32 rounded-[2rem] overflow-hidden border border-white/10 bg-background flex-shrink-0 shadow-xl">
@@ -243,11 +321,22 @@ export const WorkoutTrackingPage = () => {
                     {activeExercise.exerciseName}
                   </h3>
                   <div className="flex flex-wrap gap-4 mt-4">
-                    <span className="bg-surface-high/50 px-3 py-1.5 rounded-lg text-[10px] font-black text-text-secondary uppercase border border-white/5">
-                      OBJETIVO: {activeExercise.sets}x{activeExercise.repsMin}-{activeExercise.repsMax} @ {activeExercise.suggestedWeight}kg (RIR {activeExercise.targetRIR})
-                    </span>
-                  </div>
-                  {activeExercise.notes && (
+                    {activeExercise.exerciseVideoUrl && (
+                      <button 
+                        onClick={() => setVideoPlayer({ isOpen: true, url: activeExercise.exerciseVideoUrl, title: activeExercise.exerciseName })}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary text-[10px] font-black rounded-lg uppercase tracking-widest border border-primary/20 transition-all group"
+                      >
+                        <Play size={12} className="fill-primary" />
+                        Ver descripción
+                      </button>
+                    )}
+                    </div>
+                    {activeExercise.exerciseDescription && (
+                    <p className="mt-4 text-sm text-text-secondary leading-relaxed max-w-2xl border-l-2 border-primary/20 pl-4">
+                      {activeExercise.exerciseDescription}
+                    </p>
+                    )}
+                    {activeExercise.notes && (
                     <p className="mt-4 text-xs font-medium text-text-secondary italic">
                       💡 {activeExercise.notes}
                     </p>
@@ -255,7 +344,6 @@ export const WorkoutTrackingPage = () => {
                 </div>
               </div>
 
-              {/* SETS TABLE */}
               <div className="flex flex-col gap-4">
                  <div className="grid grid-cols-12 gap-4 px-4 mb-2">
                     <div className="col-span-1 text-xs font-black uppercase tracking-widest text-text-secondary opacity-30 text-center">#</div>
@@ -327,7 +415,6 @@ export const WorkoutTrackingPage = () => {
               </div>
            </div>
 
-           {/* NAVIGATION BUTTONS */}
            <div className="flex items-center justify-between gap-6">
               <Button 
                 onClick={() => setActiveExerciseIndex(prev => Math.max(0, prev - 1))}
@@ -358,6 +445,96 @@ export const WorkoutTrackingPage = () => {
            </div>
         </div>
       )}
+
+      {/* MODAL DE SESIÓN PENDIENTE (RECUPERACIÓN) */}
+      <Modal 
+        isOpen={showResumeModal} 
+        onClose={() => {}} 
+        title="Entrenamiento en Progreso"
+      >
+        <div className="p-8 flex flex-col items-center text-center gap-6">
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-2">
+            <History size={32} />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-xl font-display font-black uppercase italic text-text-main">
+              ¡Tienes una sesión pendiente!
+            </h3>
+            <p className="text-text-secondary text-sm font-medium max-w-xs mx-auto">
+              Detectamos que no finalizaste tu último entrenamiento. ¿Deseas retomarlo desde donde quedaste o prefieres cancelarlo y empezar de cero?
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 w-full gap-3 pt-4">
+            <Button 
+              onClick={handleResumeSession} 
+              variant="primary" 
+              className="py-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20"
+              icon={<Play size={14} />}
+            >
+              Continuar Entrenamiento
+            </Button>
+            <Button 
+              onClick={handleCancelSession} 
+              variant="ghost" 
+              className="py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-error hover:bg-error/10 border-none"
+              icon={<Trash2 size={14} />}
+            >
+              Cancelar y Eliminar
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* MODAL DE OPCIONES (DURANTE EL ENTRENAMIENTO) */}
+      <Modal 
+        isOpen={showOptionsModal} 
+        onClose={() => setShowOptionsModal(false)} 
+        title="Opciones de Sesión"
+      >
+        <div className="p-8 flex flex-col gap-4">
+          <div className="mb-4">
+            <p className="text-text-secondary text-sm font-medium text-center">
+              ¿Qué deseas hacer con tu sesión actual?
+            </p>
+          </div>
+
+          <Button 
+            onClick={handleFinish} 
+            variant="primary" 
+            className="w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20"
+            icon={<StopCircle size={16} />}
+            disabled={trackerLoading}
+          >
+            Finalizar Entrenamiento (Guardar)
+          </Button>
+
+          <Button 
+            onClick={handleCancelSession} 
+            variant="ghost" 
+            className="w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-error hover:bg-error/10 border-none"
+            icon={<Trash2 size={16} />}
+            disabled={trackerLoading}
+          >
+            Cancelar Entrenamiento (Borrar)
+          </Button>
+
+          <Button 
+            onClick={() => setShowOptionsModal(false)} 
+            variant="ghost" 
+            className="w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-text-secondary"
+          >
+            Volver
+          </Button>
+        </div>
+      </Modal>
+
+      <VideoModal 
+        isOpen={videoPlayer.isOpen}
+        videoUrl={videoPlayer.url}
+        title={videoPlayer.title}
+        onClose={() => setVideoPlayer({ ...videoPlayer, isOpen: false })}
+      />
     </div>
   );
 };

@@ -18,6 +18,15 @@ export const trackerService = {
   },
 
   /**
+   * Obtiene la sesión activa si existe
+   */
+  getActiveSession: async (): Promise<SessionResponse | null> => {
+    const response = await api.get<SessionResponse | null>('/sessions/active');
+    if (response.status === 204) return null;
+    return response.data;
+  },
+
+  /**
    * Registra una serie en una sesión activa
    */
   logSet: async (sessionId: number, request: LogSetRequest): Promise<SetLogResponse> => {
@@ -30,6 +39,14 @@ export const trackerService = {
    */
   finishSession: async (sessionId: number): Promise<SessionResponse> => {
     const { data } = await api.patch<SessionResponse>(`/sessions/${sessionId}/finish`);
+    return data;
+  },
+
+  /**
+   * Cancela una sesión de entrenamiento
+   */
+  cancelSession: async (sessionId: number): Promise<SessionResponse> => {
+    const { data } = await api.patch<SessionResponse>(`/sessions/${sessionId}/cancel`);
     return data;
   },
 

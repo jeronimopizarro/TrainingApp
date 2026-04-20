@@ -7,6 +7,8 @@ import com.trainingapp.trainingapp.web.dto.tracker.SetLogResponse;
 import com.trainingapp.trainingapp.web.dto.tracker.StartSessionRequest;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class TrainingSessionDTOMapper {
 
@@ -22,13 +24,19 @@ public class TrainingSessionDTOMapper {
     }
 
     public SessionResponse toResponse(TrainingSession session) {
+        List<SetLogResponse> loggedSets = session.getSets() != null
+            ? session.getSets().stream().map(this::toSetLogResponse).toList()
+            : new java.util.ArrayList<>();
+
         return new SessionResponse(
                 session.getId(),
                 session.getMemberId(),
                 session.getRoutineId(),
+                session.getTrainingDayId(),
                 session.getStartTime(),
                 session.getEndTime(),
-                session.getStatus()
+                session.getStatus(),
+                loggedSets
         );
     }
 
