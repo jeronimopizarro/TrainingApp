@@ -35,7 +35,7 @@ export const LoginPage = () => {
         {/* LOGO & CABECERA */}
         <header className="text-center mb-10 sm:mb-12">
           <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-primary to-primary-dark rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary/20 rotate-3">
-            <Dumbbell className="text-white" size={28} strokeWidth={2.5} className="sm:size-[32px]" />
+            <Dumbbell className="text-white sm:size-[32px]" size={28} strokeWidth={2.5} />
           </div>
           <h1 className="text-3xl sm:text-4xl font-display font-black italic text-text-main tracking-tighter mb-2">
             TrainingApp<span className="text-primary text-4xl sm:text-5xl">.</span>
