@@ -59,6 +59,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // --- RUTAS PÚBLICAS (No piden token) ---
                         .requestMatchers("/auth/**").permitAll() // Permitir Login
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
 
                         // --- RUTAS PRIVADAS (Piden token obligatoriamente) ---
                         .anyRequest().authenticated()
