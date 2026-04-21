@@ -78,8 +78,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // 1. Definimos quién puede conectarse (tu frontend de React)
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        // 1. Definimos quién puede conectarse
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:5173",
+                "https://*.vercel.app"
+        ));
         
         // 2. Definimos qué acciones permitimos
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
@@ -97,10 +100,9 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        // 1. Creamos el proveedor usando el constructor vacío (el estándar)
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-        // 2. Le pasamos tus dependencias usando los "setters" explícitos
+        // Le pasamos tus dependencias usando los "setters" explícitos
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
 
