@@ -59,7 +59,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // --- RUTAS PÚBLICAS (No piden token) ---
                         .requestMatchers("/auth/**").permitAll() // Permitir Login
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/health").permitAll()  // Permitir a UptimeRobot
 
                         // --- RUTAS PRIVADAS (Piden token obligatoriamente) ---
                         .anyRequest().authenticated()
