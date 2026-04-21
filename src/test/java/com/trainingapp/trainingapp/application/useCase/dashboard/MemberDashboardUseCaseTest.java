@@ -21,8 +21,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,7 +73,7 @@ class MemberDashboardUseCaseTest {
 
         // 3. Mock de Fechas de Entrenamiento del Mes
         List<LocalDate> dates = List.of(LocalDate.now().minusDays(2), LocalDate.now().minusDays(1));
-        when(trainingSessionRepository.findTrainingDatesByMemberIdAndMonth(eq(100L), any(LocalDateTime.class), any(LocalDateTime.class)))
+        when(trainingSessionRepository.findTrainingDatesByMemberIdAndMonth(eq(100L), any(Instant.class), any(Instant.class)))
                 .thenReturn(dates);
 
         // 4. Mock de Solicitud Pendiente

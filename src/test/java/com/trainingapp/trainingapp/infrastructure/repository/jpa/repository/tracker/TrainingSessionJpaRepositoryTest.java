@@ -9,7 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ class TrainingSessionJpaRepositoryTest {
         TrainingSessionJpaEntity activeSession = new TrainingSessionJpaEntity();
         activeSession.setMemberId(1L);
         activeSession.setGymId(10L);
-        activeSession.setStartTime(LocalDateTime.now());
+        activeSession.setStartTime(Instant.now());
         activeSession.setStatus(SessionStatus.IN_PROGRESS);
         repository.save(activeSession);
 
@@ -37,8 +38,8 @@ class TrainingSessionJpaRepositoryTest {
         TrainingSessionJpaEntity completedSession = new TrainingSessionJpaEntity();
         completedSession.setMemberId(1L);
         completedSession.setGymId(10L);
-        completedSession.setStartTime(LocalDateTime.now().minusDays(1));
-        completedSession.setEndTime(LocalDateTime.now());
+        completedSession.setStartTime(Instant.now().minus(1, ChronoUnit.DAYS));
+        completedSession.setEndTime(Instant.now());
         completedSession.setStatus(SessionStatus.COMPLETED);
         repository.save(completedSession);
 
@@ -52,15 +53,15 @@ class TrainingSessionJpaRepositoryTest {
     @Test
     @DisplayName("Debería encontrar sesiones zombie que superen el límite de tiempo")
     void shouldFindZombieSessions() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime threshold =
-                now.minusHours(12); // Consideramos zombie a lo que tenga más de 12 horas
+        Instant now = Instant.now();
+        Instant threshold =
+                now.minus(12, ChronoUnit.HOURS); // Consideramos zombie a lo que tenga más de 12 horas
 
         // Sesión Zombie
         TrainingSessionJpaEntity zombieSession = new TrainingSessionJpaEntity();
         zombieSession.setMemberId(1L);
         zombieSession.setGymId(10L);
-        zombieSession.setStartTime(now.minusHours(15));
+        zombieSession.setStartTime(now.minus(15, ChronoUnit.HOURS));
         zombieSession.setStatus(SessionStatus.IN_PROGRESS);
         repository.save(zombieSession);
 
@@ -68,7 +69,7 @@ class TrainingSessionJpaRepositoryTest {
         TrainingSessionJpaEntity normalSession = new TrainingSessionJpaEntity();
         normalSession.setMemberId(2L);
         normalSession.setGymId(10L);
-        normalSession.setStartTime(now.minusHours(2));
+        normalSession.setStartTime(now.minus(2, ChronoUnit.HOURS));
         normalSession.setStatus(SessionStatus.IN_PROGRESS);
         repository.save(normalSession);
 
@@ -82,7 +83,7 @@ class TrainingSessionJpaRepositoryTest {
     @Test
     @DisplayName("Debería ejecutar la @Query manual para buscar el historial de un ejercicio")
     void shouldFindSessionsByMemberAndExercise() {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         Long memberId = 1L;
         Long targetExerciseId = 100L;
         Long otherExerciseId = 200L;
@@ -91,7 +92,7 @@ class TrainingSessionJpaRepositoryTest {
         TrainingSessionJpaEntity session1 = new TrainingSessionJpaEntity();
         session1.setMemberId(memberId);
         session1.setGymId(10L);
-        session1.setStartTime(now.minusMonths(2));
+        session1.setStartTime(now.minus(60, ChronoUnit.DAYS));
         session1.setStatus(SessionStatus.COMPLETED);
 
         SetLogJpaEntity set1 = new SetLogJpaEntity();
@@ -108,7 +109,7 @@ class TrainingSessionJpaRepositoryTest {
         TrainingSessionJpaEntity session2 = new TrainingSessionJpaEntity();
         session2.setMemberId(memberId);
         session2.setGymId(10L);
-        session2.setStartTime(now.minusMonths(1));
+        session2.setStartTime(now.minus(30, ChronoUnit.DAYS));
         session2.setStatus(SessionStatus.COMPLETED);
 
         SetLogJpaEntity set2 = new SetLogJpaEntity();
@@ -123,7 +124,7 @@ class TrainingSessionJpaRepositoryTest {
 
         // Act: Llamamos a tu JPQL escrito a mano
         List<TrainingSessionJpaEntity> result = repository.findSessionsByMemberAndExercise(
-                memberId, targetExerciseId, now.minusMonths(6)
+                memberId, targetExerciseId, now.minus(180, ChronoUnit.DAYS)
         );
 
         // Assert

@@ -26,7 +26,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -76,7 +76,7 @@ class TrainingSessionControllerTest {
     void shouldStartSessionSuccessfully() throws Exception {
         StartSessionRequest request = new StartSessionRequest(100L, 5L);
         SessionResponse fakeResponse = new SessionResponse(
-                1L, 10L, 100L, 5L, LocalDateTime.now(), null, SessionStatus.IN_PROGRESS, new ArrayList<>()
+                1L, 10L, 100L, 5L, Instant.now(), null, SessionStatus.IN_PROGRESS, new ArrayList<>()
         );
 
         when(startTrainingSessionUseCase.execute(any(StartSessionRequest.class))).thenReturn(fakeResponse);
@@ -130,7 +130,7 @@ class TrainingSessionControllerTest {
     @DisplayName("PATCH /sessions/{sessionId}/finish - Debería retornar 200 al finalizar")
     void shouldFinishSession() throws Exception {
         SessionResponse mockResponse = new SessionResponse(
-                1L, 10L, 100L, 5L, LocalDateTime.now(), LocalDateTime.now(), SessionStatus.COMPLETED, new ArrayList<>()
+                1L, 10L, 100L, 5L, Instant.now(), Instant.now(), SessionStatus.COMPLETED, new ArrayList<>()
         );
 
         when(finishTrainignSessionUseCase.execute(1L)).thenReturn(mockResponse);

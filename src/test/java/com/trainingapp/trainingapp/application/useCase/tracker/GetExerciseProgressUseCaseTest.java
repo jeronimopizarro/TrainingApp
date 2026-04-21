@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +54,7 @@ class GetExerciseProgressUseCaseTest {
                 .thenReturn(List.of(mockSession));
 
         when(mockSession.calculateAverageE1RMForExercise(5L)).thenReturn(new BigDecimal("120.0"));
-        when(mockSession.getStartTime()).thenReturn(LocalDateTime.now());
+        when(mockSession.getStartTime()).thenReturn(Instant.now());
 
         ExerciseProgressResponse response = useCase.execute(5L, null, 6);
 

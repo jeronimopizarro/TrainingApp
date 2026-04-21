@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class CleanZombieSessionsUseCaseTest {
         TrainingSession mockSession2 = mock(TrainingSession.class);
         List<TrainingSession> zombies = List.of(mockSession1, mockSession2);
 
-        when(sessionRepository.findZombieSessions(any(LocalDateTime.class))).thenReturn(zombies);
+        when(sessionRepository.findZombieSessions(any(Instant.class))).thenReturn(zombies);
 
         useCase.execute();
 
@@ -45,7 +45,7 @@ public class CleanZombieSessionsUseCaseTest {
     @Test
     @DisplayName("No debería hacer nada si la lista de zombies está vacía")
     void shouldDoNothingWhenNoZombieSessions() {
-        when(sessionRepository.findZombieSessions(any(LocalDateTime.class))).thenReturn(Collections.emptyList());
+        when(sessionRepository.findZombieSessions(any(Instant.class))).thenReturn(Collections.emptyList());
 
         useCase.execute();
 
