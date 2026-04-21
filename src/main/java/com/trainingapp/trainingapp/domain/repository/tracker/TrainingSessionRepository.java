@@ -2,8 +2,8 @@ package com.trainingapp.trainingapp.domain.repository.tracker;
 
 import com.trainingapp.trainingapp.domain.entity.tracker.TrainingSession;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,15 +14,15 @@ public interface TrainingSessionRepository {
 
     Optional<TrainingSession> findActiveSessionByMemberId(Long memberId);
 
-    List<LocalDate> findTrainingDatesByMemberIdAndMonth(Long memberId, LocalDateTime startOfMonth,
-                                                        LocalDateTime endOfMonth);
+    List<LocalDate> findTrainingDatesByMemberIdAndMonth(Long memberId, Instant startOfMonth,
+                                                        Instant endOfMonth);
 
-    List<TrainingSession> findZombieSessions(LocalDateTime threshold);
+    List<TrainingSession> findZombieSessions(Instant threshold);
 
     Optional<TrainingSession> findLastSessionByMemberIdAndRoutineId(Long memberId, Long routineId);
 
     // Analítica Deportiva
     List<Long> findPerformedExerciseIdsByMemberId(Long memberId);
 
-    List<TrainingSession> findSessionsByMemberAndExercise(Long memberId, Long exerciseId, LocalDateTime since);
+    List<TrainingSession> findSessionsByMemberAndExercise(Long memberId, Long exerciseId, Instant since);
 }

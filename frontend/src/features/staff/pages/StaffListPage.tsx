@@ -55,47 +55,53 @@ const StaffRow = ({ member }: { member: StaffMember }) => {
   const initials = `${member.firstName[0]}${member.lastName[0]}`.toUpperCase();
 
   return (
-    <div className="group flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-4 sm:p-6 bg-surface-low hover:bg-surface-med/50 transition-all cursor-pointer border-b border-white/[0.02] last:border-0 first:rounded-t-[1.5rem] last:rounded-b-[1.5rem]">
-      <div className="flex items-center gap-4 min-w-0 flex-1">
-        <div className="w-12 h-12 rounded-2xl bg-surface-high flex-shrink-0 flex items-center justify-center font-display font-black text-primary group-hover:scale-105 transition-all duration-300 shadow-xl border border-white/5">
-          {initials}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between sm:block">
-            <h3 className="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1.5 truncate">
-              {member.firstName} {member.lastName}
-            </h3>
-            <div className="sm:hidden scale-75 origin-right">
-              <RoleBadge role={member.role} />
-            </div>
+    <div className="group p-4 sm:p-0 bg-surface-low hover:bg-surface-med/50 transition-all cursor-pointer border-b border-white/[0.02] last:border-0 first:rounded-t-[1.5rem] last:rounded-b-[1.5rem]">
+      <div className="flex flex-col sm:grid sm:grid-cols-12 sm:items-center gap-4 sm:gap-0 sm:px-6 sm:py-6">
+        {/* Info Principal: Avatar + Nombre/Email */}
+        <div className="flex items-center gap-4 min-w-0 sm:col-span-4">
+          <div className="w-12 h-12 rounded-2xl bg-surface-high flex-shrink-0 flex items-center justify-center font-display font-black text-primary group-hover:scale-105 transition-all duration-300 shadow-xl border border-white/5">
+            {initials}
           </div>
-          <p className="text-xs text-text-secondary font-medium truncate flex items-center gap-2">
-            <Mail size={12} className="flex-shrink-0" /> {member.email}
-          </p>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between sm:block">
+              <h3 className="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-none mb-1.5 truncate">
+                {member.firstName} {member.lastName}
+              </h3>
+              <div className="sm:hidden scale-75 origin-right">
+                <RoleBadge role={member.role} />
+              </div>
+            </div>
+            <p className="text-xs text-text-secondary font-medium truncate flex items-center gap-2">
+              <Mail size={12} className="flex-shrink-0" /> {member.email}
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Este contenedor maneja la info extra en móvil (en fila) y se alinea con la fila en PC */}
-      <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6">
-        <div className="hidden lg:block w-32 shrink-0">
-          <p className="text-[11px] uppercase tracking-widest text-text-secondary font-bold mb-1">DNI</p>
+        {/* DNI - Solo visible desde LG en su propia columna */}
+        <div className="hidden lg:block lg:col-span-2 px-4">
+          <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black mb-1 opacity-50">Documento</p>
           <p className="text-sm font-mono font-bold text-text-main">{member.dni}</p>
         </div>
         
-        <div className="w-auto sm:w-48 shrink-0">
-          <p className="text-sm font-bold text-text-main leading-none mb-1.5 truncate">
-            {member.role === 'TRAINER' ? (member as any).specialization : 'Gestión Administrativa'}
-          </p>
-          <p className="text-[10px] sm:text-xs uppercase tracking-widest text-text-secondary font-black">
-            {member.role === 'TRAINER' ? 'Especialidad' : 'Responsabilidad'}
-          </p>
+        {/* Especialidad / Responsabilidad */}
+        <div className="sm:col-span-4 lg:col-span-3 px-0 sm:px-4">
+          <div className="flex flex-col">
+            <p className="text-sm font-bold text-text-main leading-none mb-1.5 truncate">
+              {member.role === 'TRAINER' ? (member as any).specialization : 'Gestión Administrativa'}
+            </p>
+            <p className="text-[10px] uppercase tracking-widest text-text-secondary font-black opacity-50">
+              {member.role === 'TRAINER' ? 'Especialidad' : 'Responsabilidad'}
+            </p>
+          </div>
         </div>
 
-        <div className="hidden sm:flex w-44 justify-center shrink-0">
+        {/* Rol Badge - Centrado en PC */}
+        <div className="hidden sm:flex sm:col-span-3 lg:col-span-2 justify-center px-4">
           <RoleBadge role={member.role} />
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Acción */}
+        <div className="hidden sm:flex sm:col-span-1 justify-end">
           <button className="p-2 text-text-secondary hover:text-primary transition-colors hover:bg-primary/10 rounded-xl">
             <ChevronRight size={20} />
           </button>

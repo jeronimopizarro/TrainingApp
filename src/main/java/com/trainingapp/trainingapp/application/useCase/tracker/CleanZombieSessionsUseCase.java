@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -25,7 +26,7 @@ public class CleanZombieSessionsUseCase {
         logger.info("Ejecutando caso de uso: Limpieza de sesiones Zombie...");
 
         // REGLA DE NEGOCIO: 12 horas de antigüedad
-        LocalDateTime threshold = LocalDateTime.now().minusHours(12);
+        Instant threshold = Instant.now().minus(12, ChronoUnit.HOURS);
 
         List<TrainingSession> zombieSessions = sessionRepository.findZombieSessions(threshold);
 

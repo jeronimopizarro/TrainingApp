@@ -6,7 +6,7 @@ import com.trainingapp.trainingapp.domain.exception.tracker.SessionMemberRequire
 import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +18,14 @@ public class TrainingSession {
     private Long routineId; // Opcional: Puede estar haciendo un entrenamiento libre
     private Long trainingDayId;
     private Long gymId;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private Instant startTime;
+    private Instant endTime;
     private SessionStatus status;
     private List<SetLog> sets;
 
     public TrainingSession(Long id, Long memberId, Long routineId, Long trainingDayId, Long gymId,
-                           LocalDateTime startTime,
-                           LocalDateTime endTime, SessionStatus status, List<SetLog> sets) {
+                           Instant startTime,
+                           Instant endTime, SessionStatus status, List<SetLog> sets) {
         this.id = id;
         this.memberId = memberId;
         this.routineId = routineId;
@@ -47,12 +47,12 @@ public class TrainingSession {
     }
 
     public static TrainingSession startNew(Long memberId, Long routineId, Long trainingDayId, Long gymId) {
-        return new TrainingSession(null, memberId, routineId, trainingDayId, gymId, LocalDateTime.now(),
+        return new TrainingSession(null, memberId, routineId, trainingDayId, gymId, Instant.now(),
                 null, SessionStatus.IN_PROGRESS, new ArrayList<>());
     }
 
     public static TrainingSession restore(Long id, Long memberId, Long routineId, Long trainingDayId, Long gymId,
-                                          LocalDateTime startTime, LocalDateTime endTime,
+                                          Instant startTime, Instant endTime,
                                           SessionStatus status, List<SetLog> sets) {
         return new TrainingSession(id, memberId, routineId, trainingDayId, gymId, startTime, endTime, status,
                 sets);
@@ -75,7 +75,7 @@ public class TrainingSession {
             throw new InvalidSessionStateException("Solo se puede finalizar una sesión que está en progreso.");
         }
         this.status = SessionStatus.COMPLETED;
-        this.endTime = LocalDateTime.now();
+        this.endTime = Instant.now();
     }
 
     public void cancel() {
@@ -83,7 +83,7 @@ public class TrainingSession {
             throw new InvalidSessionStateException("Solo se puede cancelar una sesión que está en progreso.");
         }
         this.status = SessionStatus.CANCELLED;
-        this.endTime = LocalDateTime.now();
+        this.endTime = Instant.now();
     }
 
     /**

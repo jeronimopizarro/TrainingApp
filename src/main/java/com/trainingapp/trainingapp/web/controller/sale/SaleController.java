@@ -24,7 +24,7 @@ public class SaleController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'GYM_ADMIN', 'RECEPTIONIST')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'RECEPTIONIST')")
     public ResponseEntity<SaleResponse> processSale(@Valid @RequestBody CreateSaleRequest request) {
         SaleResponse response = processSaleUseCase.execute(request);
         return buildCreatedResponse(response);

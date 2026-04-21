@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +19,7 @@ public interface TrainingSessionJpaRepository
     Optional<TrainingSessionJpaEntity> findByMemberIdAndStatus(Long memberId, SessionStatus status);
 
     List<TrainingSessionJpaEntity> findByStatusAndStartTimeBefore(SessionStatus status,
-                                                                  LocalDateTime thresholdTime);
+                                                                  Instant thresholdTime);
 
     Optional<TrainingSessionJpaEntity> findFirstByMemberIdAndRoutineIdAndStatusOrderByStartTimeDesc(
             Long memberId, Long routineId, SessionStatus status);
@@ -30,8 +30,8 @@ public interface TrainingSessionJpaRepository
             "AND ts.startTime <= :endOfMonth " +
             "ORDER BY ts.startTime ASC")
     List<TrainingSessionJpaEntity> findSessionsByMemberIdAndMonth(@Param("memberId") Long memberId,
-                                                                  @Param("startOfMonth") LocalDateTime startOfMonth,
-                                                                  @Param("endOfMonth") LocalDateTime endOfMonth);
+                                                                  @Param("startOfMonth") Instant startOfMonth,
+                                                                  @Param("endOfMonth") Instant endOfMonth);
 
     /**
      * NIVEL 1: PANTALLA DE PROGRESO (RESUMEN)
@@ -55,5 +55,5 @@ public interface TrainingSessionJpaRepository
     List<TrainingSessionJpaEntity> findSessionsByMemberAndExercise(
             @Param("memberId") Long memberId,
             @Param("exerciseId") Long exerciseId,
-            @Param("since") LocalDateTime since);
+            @Param("since") Instant since);
 }

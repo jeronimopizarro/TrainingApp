@@ -8,8 +8,9 @@ import com.trainingapp.trainingapp.infrastructure.repository.jpa.mapper.tracker.
 import com.trainingapp.trainingapp.infrastructure.repository.jpa.repository.tracker.TrainingSessionJpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,17 +44,17 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository 
     }
 
     @Override
-    public List<LocalDate> findTrainingDatesByMemberIdAndMonth(Long memberId, LocalDateTime startOfMonth, LocalDateTime endOfMonth) {
+    public List<LocalDate> findTrainingDatesByMemberIdAndMonth(Long memberId, Instant startOfMonth, Instant endOfMonth) {
         // Usamos la query JPA que armaste en el paso anterior
         return jpaRepository.findSessionsByMemberIdAndMonth(memberId, startOfMonth, endOfMonth)
                 .stream()
-                .map(session -> session.getStartTime().toLocalDate()) // Extraemos la fecha
+                .map(session -> session.getStartTime().atZone(ZoneOffset.UTC).toLocalDate()) // Extraemos la fecha en UTC
                 .distinct() // Filtramos repetidos
                 .toList();
     }
 
     @Override
-    public List<TrainingSession> findZombieSessions(LocalDateTime threshold) {
+    public List<TrainingSession> findZombieSessions(Instant threshold) {
         return jpaRepository.findByStatusAndStartTimeBefore(SessionStatus.IN_PROGRESS, threshold)
                 .stream()
                 .map(mapper::toDomain)
@@ -72,7 +73,7 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository 
     }
 
     @Override
-    public List<TrainingSession> findSessionsByMemberAndExercise(Long memberId, Long exerciseId, java.time.LocalDateTime since) {
+    public List<TrainingSession> findSessionsByMemberAndExercise(Long memberId, Long exerciseId, Instant since) {
         return jpaRepository.findSessionsByMemberAndExercise(memberId, exerciseId, since).stream()
                 .map(mapper::toDomain)
                 .toList();

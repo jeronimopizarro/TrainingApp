@@ -2,7 +2,7 @@ package com.trainingapp.trainingapp.web.dto.tracker;
 
 import com.trainingapp.trainingapp.domain.enums.tracker.SessionStatus;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 public record SessionResponse(
@@ -10,8 +10,8 @@ public record SessionResponse(
         Long memberId,
         Long routineId,
         Long trainingDayId,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
+        Instant startTime,
+        Instant endTime,
         SessionStatus status,
         List<SetLogResponse> loggedSets
 ) {

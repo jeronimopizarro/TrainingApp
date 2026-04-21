@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class GetMemberProgressSummaryUseCase {
     }
 
     private BigDecimal calculateLatestPR(Long memberId, Long exerciseId) {
-        LocalDateTime threeMonthsAgo = LocalDateTime.now().minusMonths(3);
+        Instant threeMonthsAgo = Instant.now().minus(90, ChronoUnit.DAYS);
         List<TrainingSession> recentSessions = trainingSessionRepository
                 .findSessionsByMemberAndExercise(memberId, exerciseId, threeMonthsAgo);
 

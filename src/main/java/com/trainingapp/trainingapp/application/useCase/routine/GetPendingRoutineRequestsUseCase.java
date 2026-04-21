@@ -9,6 +9,7 @@ import com.trainingapp.trainingapp.web.dto.routine.GetPendingRoutineRequestsResp
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class GetPendingRoutineRequestsUseCase {
@@ -27,10 +28,19 @@ public class GetPendingRoutineRequestsUseCase {
 
     public List<GetPendingRoutineRequestsResponse> execute() {
         Long currentGymId = securityUtils.getCurrentUserGymId();
+        Long currentUserId = securityUtils.getCurrentUser().getId();
 
-        List<RoutineRequest> requests = routineRequestRepository.findByGymIdAndStatus(currentGymId, RoutineRequestStatus.PENDING);
+        // 1. Buscamos todas las PENDING del gimnasio (para el tab Global)
+        List<RoutineRequest> pendingRequests = routineRequestRepository.findByGymIdAndStatus(currentGymId, RoutineRequestStatus.PENDING);
 
-        return requests.stream()
+        // 2. Buscamos todas las IN_PROGRESS asignadas a ESTE entrenador (para que no las pierda)
+        List<RoutineRequest> inProgressRequests = routineRequestRepository.findByAssignedTrainerIdAndStatus(currentUserId, RoutineRequestStatus.IN_PROGRESS);
+
+        // Combinamos ambas listas
+        List<RoutineRequest> allVisibleRequests = Stream.concat(pendingRequests.stream(), inProgressRequests.stream())
+                .toList();
+
+        return allVisibleRequests.stream()
                 .map(request -> {
                     String memberName = memberRepository.findById(request.getMemberId())
                             .map(member -> member.getFirstName() + " " + member.getLastName())

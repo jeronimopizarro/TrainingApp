@@ -56,4 +56,11 @@ public class RoutineRequestRepositoryImpl implements RoutineRequestRepository {
         return jpaRepository.findFirstByMemberIdAndStatusAndAssignedTrainerId(memberId, status, assignedTrainerId)
                 .map(mapper::toDomain);
     }
+
+    @Override
+    public List<RoutineRequest> findByAssignedTrainerIdAndStatus(Long assignedTrainerId, RoutineRequestStatus status) {
+        return jpaRepository.findByAssignedTrainerIdAndStatus(assignedTrainerId, status).stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
 }

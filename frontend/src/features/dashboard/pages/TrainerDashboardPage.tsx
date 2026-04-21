@@ -31,11 +31,26 @@ export const TrainerDashboardPage = () => {
   const displayRequests = activeTab === 'mine' ? myRequests : globalRequests;
 
   const handleTakeRequest = async (request: any) => {
+    // Si ya está en progreso, vamos directo al builder
+    if (request.status === 'IN_PROGRESS') {
+      navigate(`/trainer/routines/builder?memberId=${request.memberId}&requestId=${request.id}&memberName=${encodeURIComponent(request.memberName)}`);
+      return;
+    }
+
     const success = await takeRequest(request.id);
     if (success) {
       // Redirigir al creador de rutinas con los datos del socio y la solicitud
       navigate(`/trainer/routines/builder?memberId=${request.memberId}&requestId=${request.id}&memberName=${encodeURIComponent(request.memberName)}`);
     }
+  };
+
+  const translateLevel = (level: string) => {
+    const levels: Record<string, string> = {
+      'BEGINNER': 'Principiante',
+      'INTERMEDIATE': 'Intermedio',
+      'ADVANCED': 'Avanzado'
+    };
+    return levels[level.toUpperCase()] || level;
   };
 
   const RequestCard = ({ request, isMyRequest }: { request: any, isMyRequest?: boolean }) => (
@@ -47,13 +62,17 @@ export const TrainerDashboardPage = () => {
           </div>
           <div>
             <h3 className="font-display font-bold text-text-main leading-none">{request.memberName}</h3>
-            <p className="text-[10px] text-text-secondary uppercase tracking-widest font-bold mt-1">Socio #{request.memberId}</p>
           </div>
         </div>
         <div className="flex flex-col items-end">
            <span className="text-[10px] font-black text-primary uppercase tracking-tighter flex items-center gap-1">
             <Clock size={10} /> {new Date(request.requestDate).toLocaleDateString()}
           </span>
+          {request.status === 'IN_PROGRESS' && (
+            <span className="text-[8px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-widest mt-1">
+              En Curso
+            </span>
+          )}
         </div>
       </div>
 
@@ -68,7 +87,7 @@ export const TrainerDashboardPage = () => {
           <p className="text-[9px] text-text-secondary uppercase font-bold tracking-widest flex items-center gap-1">
             <Dumbbell size={10} /> Nivel
           </p>
-          <p className="text-xs font-bold text-text-main capitalize">{request.experienceLevel.toLowerCase()}</p>
+          <p className="text-xs font-bold text-text-main">{translateLevel(request.experienceLevel)}</p>
         </div>
       </div>
 
@@ -95,7 +114,7 @@ export const TrainerDashboardPage = () => {
         className="w-full justify-center gap-2 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em]"
         onClick={() => handleTakeRequest(request)}
       >
-        Tomar Solicitud <ArrowRight size={14} />
+        {request.status === 'IN_PROGRESS' ? 'Continuar Rutina' : 'Tomar Solicitud'} <ArrowRight size={14} />
       </Button>
     </div>
   );

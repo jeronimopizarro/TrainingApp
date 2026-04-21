@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class GetExerciseProgressUseCase {
         Exercise exercise = findExerciseOrThrow(exerciseId);
 
         // Traemos los datos de los últimos 6 meses.
-        LocalDateTime since = LocalDateTime.now().minusMonths(monthsBack);
+        Instant since = Instant.now().minus(monthsBack * 30L, java.time.temporal.ChronoUnit.DAYS);
 
         // Sesiones donde el alumno hizo ESTE ejercicio en ese rango de tiempo
         List<TrainingSession> sessions = trainingSessionRepository
@@ -55,7 +56,7 @@ public class GetExerciseProgressUseCase {
             BigDecimal averageE1RM = session.calculateAverageE1RMForExercise(exerciseId);
 
             if (averageE1RM.compareTo(BigDecimal.ZERO) > 0) {
-                dataPoints.add(new ProgressDataPoint(session.getStartTime().toLocalDate(), averageE1RM));
+                dataPoints.add(new ProgressDataPoint(session.getStartTime().atZone(ZoneOffset.UTC).toLocalDate(), averageE1RM));
             }
         }
 

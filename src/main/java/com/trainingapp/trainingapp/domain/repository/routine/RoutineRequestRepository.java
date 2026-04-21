@@ -23,4 +23,6 @@ public interface RoutineRequestRepository {
     Optional<RoutineRequest> findFirstByMemberIdAndStatusAndAssignedTrainerId(Long memberId,
                                                                               RoutineRequestStatus status,
                                                                               Long assignedTrainerId);
+
+    List<RoutineRequest> findByAssignedTrainerIdAndStatus(Long assignedTrainerId, RoutineRequestStatus status);
 }

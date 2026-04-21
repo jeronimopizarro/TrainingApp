@@ -23,6 +23,7 @@ import { PaymentMethod, TransactionCategory, SaleResponse } from '../types/sale.
 import { SaleModal } from '../components/SaleModal';
 import { adminService } from '@/features/staff/services/admin.service';
 import { staffService } from '@/features/staff/services/staff.service';
+import { authService } from '@/features/auth/services/auth.service';
 
 const PaymentMethodBadge = ({ method }: { method: PaymentMethod }) => {
   const configs: Record<PaymentMethod, { label: string; class: string; icon: any }> = {
@@ -187,6 +188,9 @@ export const CashierPage = () => {
   const { transactions, loading, error, refreshTransactions, currentCategory } = useTransactions();
   const { getSaleDetails, loading: loadingDetails } = useSales();
   
+  const userRole = authService.getUserRole();
+  const canCreateSale = userRole === 'SUPER_ADMIN' || userRole === 'RECEPTIONIST';
+  
   const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
   const [selectedSale, setSelectedSale] = useState<SaleResponse | null>(null);
@@ -268,12 +272,14 @@ export const CashierPage = () => {
             Caja y <span className="text-primary-dark">Balance</span>.
           </h1>
         </div>
-        <Button 
-          icon={<Plus size={18} />} 
-          onClick={() => setIsSaleModalOpen(true)}
-        >
-          Nueva Venta
-        </Button>
+        {canCreateSale && (
+          <Button 
+            icon={<Plus size={18} />} 
+            onClick={() => setIsSaleModalOpen(true)}
+          >
+            Nueva Venta
+          </Button>
+        )}
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">

@@ -17,9 +17,9 @@ import com.trainingapp.trainingapp.web.dto.dashboard.MemberDashboardResponse.Sug
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -102,8 +102,8 @@ public class MemberDashboardUseCase {
     }
 
     private List<LocalDate> getTrainingDaysThisMonth(Long memberId, LocalDate today) {
-        LocalDateTime startOfMonth = today.withDayOfMonth(1).atStartOfDay();
-        LocalDateTime endOfMonth = today.withDayOfMonth(today.lengthOfMonth()).atTime(LocalTime.MAX);
+        Instant startOfMonth = today.withDayOfMonth(1).atStartOfDay(ZoneOffset.UTC).toInstant();
+        Instant endOfMonth = today.withDayOfMonth(today.lengthOfMonth()).atTime(23, 59, 59).toInstant(ZoneOffset.UTC);
 
         return trainingSessionRepository.findTrainingDatesByMemberIdAndMonth(memberId, startOfMonth, endOfMonth);
     }
